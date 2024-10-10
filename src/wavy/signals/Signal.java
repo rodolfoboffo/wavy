@@ -18,6 +18,10 @@ public abstract class Signal {
 		return 0;
 	}
 	
+	public float getNextValue() {
+		return 0;
+	}
+	
 	public final float getLimit() {
 		return limit;
 	}
