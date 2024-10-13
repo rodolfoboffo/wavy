@@ -8,6 +8,7 @@ public class UIApplication {
 	
 	public UIApplication() {
 		this.frame = new Frame("Wavy");
+		this.frame.setSize(800, 600);
 		this.frame.addWindowListener(new DefaultWindowsListener(this.frame));
 	}
 	

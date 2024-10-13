@@ -11,7 +11,7 @@ public class App {
 	public static void main(String[] args) throws InterruptedException {
 		int SAMPLE_RATE = 44100;
 		ConstantWave cw = new ConstantWave(SAMPLE_RATE, 400);
-		ConstantWave s = new ConstantWave(SAMPLE_RATE, 40);
+		ConstantWave s = new ConstantWave(SAMPLE_RATE, 1);
 		Multiplication w = new Multiplication(cw, s);
 		AudioPlayer player = new AudioPlayer(w);
 		player.play();
