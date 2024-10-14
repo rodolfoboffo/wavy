@@ -1,21 +1,20 @@
 package wavy.flow;
 
-public class DataStream extends Pipe {
+public class DataStream extends AbstractPipe {
+
+	protected Port inputPort;
+	protected Port outputPort;
 	
-	protected Pipe input;
-	protected Pipe output;
-	
-	public void Pipe(Pipe input, Pipe output) {
-		this.input = input;
-		this.output = output;
+	public DataStream() {
+		this.inputPort = new Port(this);
+		this.inputPorts.add(inputPort);
+		this.outputPort = new Port(this);
+		this.outputPorts.add(outputPort);
 	}
 	
-	public void setInput(Pipe input) {
-		this.input = input;
+	@Override
+	protected void doWork() {
+		
 	}
-	
-	public void setOuput(Pipe output) {
-		this.output = output;
-	}
-	
+
 }

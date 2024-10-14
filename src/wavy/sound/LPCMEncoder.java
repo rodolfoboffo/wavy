@@ -2,10 +2,9 @@ package wavy.sound;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.Queue;
 
 import javax.sound.sampled.AudioFormat;
-
-import wavy.signals.Signal;
 
 public class LPCMEncoder extends Encoder {
 
@@ -15,46 +14,28 @@ public class LPCMEncoder extends Encoder {
 	protected boolean signed;
 	protected boolean bigEndian = false;
 
-	public LPCMEncoder(int sampleRate, int bitsPerSample, boolean signed) {
-		super(sampleRate);
+	public LPCMEncoder(int sampleRate, int bitsPerSample, boolean signed, Queue<Float>[] buffers) {
+		super(sampleRate, buffers);
 		this.bitsPerSample = bitsPerSample;
 		this.signed = signed;
 	}
 	
-	public LPCMEncoder(int sampleRate, int bitsPerSample) {
-		this(sampleRate, bitsPerSample, DEFAULT_SIGNED);
+	public LPCMEncoder(int sampleRate, int bitsPerSample, Queue<Float>[] buffers) {
+		this(sampleRate, bitsPerSample, DEFAULT_SIGNED, buffers);
 	}
 	
-	public LPCMEncoder(int bitsPerSample, Signal...s) {
-		this(bitsPerSample, DEFAULT_SIGNED, s);
+	public LPCMEncoder(int sampleRate, Queue<Float>[] buffers) {
+		this(sampleRate, DEFAULT_BITS_PER_SAMPLE, DEFAULT_SIGNED, buffers);
 	}
-	
-	public LPCMEncoder(Signal...s) {
-		this(DEFAULT_BITS_PER_SAMPLE, DEFAULT_SIGNED, s);
-	}
-	
-	public LPCMEncoder() {
-		this(DEFAULT_BITS_PER_SAMPLE);
-	}
-	
-	public LPCMEncoder(int bitsPerSample) {
-		this(bitsPerSample, DEFAULT_SIGNED);
-	}
-	
-	public LPCMEncoder(int bitsPerSample, boolean signed, Signal...s) {
-		super(s);
-		this.signed = signed;
-		this.bitsPerSample = bitsPerSample;
-	}
-	
+
 	@Override
 	public AudioFormat getAudioFormat() {
-		return new AudioFormat(this.sampleRate, this.bitsPerSample, this.signals.size(), this.signed, this.bigEndian);
+		return new AudioFormat(this.sampleRate, this.bitsPerSample, this.buffers.length, this.signed, this.bigEndian);
 	}
 	
 	@Override
 	public byte[] getNumOfFrames(int n) {
-		int bitsPerFrame = this.signals.size()*this.bitsPerSample;
+		int bitsPerFrame = this.buffers.length*this.bitsPerSample;
 		if (bitsPerFrame % 8 != 0)
 			throw new RuntimeException("Number of bits per frame should be multiple of 8.");
 		int bytesPerFrame = bitsPerFrame / 8;
@@ -67,11 +48,10 @@ public class LPCMEncoder extends Encoder {
 		for (int iFrame = 0; iFrame < n; iFrame++) {
 			frameInt = 0;
 			buffer.clear();
-			for (Signal s : this.signals) {
+			for (Queue<Float> b : this.buffers) {
 				frameInt <<= this.bitsPerSample;
-//				float v = s.getValue(this.index);
-				float v = s.getNextValue();
-				int sampleInt = (int) ((v / s.getLimit()) * SIGNED_MAX);
+				float v = b.poll();
+				int sampleInt = (int) ((v * SIGNED_MAX) % SIGNED_MAX);
 				if (!this.signed)
 					sampleInt += SIGNED_MAX;
 				frameInt |= sampleInt;

@@ -1,7 +1,6 @@
 package wavy.signals;
 
-import wavy.Configuration;
-import wavy.Constants;
+import wavy.math.Constants;
 import wavy.math.SineTable;
 
 public class ConstantWave extends Signal {
@@ -20,7 +19,7 @@ public class ConstantWave extends Signal {
 	}
 	
 	public ConstantWave(int sampleRate, float frequency) {
-		this(sampleRate, frequency, 1.0f, Configuration.SINE_TABLE);
+		this(sampleRate, frequency, 1.0f, SineTable.DEFAULT_SINE_TABLE);
 	}
 
 	public final float getFrequency() {
