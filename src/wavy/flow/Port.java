@@ -8,11 +8,13 @@ public class Port implements IPort {
 	protected IPipe pipe;
 	protected IPort linkedPort;
 	protected Queue<Float> buffer;
+	protected final int bufferCapacity;
 	
 	public Port(IPipe pipe) {
 		super();
 		this.pipe = pipe;
-		this.buffer = new ArrayBlockingQueue<Float>(DEFAULT_DATASTREAM_BUFER_SIZE);
+		this.bufferCapacity = DEFAULT_DATASTREAM_BUFER_SIZE;
+		this.buffer = new ArrayBlockingQueue<Float>(this.bufferCapacity);
 	}
 	
 	public IPipe getPipe() {
@@ -20,6 +22,10 @@ public class Port implements IPort {
 	}
 	public Queue<Float> getBuffer() {
 		return buffer;
+	}
+	
+	public int getBufferCapacity() {
+		return bufferCapacity;
 	}
 
 	@Override

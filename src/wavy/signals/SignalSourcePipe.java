@@ -21,8 +21,11 @@ public class SignalSourcePipe extends AbstractPipe {
 
 	@Override
 	protected void doWork() {
-		float v = this.signal.getNextValue();
-		this.outputPort.getBuffer().add(v);
+		if (this.outputPort.getLinkedPort() != null &&
+				this.outputPort.getLinkedPort().getBuffer().size() < this.outputPort.getLinkedPort().getBufferCapacity()) {
+			float v = this.signal.getNextValue();
+			this.outputPort.getLinkedPort().getBuffer().add(v);
+		}
 	}
 
 }

@@ -37,16 +37,23 @@ public class Studio {
 	}
 	
 	public void addPipe(IPipe p) {
-		if (!this.pipes.contains(p)) {
-			this.pipes.add(p);
+		synchronized (this.pipes) {
+			if (!this.pipes.contains(p)) {
+				ArrayList<IPipe> newPipes = new ArrayList<IPipe>(this.pipes);
+				newPipes.add(p);
+				this.pipes = newPipes;
+			}
 		}
 	}
 	
 	public List<IPipe> getPipes() {
-		return pipes;
+		synchronized (this.pipes) {
+			return this.pipes;
+		}
 	}
 	
-	public synchronized void shutdown() throws InterruptedException {
+	public void shutdown() throws InterruptedException {
+		this.isPaused = true;
 		this.isActive = false;
 		for (StudioWorker w : this.workers) {
 			w.join();
@@ -56,11 +63,17 @@ public class Studio {
 	public static void main(String[] args) throws InterruptedException {
 		Studio s = new Studio();
 		int SAMPLE_RATE = 44100;
-		ConstantWave cw = new ConstantWave(SAMPLE_RATE, 400);
+		ConstantWave cw = new ConstantWave(SAMPLE_RATE, 0.5f);
+//		ConstantWave cw2 = new ConstantWave(SAMPLE_RATE, 7);
 		SignalSourcePipe sp = new SignalSourcePipe(cw);
+//		SignalSourcePipe sp2 = new SignalSourcePipe(cw2);
 		AudioPlayerPipe player = new AudioPlayerPipe(1, SAMPLE_RATE);
 		player.getInputPipes().get(0).setLinkedPort(sp.getOutputPort());
+//		player.getInputPipes().get(1).setLinkedPort(sp2.getOutputPort());
 		s.addPipe(sp);
+//		s.addPipe(sp2);
 		s.addPipe(player);
+		Thread.sleep(30000);
+		s.shutdown();
 	}
 }

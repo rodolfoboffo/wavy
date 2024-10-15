@@ -12,7 +12,7 @@ public class StudioWorker extends Thread {
 	public void run() {
 		super.run();
 		while (this.studio.isActive()) {
-			while (!this.studio.isPaused()) {
+			if (!this.studio.isPaused()) {
 				for (IPipe p : this.studio.getPipes()) {
 					if (!p.isBusy())
 						p.process();
