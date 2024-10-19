@@ -1,7 +1,7 @@
-package wavy.signals.operations;
+package com.terpomo.wavy.signals.operations;
 
-import wavy.signals.Constant;
-import wavy.signals.Signal;
+import com.terpomo.wavy.signals.Constant;
+import com.terpomo.wavy.signals.Signal;
 
 public abstract class BinaryOp extends SignalOp {
 

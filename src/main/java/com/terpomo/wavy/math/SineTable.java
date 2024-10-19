@@ -1,9 +1,8 @@
-package wavy.math;
-
-import wavy.Constants;
+package com.terpomo.wavy.math;
 
 public class SineTable {
-
+	public static final SineTable DEFAULT_SINE_TABLE = new SineTable(200000);
+	
 	private final int n;
 	private final float sineValues[];
 	

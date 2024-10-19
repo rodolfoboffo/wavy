@@ -1,6 +1,6 @@
-package wavy.signals.operations;
+package com.terpomo.wavy.signals.operations;
 
-import wavy.signals.Signal;
+import com.terpomo.wavy.signals.Signal;
 
 public abstract class SignalOp extends Signal {
 	

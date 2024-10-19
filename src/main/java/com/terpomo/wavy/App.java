@@ -1,19 +1,17 @@
-package wavy;
+package com.terpomo.wavy;
 
-import java.util.Scanner;
-
-import wavy.signals.ConstantWave;
-import wavy.signals.operations.Multiplication;
-import wavy.sound.player.AudioPlayer;
+import com.terpomo.wavy.signals.ConstantWave;
+import com.terpomo.wavy.signals.operations.Multiplication;
+import com.terpomo.wavy.sound.player.AudioPlayerPipe;
 
 public class App {
 
 	public static void main(String[] args) throws InterruptedException {
 		int SAMPLE_RATE = 44100;
 		ConstantWave cw = new ConstantWave(SAMPLE_RATE, 400);
-		ConstantWave s = new ConstantWave(SAMPLE_RATE, 40);
+		ConstantWave s = new ConstantWave(SAMPLE_RATE, 1);
 		Multiplication w = new Multiplication(cw, s);
-		AudioPlayer player = new AudioPlayer(w);
+		AudioPlayerPipe player = new AudioPlayerPipe(1, SAMPLE_RATE);
 		player.play();
 //		Scanner scanner = new Scanner(System.in);
 //		while(scanner.hasNextLine()) {

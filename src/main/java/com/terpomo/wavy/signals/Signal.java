@@ -1,4 +1,4 @@
-package wavy.signals;
+package com.terpomo.wavy.signals;
 
 public abstract class Signal {
 

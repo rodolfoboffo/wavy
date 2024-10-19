@@ -1,4 +1,4 @@
-package wavy;
+package com.terpomo.wavy.math;
 
 public class Constants {
 
