@@ -14,4 +14,21 @@
 	<natures>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>JAVAFXLIB</name>
+			<type>2</type>
+			<locationURI>JAVAFXLIB</locationURI>
+		</link>
+	</linkedResources>
+	<variableList>
+		<variable>
+			<name>JAVAFXBIN</name>
+			<value>file:/C:/working/javafx-sdk-23.0.1/bin</value>
+		</variable>
+		<variable>
+			<name>JAVAFXLIB</name>
+			<value>file:/C:/working/javafx-sdk-23.0.1/lib</value>
+		</variable>
+	</variableList>
 </projectDescription>

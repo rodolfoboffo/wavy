@@ -8,7 +8,7 @@ import com.terpomo.wavy.signals.SignalSourcePipe;
 import com.terpomo.wavy.sound.player.AudioPlayerPipe;
 
 public class Studio {
-	public static int DEFAULT_NUM_OF_WORKERS = 1;
+	public static int DEFAULT_NUM_OF_WORKERS = 4;
 	protected List<IPipe> pipes;
 	protected List<StudioWorker> workers;
 	protected boolean isActive = true;
