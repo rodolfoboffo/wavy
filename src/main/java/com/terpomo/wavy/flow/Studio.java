@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.terpomo.wavy.signals.ConstantWave;
-import com.terpomo.wavy.signals.SignalSourcePipe;
+import com.terpomo.wavy.signals.AbstractSignalSourcePipe;
+import com.terpomo.wavy.signals.ConstantWavePipe;
 import com.terpomo.wavy.sound.player.AudioPlayerPipe;
 
 public class Studio {
@@ -65,7 +66,7 @@ public class Studio {
 		int SAMPLE_RATE = 44100;
 		ConstantWave cw = new ConstantWave(SAMPLE_RATE, 400f);
 //		ConstantWave cw2 = new ConstantWave(SAMPLE_RATE, 7);
-		SignalSourcePipe sp = new SignalSourcePipe(cw);
+		AbstractSignalSourcePipe sp = new ConstantWavePipe(cw);
 //		SignalSourcePipe sp2 = new SignalSourcePipe(cw2);
 		AudioPlayerPipe player = new AudioPlayerPipe(1, SAMPLE_RATE);
 		player.getInputPipes().get(0).setLinkedPort(sp.getOutputPort());

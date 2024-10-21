@@ -4,11 +4,11 @@ import java.awt.Frame;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
-public class DefaultWindowsListener implements WindowListener {
+public class DefaultWindowListener implements WindowListener {
 
 	Frame frame;
 	
-	public DefaultWindowsListener(Frame f) {
+	public DefaultWindowListener(Frame f) {
 		this.frame = f;
 	}
 	

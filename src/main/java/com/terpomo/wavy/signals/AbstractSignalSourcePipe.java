@@ -3,12 +3,12 @@ package com.terpomo.wavy.signals;
 import com.terpomo.wavy.flow.AbstractPipe;
 import com.terpomo.wavy.flow.Port;
 
-public class SignalSourcePipe extends AbstractPipe {
+public abstract class AbstractSignalSourcePipe extends AbstractPipe {
 	
 	protected Signal signal;
 	protected Port outputPort;
 	
-	public SignalSourcePipe(Signal signal) {
+	public AbstractSignalSourcePipe(Signal signal) {
 		super();
 		this.signal = signal;
 		this.outputPort = new Port(this);

@@ -15,7 +15,7 @@ public class App {
 		player.play();
 //		Scanner scanner = new Scanner(System.in);
 //		while(scanner.hasNextLine()) {
-//			String line = scanner.nextLine();
+//			String line = scanner.nextLine();	
 //			if (line.startsWith("P")) {
 //				player.play();
 //			}

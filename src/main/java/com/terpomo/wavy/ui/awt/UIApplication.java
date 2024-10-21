@@ -1,24 +1,19 @@
 package com.terpomo.wavy.ui.awt;
 
-import java.awt.Frame;
+import com.terpomo.wavy.ui.awt.main.MainWindow;
 
 public class UIApplication {
 	
-	protected Frame frame;
+	protected MainWindow main;
 	
-	public UIApplication() {
-		this.frame = new Frame("Wavy");
-		this.frame.setSize(800, 600);
-		this.frame.addWindowListener(new DefaultWindowsListener(this.frame));
-	}
-	
-	public void show() {
-		this.frame.setVisible(true);
+	public void start() {
+		this.main = new MainWindow();
+		this.main.showApp();
 	}
 	
 	public static void main(String[] args) {
 		UIApplication app = new UIApplication();
-		app.show();
+		app.start();
 	}
 	
 }
