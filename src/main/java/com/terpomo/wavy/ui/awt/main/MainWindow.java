@@ -5,7 +5,7 @@ import java.awt.Frame;
 import java.awt.LayoutManager;
 import java.awt.MenuBar;
 
-import com.terpomo.wavy.ui.awt.DefaultWindowListener;
+import com.terpomo.wavy.ui.awt.util.DefaultWindowListener;
 
 public class MainWindow extends Frame {
 

@@ -1,4 +1,4 @@
-package com.terpomo.wavy.ui.awt;
+package com.terpomo.wavy.ui.awt.util;
 
 import java.awt.Frame;
 import java.awt.event.WindowEvent;
