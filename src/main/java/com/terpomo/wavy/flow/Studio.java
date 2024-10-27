@@ -69,7 +69,7 @@ public class Studio {
 		AbstractSignalSourcePipe sp = new ConstantWavePipe(cw);
 //		SignalSourcePipe sp2 = new SignalSourcePipe(cw2);
 		AudioPlayerPipe player = new AudioPlayerPipe(1, SAMPLE_RATE);
-		player.getInputPipes().get(0).setLinkedPort(sp.getOutputPort());
+		player.getInputPorts().get(0).setLinkedPort(sp.getOutputPort());
 //		player.getInputPipes().get(1).setLinkedPort(sp2.getOutputPort());
 		s.addPipe(sp);
 //		s.addPipe(sp2);

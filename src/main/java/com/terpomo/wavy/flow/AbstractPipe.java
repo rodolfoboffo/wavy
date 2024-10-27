@@ -19,12 +19,12 @@ public abstract class AbstractPipe implements IPipe {
 	}
 	
 	@Override
-	public List<IPort> getOutputPipes() {
+	public List<IPort> getOutputPorts() {
 		return this.outputPorts;
 	}
 
 	@Override
-	public List<IPort> getInputPipes() {
+	public List<IPort> getInputPorts() {
 		return this.inputPorts;
 	}
 

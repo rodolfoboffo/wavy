@@ -7,7 +7,7 @@ import java.util.List;
 import com.terpomo.wavy.signals.ConstantWave;
 import com.terpomo.wavy.signals.ConstantWavePipe;
 import com.terpomo.wavy.ui.awt.pipes.AbstractPipeRepr;
-import com.terpomo.wavy.ui.awt.pipes.ConstantWaveRepr;
+import com.terpomo.wavy.ui.awt.pipes.ConstantWavePipeRepr;
 
 public class ProjectRepr extends Panel {
 
@@ -17,7 +17,7 @@ public class ProjectRepr extends Panel {
 	
 	public ProjectRepr() {
 		this.pipes = new ArrayList<AbstractPipeRepr>();
-		ConstantWaveRepr pipeRepr = new ConstantWaveRepr(new ConstantWavePipe(new ConstantWave(44100, 400)), "Const Sine Wave");
+		ConstantWavePipeRepr pipeRepr = new ConstantWavePipeRepr(new ConstantWavePipe(new ConstantWave(44100, 400)), "Const Sine Wave");
 		pipeRepr.setLocation(0, 0);
 		this.pipes.add(pipeRepr);
 		this.add(pipeRepr);
