@@ -1,10 +1,10 @@
 package com.terpomo.wavy.signals;
 
-public class Constant extends Signal {
+public class ConstantValue extends Signal {
 
 	protected float value;
 	
-	public Constant(float value, int sampleRate) {
+	public ConstantValue(float value, int sampleRate) {
 		super(sampleRate);
 		this.value = value;
 	}

@@ -14,7 +14,7 @@ public class SineTable {
 	private final float[] generateSineTable(int n) {
 		final float values[] = new float[n];
 		for (int i = 0; i < n; i++) {
-			values[i] = (float) Math.sin(Constants.PI2 / n * i);
+			values[i] = (float) Math.sin(MathConstants.PI2 / n * i);
 		}
 		return values;
 	}
@@ -33,7 +33,7 @@ public class SineTable {
 	}
 	
 	public final float getSineValue(float rad) {
-		int i = (int) (rad % Constants.PI2 / Constants.PI2 * this.n);
+		int i = (int) (rad % MathConstants.PI2 / MathConstants.PI2 * this.n);
 		return this.sineValues[i];
 	}
 	

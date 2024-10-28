@@ -1,7 +1,7 @@
 package com.terpomo.wavy.signals;
 
 public abstract class Signal {
-
+	
 	protected int sampleRate;
 	protected float limit = 1.0f;
 

@@ -1,10 +1,15 @@
 package com.terpomo.wavy.ui.awt.main;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.EventQueue;
 import java.awt.Frame;
 import java.awt.LayoutManager;
 import java.awt.MenuBar;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
+import com.terpomo.wavy.ui.awt.UIController;
 import com.terpomo.wavy.ui.awt.util.DefaultWindowListener;
 
 public class MainWindow extends Frame {
@@ -13,11 +18,11 @@ public class MainWindow extends Frame {
 	private static final String WAVY = "Wavy";
 	protected MenuBar mainMenu;
 	protected LayoutManager layout;
-	protected ProjectRepr mainProject;
 	
 	public MainWindow() {
 		super(WAVY);
 		this.setSize(800, 600);
+		this.setBackground(Color.LIGHT_GRAY);
 		this.addWindowListener(new DefaultWindowListener(this));
 		
 		this.mainMenu = new MainMenuBar();
@@ -25,12 +30,33 @@ public class MainWindow extends Frame {
 		
 		this.layout = new BorderLayout();
 		this.setLayout(this.layout);
-		this.mainProject = new ProjectRepr();
-		this.add(BorderLayout.CENTER, this.mainProject);
+		
+		UIController.getInstance().onSelectedProjectChanged(new SelectedProjectChangedListener());
+	}
+	
+	public void setProject(ProjectRepr p) {
+		if (p != null) {
+			this.add(BorderLayout.CENTER, p);
+		}
+		else {
+			this.removeAll();
+		}
+		this.revalidate();
+		this.repaint();
 	}
 	
 	public void showApp() {
 		this.setVisible(true);
 	}
 	
+	class SelectedProjectChangedListener implements PropertyChangeListener {
+
+		@Override
+		public void propertyChange(PropertyChangeEvent evt) {
+			EventQueue.invokeLater(() -> {
+				MainWindow.this.setProject((ProjectRepr) evt.getNewValue());
+			});
+		}
+		
+	}
 }

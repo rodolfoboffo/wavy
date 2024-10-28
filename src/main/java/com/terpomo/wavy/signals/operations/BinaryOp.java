@@ -1,6 +1,6 @@
 package com.terpomo.wavy.signals.operations;
 
-import com.terpomo.wavy.signals.Constant;
+import com.terpomo.wavy.signals.ConstantValue;
 import com.terpomo.wavy.signals.Signal;
 
 public abstract class BinaryOp extends SignalOp {
@@ -17,11 +17,11 @@ public abstract class BinaryOp extends SignalOp {
 	}
 	
 	public BinaryOp(float s1, Signal s2) {
-		this(new Constant(s1, s2.getSampleRate()), s2);
+		this(new ConstantValue(s1, s2.getSampleRate()), s2);
 	}
 	
 	public BinaryOp(Signal s1, float s2) {
-		this(s1, new Constant(s2, s1.getSampleRate()));
+		this(s1, new ConstantValue(s2, s1.getSampleRate()));
 	}
 
 	public Signal getSignal1() {
