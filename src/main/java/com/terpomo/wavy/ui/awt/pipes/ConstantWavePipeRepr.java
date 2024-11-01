@@ -2,7 +2,6 @@ package com.terpomo.wavy.ui.awt.pipes;
 
 import java.awt.GridLayout;
 import java.awt.Label;
-import java.awt.LayoutManager;
 import java.awt.TextField;
 
 import com.terpomo.wavy.signals.ConstantWave;
@@ -13,7 +12,7 @@ public class ConstantWavePipeRepr extends AbstractSignalPipeRepr<ConstantWave, C
 	private static final long serialVersionUID = 8289652143621889982L;
 	public static final String FREQUENCY = "Frequency";
 	
-	LayoutManager contentLayout;
+	GridLayout contentLayout;
 	protected ConstantWavePipe pipe;
 	
 	private String frequencyStrValue;
@@ -25,9 +24,9 @@ public class ConstantWavePipeRepr extends AbstractSignalPipeRepr<ConstantWave, C
 		super(pipe, name);
 		this.pipe = (ConstantWavePipe) super.pipe;
 		this.contentLayout = new GridLayout(1, 1, 10, 10);
-		this.frequencyLabel = new Label(FREQUENCY);
-		
 		this.contentPanel.setLayout(this.contentLayout);
+		
+		this.frequencyLabel = new Label(FREQUENCY);
 		this.contentPanel.add(this.frequencyLabel);
 		
 		this.frequencyStrValue = String.valueOf(this.getPipe().getSignal().getFrequency());

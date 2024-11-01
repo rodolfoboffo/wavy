@@ -1,10 +1,13 @@
 package com.terpomo.wavy.ui.awt.main;
 
+import java.awt.EventQueue;
 import java.awt.Menu;
 import java.awt.MenuBar;
 import java.awt.MenuItem;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 import com.terpomo.wavy.ui.awt.UIController;
 
@@ -51,6 +54,14 @@ public class MainMenuBar extends MenuBar {
 		this.constWaveMenuItem.addActionListener(this.newConstWaveActionListener);
 		this.pipesMenu.add(this.constWaveMenuItem);
 		this.add(this.pipesMenu);
+		
+		this.onSelectedProjectChange(UIController.getInstance().getSelectedProjectRepr());
+		UIController.getInstance().onSelectedProjectChanged(new SelectedProjectChangedListener());
+	}
+	
+	public void onSelectedProjectChange(ProjectRepr p) {
+		boolean enabled = p != null;
+		this.constWaveMenuItem.setEnabled(enabled);
 	}
 	
 	class NewProjectActionListener implements ActionListener {
@@ -59,7 +70,6 @@ public class MainMenuBar extends MenuBar {
 		public void actionPerformed(ActionEvent e) {
 			UIController.getInstance().createNewProjectRepr();
 		}
-		
 	}
 	
 	class ExitActionListener implements ActionListener {
@@ -68,7 +78,6 @@ public class MainMenuBar extends MenuBar {
 		public void actionPerformed(ActionEvent e) {
 			UIController.getInstance().exit();
 		}
-		
 	}
 	
 	class NewSineWaveActionListener implements ActionListener {
@@ -77,7 +86,20 @@ public class MainMenuBar extends MenuBar {
 		public void actionPerformed(ActionEvent e) {
 			UIController.getInstance().createSineWavePipe();
 		}
-		
+	}
+	
+	class SelectedProjectChangedListener implements PropertyChangeListener {
+
+		@Override
+		public void propertyChange(PropertyChangeEvent evt) {
+			EventQueue.invokeLater(new Runnable() {
+				
+				@Override
+				public void run() {
+					MainMenuBar.this.onSelectedProjectChange((ProjectRepr) evt.getNewValue());
+				}
+			});
+		}
 	}
 
 }

@@ -48,7 +48,9 @@ public class ProjectRepr extends Panel {
 	}
 	
 	private void setPipeReprPredefinitions(AbstractPipeRepr pipeRepr) {
-		pipeRepr.setBounds(0, 0, 300, 100);
+		pipeRepr.getLayout().layoutContainer(pipeRepr);
+		Dimension size = pipeRepr.getLayout().preferredLayoutSize(pipeRepr);
+		pipeRepr.setBounds(0, 0, 200, 150);
 	}
 	
 	public void addPipeRepr(AbstractPipeRepr pipeRepr) {
