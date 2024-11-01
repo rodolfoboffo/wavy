@@ -4,12 +4,10 @@ import com.terpomo.wavy.signals.ConstantWave;
 import com.terpomo.wavy.signals.ConstantWavePipe;
 
 public class PipeFactory {
-
-	public static final String PIPE_CW = "PIPE_CW";
 	
-	public static AbstractPipe createPipe(String pipeType) {
+	public static AbstractPipe createPipe(PipeTypeEnum pipeType) {
 		switch (pipeType) {
-		case PIPE_CW: {
+		case CONSTANT_WAVE_SIGNAL_PIPE_ENUM: {
 			return new ConstantWavePipe(new ConstantWave());
 		}
 		default:

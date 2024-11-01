@@ -21,5 +21,6 @@ public class Worker extends Thread {
 				}
 			}
 		}
+		System.out.println("Thread finished.");
 	}
 }

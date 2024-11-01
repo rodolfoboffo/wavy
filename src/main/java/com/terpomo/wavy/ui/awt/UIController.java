@@ -6,8 +6,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.terpomo.wavy.flow.Controller;
+import com.terpomo.wavy.flow.IPipe;
+import com.terpomo.wavy.flow.PipeTypeEnum;
 import com.terpomo.wavy.flow.Project;
 import com.terpomo.wavy.ui.awt.main.ProjectRepr;
+import com.terpomo.wavy.ui.awt.pipes.AbstractPipeRepr;
+import com.terpomo.wavy.ui.awt.pipes.PipeReprFactory;
 
 public class UIController extends Component {
 
@@ -15,7 +19,7 @@ public class UIController extends Component {
 	private final static UIController instance = new UIController();
 	public static final String PROPERTY_SELECTED_PROJECT = "PROPERTY_SELECTED_PROJECT";
 	private List<ProjectRepr> projectsRepr;
-	private ProjectRepr selectedProject;
+	private ProjectRepr selectedProjectRepr;
 	private Controller controller;
 	
 	private UIController() {
@@ -27,10 +31,6 @@ public class UIController extends Component {
 		return instance;
 	}
 	
-	public ProjectRepr getSelectedProject() {
-		return selectedProject;
-	}
-	
 	public void exit() {
 		try {
 			this.controller.shutdown();
@@ -39,11 +39,15 @@ public class UIController extends Component {
 			System.exit(-1);
 		}
 	}
-
-	public void setSelectedProject(ProjectRepr selectedProject) {
-		ProjectRepr oldValue = this.selectedProject;
+	
+	public ProjectRepr getSelectedProjectRepr() {
+		return selectedProjectRepr;
+	}
+	
+	public void setSelectedProjectRepr(ProjectRepr selectedProject) {
+		ProjectRepr oldValue = this.selectedProjectRepr;
 		if (oldValue != selectedProject) {
-			this.selectedProject = selectedProject;
+			this.selectedProjectRepr = selectedProject;
 			this.firePropertyChange(PROPERTY_SELECTED_PROJECT, oldValue, selectedProject);
 		}
 	}
@@ -52,12 +56,28 @@ public class UIController extends Component {
 		this.addPropertyChangeListener(PROPERTY_SELECTED_PROJECT, l);
 	}
 	
-	public ProjectRepr createNewProject() {
+	public ProjectRepr createNewProjectRepr() {
 		Project p = this.controller.createNewProject();
-		ProjectRepr pRepr = new ProjectRepr(p);
+		ProjectRepr pRepr = new ProjectRepr();
+		pRepr.setProject(p);
 		this.projectsRepr.add(pRepr);
-		this.setSelectedProject(pRepr);
+		this.setSelectedProjectRepr(pRepr);
 		return pRepr;
+	}
+
+	public void createSineWavePipe() {
+		this.createPipeRepr(PipeTypeEnum.CONSTANT_WAVE_SIGNAL_PIPE_ENUM);
+	}
+	
+	public void createPipeRepr(PipeTypeEnum pipeType) {
+		if (this.selectedProjectRepr != null) {
+			Project project = this.selectedProjectRepr.getProject();
+			String pipeName = this.selectedProjectRepr.generatePipeName(pipeType);
+			AbstractPipeRepr pipeRepr = PipeReprFactory.createPipeRepr(pipeType, pipeName);
+			IPipe pipe = pipeRepr.getPipe();
+			this.controller.addPipe(project, pipe);
+			this.selectedProjectRepr.addPipeRepr(pipeRepr);
+		}
 	}
 	
 }

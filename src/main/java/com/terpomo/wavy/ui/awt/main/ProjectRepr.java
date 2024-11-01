@@ -1,11 +1,14 @@
 package com.terpomo.wavy.ui.awt.main;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Panel;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import com.terpomo.wavy.flow.IPipe;
+import com.terpomo.wavy.flow.PipeTypeEnum;
 import com.terpomo.wavy.flow.Project;
 import com.terpomo.wavy.ui.awt.pipes.AbstractPipeRepr;
 
@@ -14,16 +17,45 @@ public class ProjectRepr extends Panel {
 	private static final long serialVersionUID = -3136424835205807021L;
 
 	private Project project;
-	protected List<? extends AbstractPipeRepr> pipesRepr;
+	protected List<AbstractPipeRepr> pipesRepr;
+	private Map<PipeTypeEnum, Integer> pipeTypeCountMap;
 	
-	public ProjectRepr(Project project) {
-		this.project = project;
+	public ProjectRepr() {
+		this.setLayout(null);
 		this.pipesRepr = new ArrayList<AbstractPipeRepr>();
-		for (IPipe pipe : project.getPipes()) {
-			
-		}
-		
+		this.pipeTypeCountMap = new HashMap<PipeTypeEnum, Integer>();
 		this.setBackground(Color.WHITE);
 	}
 	
+	private Integer getPipeCountAndIncr(PipeTypeEnum pipeType) {
+		int c = this.pipeTypeCountMap.getOrDefault(pipeType, 0);
+		this.pipeTypeCountMap.put(pipeType, c+1);
+		return c;
+	}
+	
+	public String generatePipeName(PipeTypeEnum pipeType) {
+		Integer c = this.getPipeCountAndIncr(pipeType);
+		String pipeName = String.format("%s %d", pipeType.getFriendlyName(), c);
+		return pipeName;
+	}
+	
+	public Project getProject() {
+		return project;
+	}
+	
+	public void setProject(Project project) {
+		this.project = project;
+	}
+	
+	private void setPipeReprPredefinitions(AbstractPipeRepr pipeRepr) {
+		pipeRepr.setBounds(0, 0, 300, 100);
+	}
+	
+	public void addPipeRepr(AbstractPipeRepr pipeRepr) {
+		this.setPipeReprPredefinitions(pipeRepr);
+		this.pipesRepr.add(pipeRepr);
+		this.add(pipeRepr);
+		this.revalidate();
+		this.repaint();
+	}
 }

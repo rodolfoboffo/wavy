@@ -5,6 +5,7 @@ import java.util.List;
 
 public class Controller {
 	public static int DEFAULT_NUM_OF_WORKERS = 1;
+	public static int DEFAULT_THREAD_WAIT_TIME_MILIS = 100;
 	private List<Worker> workers;
 	private List<Project> projects;
 	private boolean isActive = true;
@@ -64,7 +65,7 @@ public class Controller {
 		this.isPaused = true;
 		this.isActive = false;
 		for (Worker w : this.workers) {
-			w.join();
+			w.join(DEFAULT_THREAD_WAIT_TIME_MILIS);
 		}
 	}
 }

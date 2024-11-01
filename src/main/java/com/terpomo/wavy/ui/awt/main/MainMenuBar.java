@@ -16,7 +16,7 @@ public class MainMenuBar extends MenuBar {
 	private static final String NEW_PROJECT = "New Project";
 	private static final String EXIT = "Exit";
 	private static final String PIPES = "Pipes";
-	private static final String SINE_WAVE = "Sine Wave";
+	private static final String CONSTNAT_WAVE = "Constant Wave";
 	
 	private Menu fileMenu;
 	private MenuItem newProjectMenuItem;
@@ -25,7 +25,8 @@ public class MainMenuBar extends MenuBar {
 	private ActionListener exitActionListener;
 	
 	private Menu pipesMenu;
-	private MenuItem sineWaveMenuItem;
+	private MenuItem constWaveMenuItem;
+	private ActionListener newConstWaveActionListener;
 	
 	public MainMenuBar() {
 		super();
@@ -45,8 +46,10 @@ public class MainMenuBar extends MenuBar {
 		this.fileMenu.add(exitMenuItem);
 		
 		this.pipesMenu = new Menu(PIPES);
-		this.sineWaveMenuItem = new MenuItem(SINE_WAVE);
-		this.pipesMenu.add(this.sineWaveMenuItem);
+		this.constWaveMenuItem = new MenuItem(CONSTNAT_WAVE);
+		this.newConstWaveActionListener = new NewSineWaveActionListener();
+		this.constWaveMenuItem.addActionListener(this.newConstWaveActionListener);
+		this.pipesMenu.add(this.constWaveMenuItem);
 		this.add(this.pipesMenu);
 	}
 	
@@ -54,7 +57,7 @@ public class MainMenuBar extends MenuBar {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			UIController.getInstance().createNewProject();
+			UIController.getInstance().createNewProjectRepr();
 		}
 		
 	}
@@ -64,6 +67,15 @@ public class MainMenuBar extends MenuBar {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			UIController.getInstance().exit();
+		}
+		
+	}
+	
+	class NewSineWaveActionListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			UIController.getInstance().createSineWavePipe();
 		}
 		
 	}

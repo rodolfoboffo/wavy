@@ -4,6 +4,8 @@ import java.awt.Frame;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
+import com.terpomo.wavy.ui.awt.UIController;
+
 public class DefaultWindowListener implements WindowListener {
 
 	Frame frame;
@@ -20,7 +22,7 @@ public class DefaultWindowListener implements WindowListener {
 
 	@Override
 	public void windowClosing(WindowEvent e) {
-		this.frame.dispose();
+		UIController.getInstance().exit();
 	}
 
 	@Override

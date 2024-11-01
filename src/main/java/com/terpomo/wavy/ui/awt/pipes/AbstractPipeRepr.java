@@ -19,10 +19,10 @@ import java.util.List;
 
 import com.terpomo.wavy.flow.IPipe;
 import com.terpomo.wavy.flow.IPort;
-import com.terpomo.wavy.ui.awt.PointOp;
 import com.terpomo.wavy.ui.awt.components.WavyPanel;
+import com.terpomo.wavy.ui.awt.util.PointOperation;
 
-public abstract class AbstractPipeRepr extends WavyPanel {
+public abstract class AbstractPipeRepr extends WavyPanel implements IPipeRepr {
 
 	private static final long serialVersionUID = -4460157397034830356L;
 	private static final Font NAME_FONT = new Font(Font.SANS_SERIF, Font.BOLD, 12);
@@ -114,8 +114,8 @@ public abstract class AbstractPipeRepr extends WavyPanel {
 	
 	protected void onDrag(Point mousePoint) {
 		if (this.isBeingMoved) {
-			Point displace = PointOp.sub(mousePoint, this.originMousePosition);
-			Point destination = PointOp.sum(displace, this.originPipePosition);
+			Point displace = PointOperation.sub(mousePoint, this.originMousePosition);
+			Point destination = PointOperation.sum(displace, this.originPipePosition);
 			this.setLocation(destination);
 		}
 	}
