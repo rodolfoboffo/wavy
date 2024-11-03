@@ -15,6 +15,8 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.terpomo.wavy.flow.IPipe;
 import com.terpomo.wavy.ui.awt.components.WavyPanel;
@@ -29,6 +31,8 @@ public abstract class AbstractPipeRepr extends WavyPanel implements IPipeRepr {
 	private static final String IS_BEING_MOVED = "IS_BEING_MOVED";
 	
 	private LayoutManager mainLayout;
+	@SuppressWarnings("rawtypes")
+	private List<PipePropertyRepr> pipeProperties;
 	
 	protected IPipe pipe;
 	private String pipeName;
@@ -40,8 +44,10 @@ public abstract class AbstractPipeRepr extends WavyPanel implements IPipeRepr {
 	private Point originMousePosition;
 	private Point originPipePosition;
 	
+	@SuppressWarnings("rawtypes")
 	public AbstractPipeRepr(IPipe pipe, String name) {
 		super(DEFAULT_INSET_SIZE);
+		this.pipeProperties = new ArrayList<PipePropertyRepr>();
 		this.pipe = pipe;
 		
 		this.mainLayout = new BorderLayout();
@@ -67,6 +73,14 @@ public abstract class AbstractPipeRepr extends WavyPanel implements IPipeRepr {
 		this.addPropertyChangeListener(IS_BEING_MOVED, new IsBeingMovedListener());
 	}
 	
+	public void layoutPipePropertiesOnGrid() {
+		for (int i = 0; i < this.pipeProperties.size(); i++) {
+			@SuppressWarnings("rawtypes")
+			PipePropertyRepr property = this.pipeProperties.get(i);
+			property.layoutOnGrid(this.contentPanel, i);
+		}
+	}
+	
 	@Override
 	public void paint(Graphics g) {
 		g.setColor(LIGHT_CYAN);
@@ -77,6 +91,16 @@ public abstract class AbstractPipeRepr extends WavyPanel implements IPipeRepr {
 	
 	public IPipe getPipe() {
 		return pipe;
+	}
+	
+	@SuppressWarnings("rawtypes")
+	public List<PipePropertyRepr> getPipeProperties() {
+		return pipeProperties;
+	}
+	
+	@SuppressWarnings("rawtypes")
+	protected void addPipeProperty(PipePropertyRepr pipeProperty) {
+		this.pipeProperties.add(pipeProperty);
 	}
 	
 	public void setName(String name) {

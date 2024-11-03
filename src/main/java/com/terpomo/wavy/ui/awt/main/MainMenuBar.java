@@ -8,6 +8,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.terpomo.wavy.flow.PipeTypeEnum;
 import com.terpomo.wavy.ui.awt.UIController;
@@ -20,8 +22,6 @@ public class MainMenuBar extends MenuBar {
 	private static final String NEW_PROJECT = "New Project";
 	private static final String EXIT = "Exit";
 	private static final String PIPES = "Pipes";
-	private static final String CONSTANT_WAVE = "Constant Wave";
-	private static final String AUDIO_PLAYER = "Audio Player";
 	
 	private Menu fileMenu;
 	private MenuItem newProjectMenuItem;
@@ -29,15 +29,13 @@ public class MainMenuBar extends MenuBar {
 	private MenuItem exitMenuItem;
 	private ActionListener exitActionListener;
 	
+	private List<MenuItem> newPipeMenuItems;
 	private Menu pipesMenu;
-	private MenuItem constWaveMenuItem;
-	private ActionListener newConstWaveActionListener;
-	
-	private MenuItem audioPlayerMenuItem;
-	private ActionListener newAudioPlayerActionListener;
 	
 	public MainMenuBar() {
 		super();
+		this.newPipeMenuItems = new ArrayList<MenuItem>();
+		
 		this.fileMenu = new Menu(FILE);
 		this.add(fileMenu);
 		
@@ -54,25 +52,28 @@ public class MainMenuBar extends MenuBar {
 		this.fileMenu.add(exitMenuItem);
 		
 		this.pipesMenu = new Menu(PIPES);
-		this.constWaveMenuItem = new MenuItem(CONSTANT_WAVE);
-		this.newConstWaveActionListener = new NewPipeReprActionListener(PipeTypeEnum.CONSTANT_WAVE_SIGNAL_PIPE_ENUM);
-		this.constWaveMenuItem.addActionListener(this.newConstWaveActionListener);
-		this.pipesMenu.add(this.constWaveMenuItem);
-		
-		this.audioPlayerMenuItem = new MenuItem(AUDIO_PLAYER);
-		this.newAudioPlayerActionListener = new NewPipeReprActionListener(PipeTypeEnum.AUDIO_PLAYER_PIPE_ENUM);
-		this.audioPlayerMenuItem.addActionListener(this.newAudioPlayerActionListener);
-		this.pipesMenu.add(this.audioPlayerMenuItem);
-		
+		this.buildPipesMenuItems();
 		this.add(this.pipesMenu);
 		
 		this.onSelectedProjectChange(UIController.getInstance().getSelectedProjectRepr());
 		UIController.getInstance().onSelectedProjectChanged(new SelectedProjectChangedListener());
 	}
 	
+	private void buildPipesMenuItems() {
+		for (PipeTypeEnum pipeType : PipeTypeEnum.values()) {
+			MenuItem menuItem = new MenuItem(pipeType.getFriendlyName());
+			NewPipeReprActionListener newPipeActionListener = new NewPipeReprActionListener(pipeType);
+			menuItem.addActionListener(newPipeActionListener);
+			this.newPipeMenuItems.add(menuItem);
+			this.pipesMenu.add(menuItem);
+		}
+	}
+	
 	public void onSelectedProjectChange(ProjectRepr p) {
 		boolean enabled = p != null;
-		this.constWaveMenuItem.setEnabled(enabled);
+		for (MenuItem menuItem : this.newPipeMenuItems) {
+			menuItem.setEnabled(enabled);
+		}
 	}
 	
 	class NewProjectActionListener implements ActionListener {
