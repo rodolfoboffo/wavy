@@ -9,6 +9,7 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+import com.terpomo.wavy.flow.PipeTypeEnum;
 import com.terpomo.wavy.ui.awt.UIController;
 
 public class MainMenuBar extends MenuBar {
@@ -19,7 +20,8 @@ public class MainMenuBar extends MenuBar {
 	private static final String NEW_PROJECT = "New Project";
 	private static final String EXIT = "Exit";
 	private static final String PIPES = "Pipes";
-	private static final String CONSTNAT_WAVE = "Constant Wave";
+	private static final String CONSTANT_WAVE = "Constant Wave";
+	private static final String AUDIO_PLAYER = "Audio Player";
 	
 	private Menu fileMenu;
 	private MenuItem newProjectMenuItem;
@@ -30,6 +32,9 @@ public class MainMenuBar extends MenuBar {
 	private Menu pipesMenu;
 	private MenuItem constWaveMenuItem;
 	private ActionListener newConstWaveActionListener;
+	
+	private MenuItem audioPlayerMenuItem;
+	private ActionListener newAudioPlayerActionListener;
 	
 	public MainMenuBar() {
 		super();
@@ -49,10 +54,16 @@ public class MainMenuBar extends MenuBar {
 		this.fileMenu.add(exitMenuItem);
 		
 		this.pipesMenu = new Menu(PIPES);
-		this.constWaveMenuItem = new MenuItem(CONSTNAT_WAVE);
-		this.newConstWaveActionListener = new NewSineWaveActionListener();
+		this.constWaveMenuItem = new MenuItem(CONSTANT_WAVE);
+		this.newConstWaveActionListener = new NewPipeReprActionListener(PipeTypeEnum.CONSTANT_WAVE_SIGNAL_PIPE_ENUM);
 		this.constWaveMenuItem.addActionListener(this.newConstWaveActionListener);
 		this.pipesMenu.add(this.constWaveMenuItem);
+		
+		this.audioPlayerMenuItem = new MenuItem(AUDIO_PLAYER);
+		this.newAudioPlayerActionListener = new NewPipeReprActionListener(PipeTypeEnum.AUDIO_PLAYER_PIPE_ENUM);
+		this.audioPlayerMenuItem.addActionListener(this.newAudioPlayerActionListener);
+		this.pipesMenu.add(this.audioPlayerMenuItem);
+		
 		this.add(this.pipesMenu);
 		
 		this.onSelectedProjectChange(UIController.getInstance().getSelectedProjectRepr());
@@ -80,11 +91,18 @@ public class MainMenuBar extends MenuBar {
 		}
 	}
 	
-	class NewSineWaveActionListener implements ActionListener {
+	class NewPipeReprActionListener implements ActionListener {
+
+		private PipeTypeEnum pipeType;
+		
+		public NewPipeReprActionListener(PipeTypeEnum pipeType) {
+			super();
+			this.pipeType = pipeType;
+		}
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			UIController.getInstance().createSineWavePipe();
+			UIController.getInstance().createPipeRepr(pipeType);
 		}
 	}
 	

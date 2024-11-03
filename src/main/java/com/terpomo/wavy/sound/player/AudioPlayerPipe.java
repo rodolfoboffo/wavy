@@ -8,6 +8,7 @@ import javax.sound.sampled.DataLine;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
 
+import com.terpomo.wavy.Constants;
 import com.terpomo.wavy.flow.AbstractPipe;
 import com.terpomo.wavy.flow.Port;
 import com.terpomo.wavy.sound.Encoder;
@@ -15,6 +16,7 @@ import com.terpomo.wavy.sound.LPCMEncoder;
 
 public class AudioPlayerPipe extends AbstractPipe {
 	
+	public static final int DEFAULT_NUM_CHANNELS = 1;
 	protected int sampleRate;
 	protected int numOfChannels;
 	protected int audioBufferSize;
@@ -23,6 +25,10 @@ public class AudioPlayerPipe extends AbstractPipe {
 	protected Encoder encoder;
 	protected Queue<Float>[] buffers;
 	protected SourceDataLine line;
+	
+	public AudioPlayerPipe() {
+		this(DEFAULT_NUM_CHANNELS, Constants.DEFAULT_SAMPLE_RATE);
+	}
 	
 	@SuppressWarnings("unchecked")
 	public AudioPlayerPipe(int numOfChannels, int sampleRate) {

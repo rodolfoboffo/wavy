@@ -3,8 +3,9 @@ package com.terpomo.wavy.ui.awt.pipes;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
+import java.awt.EventQueue;
 import java.awt.Font;
-import java.awt.GridLayout;
+import java.awt.Graphics;
 import java.awt.Label;
 import java.awt.LayoutManager;
 import java.awt.Panel;
@@ -14,17 +15,16 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
-import java.util.List;
 
 import com.terpomo.wavy.flow.IPipe;
-import com.terpomo.wavy.flow.IPort;
 import com.terpomo.wavy.ui.awt.components.WavyPanel;
 import com.terpomo.wavy.ui.awt.util.PointOperation;
 
 public abstract class AbstractPipeRepr extends WavyPanel implements IPipeRepr {
 
 	private static final long serialVersionUID = -4460157397034830356L;
+	private static final int DEFAULT_INSET_SIZE = 8;
+	private static final Color LIGHT_CYAN = new Color(230, 230, 255);
 	private static final Font NAME_FONT = new Font(Font.SANS_SERIF, Font.BOLD, 12);
 	private static final String IS_BEING_MOVED = "IS_BEING_MOVED";
 	
@@ -40,17 +40,12 @@ public abstract class AbstractPipeRepr extends WavyPanel implements IPipeRepr {
 	private Point originMousePosition;
 	private Point originPipePosition;
 	
-	private Panel outputPortsPanel;
-	private LayoutManager outputPortsLayout;
-	private List<PortRepr> outputPortsRepr;
-	
 	public AbstractPipeRepr(IPipe pipe, String name) {
-		super(8);
+		super(DEFAULT_INSET_SIZE);
 		this.pipe = pipe;
 		
 		this.mainLayout = new BorderLayout();
 		this.setLayout(this.mainLayout);
-		this.setBackground(Color.lightGray);
 		
 		this.isBeingMoved = false;
 		this.originMousePosition = null;
@@ -58,18 +53,13 @@ public abstract class AbstractPipeRepr extends WavyPanel implements IPipeRepr {
 		
 		this.pipeName = name;
 		this.labelName = new Label(this.pipeName);
+		this.labelName.setBackground(LIGHT_CYAN);
 		this.labelName.setFont(NAME_FONT);
 		this.add(BorderLayout.NORTH, this.labelName);
 		
 		this.contentPanel = new WavyPanel(4);
+		this.contentPanel.setBackground(LIGHT_CYAN);
 		this.add(BorderLayout.CENTER, this.contentPanel);
-		
-		this.outputPortsPanel = new Panel();
-		this.outputPortsLayout = new GridLayout(this.pipe.getOutputPorts().size(), 1);
-		this.outputPortsPanel.setLayout(this.outputPortsLayout);
-		this.outputPortsRepr = new ArrayList<PortRepr>();
-		this.createOutputPorts();
-		this.add(BorderLayout.EAST, this.outputPortsPanel);
 		
 		this.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		this.addMouseListener(new PipeMouseListener());
@@ -77,12 +67,12 @@ public abstract class AbstractPipeRepr extends WavyPanel implements IPipeRepr {
 		this.addPropertyChangeListener(IS_BEING_MOVED, new IsBeingMovedListener());
 	}
 	
-	private void createOutputPorts() {
-		for (IPort p : this.pipe.getOutputPorts()) {
-			PortRepr pr = new PortRepr(p, this);
-			this.outputPortsRepr.add(pr);
-			this.outputPortsPanel.add(pr);
-		}
+	@Override
+	public void paint(Graphics g) {
+		g.setColor(LIGHT_CYAN);
+		g.fillRoundRect(0, 0, this.getWidth()-1, this.getHeight()-1, 10, 10);
+		g.setColor(Color.BLACK);
+		g.drawRoundRect(0, 0, this.getWidth()-1, this.getHeight()-1, 10, 10);
 	}
 	
 	public IPipe getPipe() {
@@ -120,16 +110,26 @@ public abstract class AbstractPipeRepr extends WavyPanel implements IPipeRepr {
 		}
 	}
 	
+	protected void bringToTop() {
+		this.getParent().setComponentZOrder(this, 0);
+	}
+	
 	class IsBeingMovedListener implements PropertyChangeListener {
 
 		@Override
 		public void propertyChange(PropertyChangeEvent evt) {
-			if ((boolean)evt.getNewValue()) {
-				AbstractPipeRepr.this.setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
-			}
-			else {
-				AbstractPipeRepr.this.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-			}
+			EventQueue.invokeLater(new Runnable() {
+				
+				@Override
+				public void run() {
+					if ((boolean)evt.getNewValue()) {
+						AbstractPipeRepr.this.setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
+					}
+					else {
+						AbstractPipeRepr.this.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+					}
+				}
+			});
 		}
 		
 	}
@@ -138,18 +138,36 @@ public abstract class AbstractPipeRepr extends WavyPanel implements IPipeRepr {
 
 		@Override
 		public void mouseClicked(MouseEvent e) {
-			// TODO Auto-generated method stub
-			
+			EventQueue.invokeLater(new Runnable() {
+				
+				@Override
+				public void run() {
+					AbstractPipeRepr.this.bringToTop();
+				}
+			});
 		}
 
 		@Override
 		public void mousePressed(MouseEvent e) {
-			AbstractPipeRepr.this.beginMovingPipe(e.getLocationOnScreen());
+			EventQueue.invokeLater(new Runnable() {
+				
+				@Override
+				public void run() {
+					AbstractPipeRepr.this.bringToTop();
+					AbstractPipeRepr.this.beginMovingPipe(e.getLocationOnScreen());
+				}
+			});
 		}
 
 		@Override
 		public void mouseReleased(MouseEvent e) {
-			AbstractPipeRepr.this.finishMovingPipe(e.getLocationOnScreen());
+			EventQueue.invokeLater(new Runnable() {
+				
+				@Override
+				public void run() {
+					AbstractPipeRepr.this.finishMovingPipe(e.getLocationOnScreen());
+				}
+			});
 		}
 
 		@Override
@@ -170,7 +188,13 @@ public abstract class AbstractPipeRepr extends WavyPanel implements IPipeRepr {
 
 		@Override
 		public void mouseDragged(MouseEvent e) {
-			AbstractPipeRepr.this.onDrag(e.getLocationOnScreen());
+			EventQueue.invokeLater(new Runnable() {
+				
+				@Override
+				public void run() {
+					AbstractPipeRepr.this.onDrag(e.getLocationOnScreen());
+				}
+			});
 		}
 
 		@Override

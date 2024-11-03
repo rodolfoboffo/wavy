@@ -4,6 +4,7 @@ import com.terpomo.wavy.flow.AbstractPipe;
 import com.terpomo.wavy.flow.PipeFactory;
 import com.terpomo.wavy.flow.PipeTypeEnum;
 import com.terpomo.wavy.signals.ConstantWavePipe;
+import com.terpomo.wavy.sound.player.AudioPlayerPipe;
 
 public class PipeReprFactory {
 
@@ -13,6 +14,10 @@ public class PipeReprFactory {
 		switch (pipeType) {
 		case CONSTANT_WAVE_SIGNAL_PIPE_ENUM: {
 			pipeRepr = new ConstantWavePipeRepr((ConstantWavePipe) pipe, pipeName);
+			return pipeRepr;
+		}
+		case AUDIO_PLAYER_PIPE_ENUM: {
+			pipeRepr = new AudioPlayerPipeRepr((AudioPlayerPipe) pipe, pipeName);
 			return pipeRepr;
 		}
 		default:

@@ -1,6 +1,7 @@
 package com.terpomo.wavy.ui.awt.pipes;
 
-import java.awt.GridLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.Label;
 import java.awt.TextField;
 
@@ -12,25 +13,46 @@ public class ConstantWavePipeRepr extends AbstractSignalPipeRepr<ConstantWave, C
 	private static final long serialVersionUID = 8289652143621889982L;
 	public static final String FREQUENCY = "Frequency";
 	
-	GridLayout contentLayout;
+	GridBagLayout contentLayout;
 	protected ConstantWavePipe pipe;
 	
 	private String frequencyStrValue;
-	
+
 	private Label frequencyLabel;
 	private TextField frequencyField;
+	private Label outSignalLabel;
 
 	public ConstantWavePipeRepr(ConstantWavePipe pipe, String name) {
 		super(pipe, name);
+		GridBagConstraints constraints;
 		this.pipe = (ConstantWavePipe) super.pipe;
-		this.contentLayout = new GridLayout(1, 1, 10, 10);
+		this.contentLayout = new GridBagLayout();
 		this.contentPanel.setLayout(this.contentLayout);
 		
 		this.frequencyLabel = new Label(FREQUENCY);
-		this.contentPanel.add(this.frequencyLabel);
+		constraints = new GridBagConstraints();
+		constraints.gridx = 1;
+		constraints.gridy = 0;
+		constraints.anchor = GridBagConstraints.EAST;
+		this.contentPanel.add(frequencyLabel, constraints);
 		
 		this.frequencyStrValue = String.valueOf(this.getPipe().getSignal().getFrequency());
 		this.frequencyField = new TextField(this.frequencyStrValue);
-		this.contentPanel.add(frequencyField);
+		constraints = new GridBagConstraints();
+		constraints.gridx = 2;
+		constraints.gridy = 0;
+		this.contentPanel.add(frequencyField, constraints);
+		
+		this.outSignalLabel = new Label(OUTPUT_SIGNAL);
+		constraints = new GridBagConstraints();
+		constraints.gridx = 1;
+		constraints.gridy = 1;
+		constraints.anchor = GridBagConstraints.EAST;
+		this.contentPanel.add(this.outSignalLabel, constraints);
+		
+		constraints = new GridBagConstraints();
+		constraints.gridx = 3;
+		constraints.gridy = 1;
+		this.contentPanel.add(this.getOutputPortRepr(), constraints);
 	}
 }

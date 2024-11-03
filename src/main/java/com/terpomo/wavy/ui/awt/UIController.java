@@ -64,10 +64,6 @@ public class UIController extends Component {
 		this.setSelectedProjectRepr(pRepr);
 		return pRepr;
 	}
-
-	public void createSineWavePipe() {
-		this.createPipeRepr(PipeTypeEnum.CONSTANT_WAVE_SIGNAL_PIPE_ENUM);
-	}
 	
 	public void createPipeRepr(PipeTypeEnum pipeType) {
 		if (this.selectedProjectRepr != null) {

@@ -1,7 +1,6 @@
 package com.terpomo.wavy.ui.awt.main;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Panel;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,17 +10,20 @@ import java.util.Map;
 import com.terpomo.wavy.flow.PipeTypeEnum;
 import com.terpomo.wavy.flow.Project;
 import com.terpomo.wavy.ui.awt.pipes.AbstractPipeRepr;
+import com.terpomo.wavy.ui.awt.util.AbsoluteLayout;
 
 public class ProjectRepr extends Panel {
 
 	private static final long serialVersionUID = -3136424835205807021L;
 
 	private Project project;
+	private AbsoluteLayout layout;
 	protected List<AbstractPipeRepr> pipesRepr;
 	private Map<PipeTypeEnum, Integer> pipeTypeCountMap;
 	
 	public ProjectRepr() {
-		this.setLayout(null);
+		this.layout = new AbsoluteLayout();
+		this.setLayout(this.layout);
 		this.pipesRepr = new ArrayList<AbstractPipeRepr>();
 		this.pipeTypeCountMap = new HashMap<PipeTypeEnum, Integer>();
 		this.setBackground(Color.WHITE);
@@ -48,9 +50,11 @@ public class ProjectRepr extends Panel {
 	}
 	
 	private void setPipeReprPredefinitions(AbstractPipeRepr pipeRepr) {
-		pipeRepr.getLayout().layoutContainer(pipeRepr);
-		Dimension size = pipeRepr.getLayout().preferredLayoutSize(pipeRepr);
-		pipeRepr.setBounds(0, 0, 200, 150);
+//		BorderLayout l = new BorderLayout();
+//		l.layoutContainer(this);
+//		Dimension dim = l.preferredLayoutSize(this);
+////		pipeRepr.getLayout().layoutContainer(pipeRepr);
+//		pipeRepr.setBounds(new Rectangle(dim));
 	}
 	
 	public void addPipeRepr(AbstractPipeRepr pipeRepr) {
