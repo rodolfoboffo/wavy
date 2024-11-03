@@ -6,6 +6,7 @@ import java.awt.Cursor;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Label;
 import java.awt.LayoutManager;
 import java.awt.Panel;
@@ -83,10 +84,12 @@ public abstract class AbstractPipeRepr extends WavyPanel implements IPipeRepr {
 	
 	@Override
 	public void paint(Graphics g) {
-		g.setColor(LIGHT_CYAN);
-		g.fillRoundRect(0, 0, this.getWidth()-1, this.getHeight()-1, 10, 10);
-		g.setColor(Color.BLACK);
-		g.drawRoundRect(0, 0, this.getWidth()-1, this.getHeight()-1, 10, 10);
+		Graphics2D g2d = (Graphics2D)g.create();
+		g2d.setColor(LIGHT_CYAN);
+		g2d.fillRoundRect(0, 0, this.getWidth()-1, this.getHeight()-1, 10, 10);
+		g2d.setColor(Color.BLACK);
+		g2d.drawRoundRect(0, 0, this.getWidth()-1, this.getHeight()-1, 10, 10);
+		g2d.dispose();
 	}
 	
 	public IPipe getPipe() {

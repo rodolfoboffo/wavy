@@ -3,7 +3,7 @@ package com.terpomo.wavy.flow;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Controller {
+public class PipeController {
 	public static int DEFAULT_NUM_OF_WORKERS = 1;
 	public static int DEFAULT_THREAD_WAIT_TIME_MILIS = 100;
 	private List<Worker> workers;
@@ -11,11 +11,11 @@ public class Controller {
 	private boolean isActive = true;
 	private boolean isPaused = false;
 	
-	public Controller() {
+	public PipeController() {
 		this(DEFAULT_NUM_OF_WORKERS);
 	}
 	
-	public Controller(int numOfWorkers) {
+	public PipeController(int numOfWorkers) {
 		this.projects = new ArrayList<Project>();
 		this.workers = new ArrayList<Worker>();
 		for (int i = 0; i < numOfWorkers; i++) {

@@ -2,9 +2,9 @@ package com.terpomo.wavy.flow;
 
 public class Worker extends Thread {
 
-	protected Controller controller;
+	protected PipeController controller;
 	
-	public Worker(Controller controller) {
+	public Worker(PipeController controller) {
 		this.controller = controller;
 	}
 	

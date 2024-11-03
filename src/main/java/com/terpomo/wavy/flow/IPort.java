@@ -8,5 +8,5 @@ public interface IPort {
 	public Queue<Float> getBuffer();
 	public int getBufferCapacity();
 	public IPort getLinkedPort();
-	public void setLinkedPort(Port p);
+	public void setLinkedPort(IPort p);
 }

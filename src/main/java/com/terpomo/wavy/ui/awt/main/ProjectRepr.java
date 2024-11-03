@@ -10,6 +10,7 @@ import java.util.Map;
 import com.terpomo.wavy.flow.PipeTypeEnum;
 import com.terpomo.wavy.flow.Project;
 import com.terpomo.wavy.ui.awt.pipes.AbstractPipeRepr;
+import com.terpomo.wavy.ui.awt.pipes.DataFlowRepr;
 import com.terpomo.wavy.ui.awt.util.AbsoluteLayout;
 
 public class ProjectRepr extends Panel {
@@ -49,18 +50,16 @@ public class ProjectRepr extends Panel {
 		this.project = project;
 	}
 	
-	private void setPipeReprPredefinitions(AbstractPipeRepr pipeRepr) {
-//		BorderLayout l = new BorderLayout();
-//		l.layoutContainer(this);
-//		Dimension dim = l.preferredLayoutSize(this);
-////		pipeRepr.getLayout().layoutContainer(pipeRepr);
-//		pipeRepr.setBounds(new Rectangle(dim));
-	}
-	
 	public void addPipeRepr(AbstractPipeRepr pipeRepr) {
-		this.setPipeReprPredefinitions(pipeRepr);
 		this.pipesRepr.add(pipeRepr);
 		this.add(pipeRepr);
+		this.revalidate();
+		this.repaint();
+	}
+	
+	public void addDataFlowRepr(DataFlowRepr dataFlow) {
+		this.add(dataFlow);
+		this.setComponentZOrder(dataFlow, 0);
 		this.revalidate();
 		this.repaint();
 	}

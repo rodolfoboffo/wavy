@@ -5,8 +5,8 @@ import java.util.List;
 
 public abstract class AbstractPipe implements IPipe {
 
-	protected List<IPort> inputPorts;
-	protected List<IPort> outputPorts;
+	protected List<InputPort> inputPorts;
+	protected List<OutputPort> outputPorts;
 	private boolean busy = false;
 	
 	public boolean isBusy() {
@@ -14,17 +14,17 @@ public abstract class AbstractPipe implements IPipe {
 	}
 	
 	public AbstractPipe() {
-		this.inputPorts = new ArrayList<IPort>();
-		this.outputPorts = new ArrayList<IPort>();
+		this.inputPorts = new ArrayList<InputPort>();
+		this.outputPorts = new ArrayList<OutputPort>();
 	}
 	
 	@Override
-	public List<IPort> getOutputPorts() {
+	public List<OutputPort> getOutputPorts() {
 		return this.outputPorts;
 	}
 
 	@Override
-	public List<IPort> getInputPorts() {
+	public List<InputPort> getInputPorts() {
 		return this.inputPorts;
 	}
 

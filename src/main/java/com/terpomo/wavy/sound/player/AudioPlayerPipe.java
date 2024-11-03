@@ -10,7 +10,7 @@ import javax.sound.sampled.SourceDataLine;
 
 import com.terpomo.wavy.Constants;
 import com.terpomo.wavy.flow.AbstractPipe;
-import com.terpomo.wavy.flow.Port;
+import com.terpomo.wavy.flow.InputPort;
 import com.terpomo.wavy.sound.Encoder;
 import com.terpomo.wavy.sound.LPCMEncoder;
 
@@ -36,7 +36,7 @@ public class AudioPlayerPipe extends AbstractPipe {
 		this.buffers = new Queue[this.numOfChannels];
 		this.sampleRate = sampleRate;
 		for (int i = 0; i < numOfChannels; i++) {
-			Port p = new Port(this);
+			InputPort p = new InputPort(this);
 			this.inputPorts.add(p);
 			this.buffers[i] = p.getBuffer();
 		}

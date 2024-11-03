@@ -12,4 +12,7 @@ public class PointOperation {
 		return new Point(a.x-b.x, a.y-b.y);
 	}
 	
+	public static Point abs(Point a) {
+		return new Point(Math.abs(a.x), Math.abs(a.y));
+	}
 }

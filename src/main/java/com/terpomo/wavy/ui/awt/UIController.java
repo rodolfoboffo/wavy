@@ -5,13 +5,15 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.terpomo.wavy.flow.Controller;
+import com.terpomo.wavy.flow.PipeController;
 import com.terpomo.wavy.flow.IPipe;
 import com.terpomo.wavy.flow.PipeTypeEnum;
 import com.terpomo.wavy.flow.Project;
 import com.terpomo.wavy.ui.awt.main.ProjectRepr;
 import com.terpomo.wavy.ui.awt.pipes.AbstractPipeRepr;
+import com.terpomo.wavy.ui.awt.pipes.DataFlowRepr;
 import com.terpomo.wavy.ui.awt.pipes.PipeReprFactory;
+import com.terpomo.wavy.ui.awt.pipes.PortRepr;
 
 public class UIController extends Component {
 
@@ -20,10 +22,13 @@ public class UIController extends Component {
 	public static final String PROPERTY_SELECTED_PROJECT = "PROPERTY_SELECTED_PROJECT";
 	private List<ProjectRepr> projectsRepr;
 	private ProjectRepr selectedProjectRepr;
-	private Controller controller;
+	
+	private PortRepr portBeingHovered;
+	
+	private PipeController controller;
 	
 	private UIController() {
-		this.controller = new Controller();
+		this.controller = new PipeController();
 		this.projectsRepr = new ArrayList<ProjectRepr>();
 	}
 	
@@ -73,6 +78,18 @@ public class UIController extends Component {
 			IPipe pipe = pipeRepr.getPipe();
 			this.controller.addPipe(project, pipe);
 			this.selectedProjectRepr.addPipeRepr(pipeRepr);
+		}
+	}
+	
+	public void setPortBeingHovered(PortRepr portBeingHovered) {
+		this.portBeingHovered = portBeingHovered;
+	}
+
+	public void portMouseReleased(PortRepr portBeingDragged) {
+		if ((portBeingDragged != null) && this.portBeingHovered != null && portBeingDragged != this.portBeingHovered) {
+			DataFlowRepr dataFlow = new DataFlowRepr(this.selectedProjectRepr, portBeingDragged, this.portBeingHovered);
+//			portBeingDragged.getPort().setLinkedPort(this.portBeingHovered.getPort());
+			this.selectedProjectRepr.addDataFlowRepr(dataFlow);
 		}
 	}
 	
