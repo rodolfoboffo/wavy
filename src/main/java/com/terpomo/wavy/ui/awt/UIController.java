@@ -23,8 +23,6 @@ public class UIController extends Component {
 	private List<ProjectRepr> projectsRepr;
 	private ProjectRepr selectedProjectRepr;
 	
-	private PortRepr portBeingHovered;
-	
 	private PipeController controller;
 	
 	private UIController() {
@@ -78,18 +76,6 @@ public class UIController extends Component {
 			IPipe pipe = pipeRepr.getPipe();
 			this.controller.addPipe(project, pipe);
 			this.selectedProjectRepr.addPipeRepr(pipeRepr);
-		}
-	}
-	
-	public void setPortBeingHovered(PortRepr portBeingHovered) {
-		this.portBeingHovered = portBeingHovered;
-	}
-
-	public void portMouseReleased(PortRepr portBeingDragged) {
-		if ((portBeingDragged != null) && this.portBeingHovered != null && portBeingDragged != this.portBeingHovered) {
-			DataFlowRepr dataFlow = new DataFlowRepr(this.selectedProjectRepr, portBeingDragged, this.portBeingHovered);
-//			portBeingDragged.getPort().setLinkedPort(this.portBeingHovered.getPort());
-			this.selectedProjectRepr.addDataFlowRepr(dataFlow);
 		}
 	}
 	
