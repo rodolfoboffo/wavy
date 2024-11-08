@@ -5,15 +5,14 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.terpomo.wavy.flow.PipeController;
 import com.terpomo.wavy.flow.IPipe;
+import com.terpomo.wavy.flow.PipeController;
 import com.terpomo.wavy.flow.PipeTypeEnum;
 import com.terpomo.wavy.flow.Project;
-import com.terpomo.wavy.ui.awt.main.ProjectRepr;
 import com.terpomo.wavy.ui.awt.pipes.AbstractPipeRepr;
-import com.terpomo.wavy.ui.awt.pipes.DataFlowRepr;
 import com.terpomo.wavy.ui.awt.pipes.PipeReprFactory;
 import com.terpomo.wavy.ui.awt.pipes.PortRepr;
+import com.terpomo.wavy.ui.awt.pipes.ProjectRepr;
 
 public class UIController extends Component {
 
@@ -22,7 +21,7 @@ public class UIController extends Component {
 	public static final String PROPERTY_SELECTED_PROJECT = "PROPERTY_SELECTED_PROJECT";
 	private List<ProjectRepr> projectsRepr;
 	private ProjectRepr selectedProjectRepr;
-	
+	private PortRepr selectedPort;
 	private PipeController controller;
 	
 	private UIController() {
@@ -77,6 +76,31 @@ public class UIController extends Component {
 			this.controller.addPipe(project, pipe);
 			this.selectedProjectRepr.addPipeRepr(pipeRepr);
 		}
+	}
+
+	public void onPortClicked(PortRepr portRepr) {
+		if (this.selectedPort == null) {
+			this.selectPort(portRepr);
+		}
+		else if (this.selectedPort == portRepr) {
+			this.unselectPort();
+		}
+		else {
+			this.controller.linkPorts(portRepr.getPort(), this.selectedPort.getPort());
+			this.selectedPort.setLinkedPortRepr(portRepr);
+			portRepr.setLinkedPortRepr(this.selectedPort);
+			this.unselectPort();
+		}
+	}
+	
+	private void selectPort(PortRepr portRepr) {
+		portRepr.setSelected(true);
+		this.selectedPort = portRepr;
+	}
+	
+	private void unselectPort() {
+		this.selectedPort.setSelected(false);
+		this.selectedPort = null;
 	}
 	
 }

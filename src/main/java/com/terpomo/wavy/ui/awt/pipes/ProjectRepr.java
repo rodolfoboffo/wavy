@@ -1,4 +1,4 @@
-package com.terpomo.wavy.ui.awt.main;
+package com.terpomo.wavy.ui.awt.pipes;
 
 import java.awt.Color;
 import java.awt.Panel;
@@ -9,14 +9,13 @@ import java.util.Map;
 
 import com.terpomo.wavy.flow.PipeTypeEnum;
 import com.terpomo.wavy.flow.Project;
-import com.terpomo.wavy.ui.awt.pipes.AbstractPipeRepr;
-import com.terpomo.wavy.ui.awt.pipes.DataFlowRepr;
 import com.terpomo.wavy.ui.awt.util.AbsoluteLayout;
 
 public class ProjectRepr extends Panel {
 
 	private static final long serialVersionUID = -3136424835205807021L;
-
+	public static final String PROPERTY_SELECTED_PROJECT = "PROPERTY_SELECTED_PROJECT";
+	
 	private Project project;
 	private AbsoluteLayout layout;
 	protected List<AbstractPipeRepr> pipesRepr;

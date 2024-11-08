@@ -1,36 +1,39 @@
 package com.terpomo.wavy.ui.awt.pipes;
 
-import java.awt.BasicStroke;
 import java.awt.Canvas;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Stroke;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import com.terpomo.wavy.flow.IPort;
+import com.terpomo.wavy.ui.awt.UIController;
 
 public class PortRepr extends Canvas {
 
 	private static final long serialVersionUID = -4561025309986054679L;
 	private static final String IS_BEING_HOVERED_PROPERTY = "IS_BEING_HOVERED";
 	private static final String IS_SELECTED_PROPERTY = "IS_SELECTED";
-	private static final Stroke ON_HOVER_STROKE = new BasicStroke(3, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
-	private static final Stroke DEFAULT_STROKE = new BasicStroke();
+	private static final String LINKED_PORT_PROPERTY = "LINKED_PORT";
+	private static final Color UNUSED_PORT_COLOR = new Color(200, 200, 200);
+	private static final Color LINKED_PORT_COLOR = new Color(20, 200, 20);
 
+	private Dimension size;
 	private IPort port;
 	private IPipeRepr parentPipeRepr;
+	private PortRepr linkedPortRepr;
 	private DataFlowRepr dataFlowRepr;
-	private Color bgColor;
 	private boolean isBeingHovered;
 	private boolean isSelected;
 	
 	public PortRepr(IPort port, IPipeRepr parentPipeRepr) {
 		super();
+		this.size = new Dimension(18, 18);
 		this.port = port;
 		this.parentPipeRepr = parentPipeRepr;
 		this.isBeingHovered = false;
@@ -39,6 +42,15 @@ public class PortRepr extends Canvas {
 		this.addMouseListener(new PortMouseListener());
 		this.addPropertyChangeListener(IS_BEING_HOVERED_PROPERTY, new RepaintOnPropertyChangedListener());
 		this.addPropertyChangeListener(IS_SELECTED_PROPERTY, new RepaintOnPropertyChangedListener());
+		this.addPropertyChangeListener(LINKED_PORT_PROPERTY, new RepaintOnPropertyChangedListener());
+	}
+	
+	public void setLinkedPortRepr(PortRepr linkedPortRepr) {
+		this.linkedPortRepr = linkedPortRepr;
+	}
+	
+	public PortRepr getLinkedPortRepr() {
+		return linkedPortRepr;
 	}
 	
 	public IPort getPort() {
@@ -53,18 +65,38 @@ public class PortRepr extends Canvas {
 		return dataFlowRepr;
 	}
 	
+	private Color getPortColor() {
+		if (this.linkedPortRepr == null) {
+			return UNUSED_PORT_COLOR;
+		}
+		else {
+			return LINKED_PORT_COLOR;
+		}
+	}
+	
 	@Override
 	public void paint(Graphics g) {
 		Graphics2D g2d = (Graphics2D)g.create();
-		if (this.bgColor != null) {
-			g2d.setColor(this.bgColor);
-			g2d.fillRoundRect(0, 0, 10, 10, 3, 3);
+		if (this.isBeingHovered || this.isSelected) {
+			g2d.setColor(Color.BLACK);
+			g2d.fillRoundRect(2, 2, 14, 14, 4, 4);
 		}
-		Stroke stroke = this.isBeingHovered ? ON_HOVER_STROKE : DEFAULT_STROKE;
-		g2d.setStroke(stroke);
+		Color bgColor = this.getPortColor();
+		g2d.setColor(bgColor);
+		g2d.fillRoundRect(4, 4, 10, 10, 2, 2);
 		g2d.setColor(Color.BLACK);
-		g2d.drawRoundRect(0, 0, 10, 10, 3, 3);
+		g2d.drawRoundRect(4, 4, 10, 10, 2, 2);
 		g2d.dispose();
+	}
+	
+	@Override
+	public Dimension getSize() {
+		return this.size;
+	}
+	
+	@Override
+	public Dimension getPreferredSize() {
+		return this.getSize();
 	}
 	
 	public boolean isBeingHovered() {
@@ -87,10 +119,6 @@ public class PortRepr extends Canvas {
 		this.firePropertyChange(IS_SELECTED_PROPERTY, oldValue, isSelected);
 	}
 	
-	public void toggleSelected() {
-		this.setSelected(!this.isSelected());
-	}
-	
 	class RepaintOnPropertyChangedListener implements PropertyChangeListener {
 
 		@Override
@@ -111,7 +139,7 @@ public class PortRepr extends Canvas {
 
 		@Override
 		public void mouseClicked(MouseEvent e) {
-			PortRepr.this.toggleSelected();
+			UIController.getInstance().onPortClicked(PortRepr.this);
 		}
 
 		@Override

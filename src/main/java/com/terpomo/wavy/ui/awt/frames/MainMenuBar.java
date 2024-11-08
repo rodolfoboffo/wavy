@@ -1,4 +1,4 @@
-package com.terpomo.wavy.ui.awt.main;
+package com.terpomo.wavy.ui.awt.frames;
 
 import java.awt.EventQueue;
 import java.awt.Menu;
@@ -13,6 +13,7 @@ import java.util.List;
 
 import com.terpomo.wavy.flow.PipeTypeEnum;
 import com.terpomo.wavy.ui.awt.UIController;
+import com.terpomo.wavy.ui.awt.pipes.ProjectRepr;
 
 public class MainMenuBar extends MenuBar {
 

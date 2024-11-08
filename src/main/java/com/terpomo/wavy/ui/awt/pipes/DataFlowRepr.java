@@ -8,7 +8,6 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 
 import com.terpomo.wavy.Disposable;
-import com.terpomo.wavy.ui.awt.main.ProjectRepr;
 import com.terpomo.wavy.ui.awt.util.PointOperation;
 
 public class DataFlowRepr extends Component implements Disposable {

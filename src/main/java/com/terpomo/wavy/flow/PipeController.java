@@ -68,4 +68,11 @@ public class PipeController {
 			w.join(DEFAULT_THREAD_WAIT_TIME_MILIS);
 		}
 	}
+	
+	public void linkPorts(IPort portA, IPort portB) {
+		if (((portA instanceof InputPort) && (portB instanceof InputPort)) || ((portA instanceof OutputPort) && (portB instanceof OutputPort))) {
+			throw new RuntimeException("Links can be made between Input and Output ports only");
+		}
+		portA.setLinkedPort(portB);
+	}
 }

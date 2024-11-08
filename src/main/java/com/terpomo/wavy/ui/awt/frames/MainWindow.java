@@ -1,4 +1,4 @@
-package com.terpomo.wavy.ui.awt.main;
+package com.terpomo.wavy.ui.awt.frames;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -10,6 +10,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import com.terpomo.wavy.ui.awt.UIController;
+import com.terpomo.wavy.ui.awt.pipes.ProjectRepr;
 import com.terpomo.wavy.ui.awt.util.DefaultWindowListener;
 
 public class MainWindow extends Frame {

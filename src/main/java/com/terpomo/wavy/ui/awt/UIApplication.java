@@ -1,6 +1,6 @@
 package com.terpomo.wavy.ui.awt;
 
-import com.terpomo.wavy.ui.awt.main.MainWindow;
+import com.terpomo.wavy.ui.awt.frames.MainWindow;
 
 public class UIApplication {
 	
