@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PipeController {
-	public static int DEFAULT_NUM_OF_WORKERS = 1;
+	public static int DEFAULT_NUM_OF_WORKERS = 5;
 	public static int DEFAULT_THREAD_WAIT_TIME_MILIS = 100;
 	private List<Worker> workers;
 	private List<Project> projects;
