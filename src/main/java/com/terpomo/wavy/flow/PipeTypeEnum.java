@@ -5,7 +5,8 @@ import com.terpomo.wavy.Constants;
 public enum PipeTypeEnum {
 	
 	CONSTANT_WAVE_SIGNAL_PIPE_ENUM(Constants.CONSTANT_WAVE),
-	AUDIO_PLAYER_PIPE_ENUM(Constants.AUDIO_PLAYER);
+	AUDIO_PLAYER_PIPE_ENUM(Constants.AUDIO_PLAYER),
+	OSCILLOSCOPE_PIPE_ENUM(Constants.OSCILLOSCOPE);
 	
 	private final String friendlyName;
 	

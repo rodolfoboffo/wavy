@@ -1,7 +1,7 @@
 package com.terpomo.wavy.ui.awt.pipes;
 
 import com.terpomo.wavy.flow.IPort;
-import com.terpomo.wavy.sound.player.AudioPlayerPipe;
+import com.terpomo.wavy.pipes.AudioPlayerPipe;
 
 public class AudioPlayerPipeRepr extends AbstractPipeRepr {
 

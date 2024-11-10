@@ -1,8 +1,9 @@
-package com.terpomo.wavy.signals;
+package com.terpomo.wavy.pipes;
 
 import com.terpomo.wavy.flow.AbstractPipe;
 import com.terpomo.wavy.flow.OutputPort;
 import com.terpomo.wavy.flow.Port;
+import com.terpomo.wavy.signals.Signal;
 
 public abstract class AbstractSignalSourcePipe<T extends Signal> extends AbstractPipe {
 	

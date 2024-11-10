@@ -11,7 +11,6 @@ import javax.swing.JFrame;
 import javax.swing.JToolBar;
 
 import com.terpomo.wavy.ui.awt.UIController;
-import com.terpomo.wavy.ui.awt.pipes.ProjectRepr;
 import com.terpomo.wavy.ui.awt.util.DefaultWindowListener;
 
 public class MainWindow extends JFrame {

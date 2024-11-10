@@ -37,7 +37,7 @@ public abstract class AbstractPipeRepr extends WavyPanel implements IPipeRepr {
 	private String pipeName;
 	private JLabel labelName;
 
-	protected JPanel contentPanel;
+	private JPanel contentPanel;
 	
 	private boolean isBeingMoved;
 	private Point originMousePosition;
@@ -67,6 +67,10 @@ public abstract class AbstractPipeRepr extends WavyPanel implements IPipeRepr {
 		this.addMouseListener(new PipeMouseListener());
 		this.addMouseMotionListener(new PipeMouseMotionListener());
 		this.addPropertyChangeListener(IS_BEING_MOVED, new IsBeingMovedListener());
+	}
+	
+	public JPanel getContentPanel() {
+		return contentPanel;
 	}
 	
 	@Override

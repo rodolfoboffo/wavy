@@ -1,8 +1,9 @@
 package com.terpomo.wavy.flow;
 
+import com.terpomo.wavy.pipes.AudioPlayerPipe;
+import com.terpomo.wavy.pipes.ConstantWavePipe;
+import com.terpomo.wavy.pipes.OscilloscopePipe;
 import com.terpomo.wavy.signals.ConstantWave;
-import com.terpomo.wavy.signals.ConstantWavePipe;
-import com.terpomo.wavy.sound.player.AudioPlayerPipe;
 
 public class PipeFactory {
 	
@@ -13,6 +14,9 @@ public class PipeFactory {
 		}
 		case AUDIO_PLAYER_PIPE_ENUM: {
 			return new AudioPlayerPipe();
+		}
+		case OSCILLOSCOPE_PIPE_ENUM: {
+			return new OscilloscopePipe();
 		}
 		default:
 			throw new IllegalArgumentException("Unexpected value: " + pipeType);

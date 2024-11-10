@@ -1,4 +1,4 @@
-package com.terpomo.wavy.sound.player;
+package com.terpomo.wavy.pipes;
 
 import java.util.Queue;
 

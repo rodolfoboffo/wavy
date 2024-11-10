@@ -1,4 +1,4 @@
-package com.terpomo.wavy.ui.awt.pipes;
+package com.terpomo.wavy.ui.awt.frames;
 
 import java.awt.Color;
 import java.awt.Panel;
@@ -9,6 +9,7 @@ import java.util.Map;
 
 import com.terpomo.wavy.flow.PipeTypeEnum;
 import com.terpomo.wavy.flow.Project;
+import com.terpomo.wavy.ui.awt.pipes.AbstractPipeRepr;
 import com.terpomo.wavy.ui.awt.util.AbsoluteLayout;
 
 public class ProjectRepr extends Panel {

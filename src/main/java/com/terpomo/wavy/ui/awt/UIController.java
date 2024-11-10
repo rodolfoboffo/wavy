@@ -9,10 +9,10 @@ import com.terpomo.wavy.flow.IPipe;
 import com.terpomo.wavy.flow.PipeController;
 import com.terpomo.wavy.flow.PipeTypeEnum;
 import com.terpomo.wavy.flow.Project;
+import com.terpomo.wavy.ui.awt.frames.ProjectRepr;
 import com.terpomo.wavy.ui.awt.pipes.AbstractPipeRepr;
 import com.terpomo.wavy.ui.awt.pipes.PipeReprFactory;
 import com.terpomo.wavy.ui.awt.pipes.PortRepr;
-import com.terpomo.wavy.ui.awt.pipes.ProjectRepr;
 
 public class UIController extends Component {
 

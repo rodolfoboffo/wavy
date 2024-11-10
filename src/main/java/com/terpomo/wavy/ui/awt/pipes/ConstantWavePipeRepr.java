@@ -2,8 +2,8 @@ package com.terpomo.wavy.ui.awt.pipes;
 
 import java.awt.GridBagLayout;
 
+import com.terpomo.wavy.pipes.ConstantWavePipe;
 import com.terpomo.wavy.signals.ConstantWave;
-import com.terpomo.wavy.signals.ConstantWavePipe;
 
 public class ConstantWavePipeRepr extends AbstractSignalPipeRepr<ConstantWave, ConstantWavePipe> {
 
@@ -17,7 +17,7 @@ public class ConstantWavePipeRepr extends AbstractSignalPipeRepr<ConstantWave, C
 		super(pipe, name);
 		this.pipe = (ConstantWavePipe) super.pipe;
 		this.contentLayout = new GridBagLayout();
-		this.contentPanel.setLayout(this.contentLayout);
+		this.getContentPanel().setLayout(this.contentLayout);
 		
 		PipePropertyRepr<Float> frequencyProperty = new PipePropertyRepr<Float>(Float.class, this, null, FREQUENCY, pipe.getSignal().getFrequency(), null, this.pipe::setFrequency);
 		this.addPipeProperty(frequencyProperty);

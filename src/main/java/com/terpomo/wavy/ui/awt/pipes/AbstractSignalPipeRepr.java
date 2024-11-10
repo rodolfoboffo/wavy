@@ -1,6 +1,6 @@
 package com.terpomo.wavy.ui.awt.pipes;
 
-import com.terpomo.wavy.signals.AbstractSignalSourcePipe;
+import com.terpomo.wavy.pipes.AbstractSignalSourcePipe;
 import com.terpomo.wavy.signals.Signal;
 
 public class AbstractSignalPipeRepr<S extends Signal, T extends AbstractSignalSourcePipe<S>> extends AbstractPipeRepr {

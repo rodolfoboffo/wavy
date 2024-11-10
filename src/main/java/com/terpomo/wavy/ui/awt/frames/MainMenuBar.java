@@ -14,7 +14,6 @@ import javax.swing.JMenuItem;
 
 import com.terpomo.wavy.flow.PipeTypeEnum;
 import com.terpomo.wavy.ui.awt.UIController;
-import com.terpomo.wavy.ui.awt.pipes.ProjectRepr;
 
 public class MainMenuBar extends JMenuBar {
 

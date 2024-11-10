@@ -1,4 +1,6 @@
-package com.terpomo.wavy.signals;
+package com.terpomo.wavy.pipes;
+
+import com.terpomo.wavy.signals.ConstantWave;
 
 public class ConstantWavePipe extends AbstractSignalSourcePipe<ConstantWave> {
 
