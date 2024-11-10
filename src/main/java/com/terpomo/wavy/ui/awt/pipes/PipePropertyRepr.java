@@ -3,8 +3,9 @@ package com.terpomo.wavy.ui.awt.pipes;
 import java.awt.Container;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Label;
-import java.awt.TextField;
+
+import javax.swing.JLabel;
+import javax.swing.JTextField;
 
 import com.terpomo.wavy.flow.IPort;
 
@@ -14,9 +15,9 @@ public class PipePropertyRepr<T> {
 	private IPort inputPort;
 	private PortRepr inputPortRepr;
 	private String propertyName;
-	private Label propertyLabel;
+	private JLabel propertyLabel;
 	private T value;
-	private TextField valueField;
+	private JTextField valueField;
 	private IPort outputPort;
 	private PortRepr outputPortRepr;
 	
@@ -26,9 +27,9 @@ public class PipePropertyRepr<T> {
 		this.inputPort = inputPort;
 		this.inputPortRepr = inputPort != null ? new PortRepr(this.inputPort, this.parentPipe) : null;
 		this.propertyName = propertyName;
-		this.propertyLabel = new Label(this.propertyName);
+		this.propertyLabel = new JLabel(this.propertyName);
 		this.value = value;
-		this.valueField = value != null ? new TextField(this.value.toString()) : null;
+		this.valueField = value != null ? new JTextField(this.value.toString()) : null;
 		this.outputPort = outputPort;
 		this.outputPortRepr = outputPort != null ? new PortRepr(this.outputPort, this.parentPipe) : null;
 	}

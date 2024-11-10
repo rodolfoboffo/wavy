@@ -7,9 +7,7 @@ import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Label;
 import java.awt.LayoutManager;
-import java.awt.Panel;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -18,6 +16,9 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 import com.terpomo.wavy.flow.IPipe;
 import com.terpomo.wavy.ui.awt.components.WavyPanel;
@@ -37,9 +38,9 @@ public abstract class AbstractPipeRepr extends WavyPanel implements IPipeRepr {
 	
 	protected IPipe pipe;
 	private String pipeName;
-	private Label labelName;
+	private JLabel labelName;
 
-	protected Panel contentPanel;
+	protected JPanel contentPanel;
 	
 	private boolean isBeingMoved;
 	private Point originMousePosition;
@@ -59,8 +60,8 @@ public abstract class AbstractPipeRepr extends WavyPanel implements IPipeRepr {
 		this.originPipePosition = null;
 		
 		this.pipeName = name;
-		this.labelName = new Label(this.pipeName);
-		this.labelName.setBackground(LIGHT_CYAN);
+		this.labelName = new JLabel(this.pipeName);
+		this.labelName.setBackground(Color.BLACK);
 		this.labelName.setFont(NAME_FONT);
 		this.add(BorderLayout.NORTH, this.labelName);
 		

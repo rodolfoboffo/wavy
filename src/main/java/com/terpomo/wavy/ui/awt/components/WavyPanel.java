@@ -2,9 +2,10 @@ package com.terpomo.wavy.ui.awt.components;
 
 import java.awt.Dimension;
 import java.awt.Insets;
-import java.awt.Panel;
 
-public class WavyPanel extends Panel {
+import javax.swing.JPanel;
+
+public class WavyPanel extends JPanel {
 
 	private static final long serialVersionUID = -6911239189205062048L;
 	private static final int DEFAULT_INSET_SIZE = 0;

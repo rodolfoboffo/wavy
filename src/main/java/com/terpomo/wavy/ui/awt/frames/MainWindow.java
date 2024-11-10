@@ -1,31 +1,29 @@
 package com.terpomo.wavy.ui.awt.frames;
 
 import java.awt.BorderLayout;
-import java.awt.Button;
 import java.awt.Color;
 import java.awt.EventQueue;
-import java.awt.FlowLayout;
-import java.awt.Frame;
 import java.awt.LayoutManager;
-import java.awt.MenuBar;
-import java.awt.Panel;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JToolBar;
 
 import com.terpomo.wavy.ui.awt.UIController;
 import com.terpomo.wavy.ui.awt.pipes.ProjectRepr;
 import com.terpomo.wavy.ui.awt.util.DefaultWindowListener;
 
-public class MainWindow extends Frame {
+public class MainWindow extends JFrame {
 
 	private static final long serialVersionUID = 6740298435235868036L;
 	private static final String WAVY = "Wavy";
-	protected MenuBar mainMenu;
+	protected MainMenuBar mainMenu;
 	protected LayoutManager mainLayout;
 	
-	protected Panel toolBarPanel;
-	protected LayoutManager toolBarLayout;
-	protected Button b1;
+	protected JToolBar mainToolbar;
+	protected JButton b1;
 	
 	public MainWindow() {
 		super(WAVY);
@@ -34,16 +32,15 @@ public class MainWindow extends Frame {
 		this.addWindowListener(new DefaultWindowListener(this));
 		
 		this.mainMenu = new MainMenuBar();
-		this.setMenuBar(mainMenu);
+		this.setJMenuBar(mainMenu);
 		
 		this.mainLayout = new BorderLayout();
 		this.setLayout(this.mainLayout);
 		
-		this.toolBarPanel = new Panel();
-		this.toolBarLayout = new FlowLayout(FlowLayout.LEFT);
-		this.add(BorderLayout.NORTH, this.toolBarPanel);
-		this.b1 = new Button("Button b1");
-		this.toolBarPanel.add(this.b1);
+		this.mainToolbar = new JToolBar();
+		this.b1 = new JButton("B1");
+		this.mainToolbar.add(this.b1);
+		this.add(BorderLayout.NORTH, this.mainToolbar);
 		
 		UIController.getInstance().onSelectedProjectChanged(new SelectedProjectChangedListener());
 	}
