@@ -1,9 +1,10 @@
 package com.terpomo.wavy.ui.awt.components;
 
-import java.awt.Dimension;
 import java.awt.Insets;
 
 import javax.swing.JPanel;
+
+import com.terpomo.wavy.Constants;
 
 public class WavyPanel extends JPanel {
 
@@ -13,6 +14,7 @@ public class WavyPanel extends JPanel {
 	
 	public WavyPanel() {
 		this(DEFAULT_INSET_SIZE);
+		this.setBackground(Constants.LIGHT_CYAN);
 	}
 	
 	public WavyPanel(int padding) {
@@ -21,12 +23,6 @@ public class WavyPanel extends JPanel {
 	
 	public WavyPanel(int top, int bottom, int left, int right) {
 		this.i = new Insets(top, left, bottom, right);
-	}
-
-	@Override
-	public Dimension getPreferredSize() {
-		// TODO Auto-generated method stub
-		return super.getPreferredSize();
 	}
 	
 	@Override

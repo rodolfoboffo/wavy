@@ -7,7 +7,6 @@ import java.awt.LayoutManager;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JToolBar;
 
@@ -19,11 +18,11 @@ public class MainWindow extends JFrame {
 
 	private static final long serialVersionUID = 6740298435235868036L;
 	private static final String WAVY = "Wavy";
+	
 	protected MainMenuBar mainMenu;
 	protected LayoutManager mainLayout;
 	
-	protected JToolBar mainToolbar;
-	protected JButton b1;
+	protected JToolBar controllerToolbar;
 	
 	public MainWindow() {
 		super(WAVY);
@@ -37,10 +36,8 @@ public class MainWindow extends JFrame {
 		this.mainLayout = new BorderLayout();
 		this.setLayout(this.mainLayout);
 		
-		this.mainToolbar = new JToolBar();
-		this.b1 = new JButton("B1");
-		this.mainToolbar.add(this.b1);
-		this.add(BorderLayout.NORTH, this.mainToolbar);
+		this.controllerToolbar = new ControllerToolbar();
+		this.add(BorderLayout.NORTH, this.controllerToolbar);
 		
 		UIController.getInstance().onSelectedProjectChanged(new SelectedProjectChangedListener());
 	}

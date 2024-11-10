@@ -19,6 +19,7 @@ public class UIController extends Component {
 	private static final long serialVersionUID = 2929056922201884170L;
 	private final static UIController instance = new UIController();
 	public static final String PROPERTY_SELECTED_PROJECT = "PROPERTY_SELECTED_PROJECT";
+	public static final String PROPERTY_IS_PAUSED = "PROPERTY_IS_PAUSED";
 	private List<ProjectRepr> projectsRepr;
 	private ProjectRepr selectedProjectRepr;
 	private PortRepr selectedPort;
@@ -103,4 +104,17 @@ public class UIController extends Component {
 		this.selectedPort = null;
 	}
 	
+	public boolean isPaused() {
+		return this.controller.isPaused();
+	}
+
+	public void onPauseToggled(PropertyChangeListener l) {
+		this.addPropertyChangeListener(PROPERTY_IS_PAUSED ,l);
+	}
+	
+	public void togglePause() {
+		boolean oldValue = this.isPaused();
+		boolean newValue = this.controller.togglePause();
+		this.firePropertyChange(PROPERTY_IS_PAUSED, oldValue, newValue);
+	}
 }

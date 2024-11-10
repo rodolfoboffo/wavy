@@ -27,7 +27,6 @@ public class PortRepr extends Canvas {
 	private IPort port;
 	private IPipeRepr parentPipeRepr;
 	private PortRepr linkedPortRepr;
-	private DataFlowRepr dataFlowRepr;
 	private boolean isBeingHovered;
 	private boolean isSelected;
 	
@@ -55,14 +54,6 @@ public class PortRepr extends Canvas {
 	
 	public IPort getPort() {
 		return port;
-	}
-	
-	public void setDataFlowRepr(DataFlowRepr dataFlowRepr) {
-		this.dataFlowRepr = dataFlowRepr;
-	}
-	
-	public DataFlowRepr getDataFlowRepr() {
-		return dataFlowRepr;
 	}
 	
 	private Color getPortColor() {

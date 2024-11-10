@@ -3,9 +3,15 @@ package com.terpomo.wavy.flow;
 public class Worker extends Thread {
 
 	protected PipeController controller;
+	private static final int SLEEP_TIME_MILLIS = 100;
 	
 	public Worker(PipeController controller) {
 		this.controller = controller;
+	}
+	
+	public Worker(PipeController controller, String name) {
+		this(controller);
+		this.setName(name);
 	}
 	
 	@Override
@@ -20,7 +26,13 @@ public class Worker extends Thread {
 					}
 				}
 			}
+			else {
+				try {
+					Thread.sleep(SLEEP_TIME_MILLIS);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
 		}
-		System.out.println("Thread finished.");
 	}
 }

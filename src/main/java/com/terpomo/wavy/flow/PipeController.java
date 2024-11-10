@@ -5,11 +5,10 @@ import java.util.List;
 
 public class PipeController {
 	public static int DEFAULT_NUM_OF_WORKERS = 5;
-	public static int DEFAULT_THREAD_WAIT_TIME_MILIS = 100;
 	private List<Worker> workers;
 	private List<Project> projects;
 	private boolean isActive = true;
-	private boolean isPaused = false;
+	private boolean isPaused = true;
 	
 	public PipeController() {
 		this(DEFAULT_NUM_OF_WORKERS);
@@ -19,7 +18,7 @@ public class PipeController {
 		this.projects = new ArrayList<Project>();
 		this.workers = new ArrayList<Worker>();
 		for (int i = 0; i < numOfWorkers; i++) {
-			Worker w = new Worker(this);
+			Worker w = new Worker(this, String.format("Worker %d", i));
 			this.workers.add(w);
 			w.start();
 		}
@@ -39,6 +38,13 @@ public class PipeController {
 	
 	public boolean isPaused() {
 		return isPaused;
+	}
+	
+	public boolean togglePause() {
+		synchronized (this) {
+			this.isPaused = !this.isPaused;
+			return this.isPaused;
+		}
 	}
 	
 	public void addPipe(Project project, IPipe p) {
@@ -65,7 +71,7 @@ public class PipeController {
 		this.isPaused = true;
 		this.isActive = false;
 		for (Worker w : this.workers) {
-			w.join(DEFAULT_THREAD_WAIT_TIME_MILIS);
+			w.join();
 		}
 	}
 	

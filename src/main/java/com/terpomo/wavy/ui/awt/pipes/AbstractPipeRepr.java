@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.EventQueue;
-import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.LayoutManager;
@@ -28,8 +27,6 @@ public abstract class AbstractPipeRepr extends WavyPanel implements IPipeRepr {
 
 	private static final long serialVersionUID = -4460157397034830356L;
 	private static final int DEFAULT_INSET_SIZE = 8;
-	private static final Color LIGHT_CYAN = new Color(230, 230, 255);
-	private static final Font NAME_FONT = new Font(Font.SANS_SERIF, Font.BOLD, 12);
 	private static final String IS_BEING_MOVED = "IS_BEING_MOVED";
 	
 	private LayoutManager mainLayout;
@@ -61,12 +58,9 @@ public abstract class AbstractPipeRepr extends WavyPanel implements IPipeRepr {
 		
 		this.pipeName = name;
 		this.labelName = new JLabel(this.pipeName);
-		this.labelName.setBackground(Color.BLACK);
-		this.labelName.setFont(NAME_FONT);
 		this.add(BorderLayout.NORTH, this.labelName);
 		
 		this.contentPanel = new WavyPanel(4);
-		this.contentPanel.setBackground(LIGHT_CYAN);
 		this.add(BorderLayout.CENTER, this.contentPanel);
 		
 		this.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -75,22 +69,23 @@ public abstract class AbstractPipeRepr extends WavyPanel implements IPipeRepr {
 		this.addPropertyChangeListener(IS_BEING_MOVED, new IsBeingMovedListener());
 	}
 	
+	@Override
+	protected void paintComponent(Graphics g) {
+		super.paintComponent(g);
+        Graphics2D g2d = (Graphics2D)g.create();
+        g2d.setColor(this.getBackground());
+        g2d.fillRoundRect(0, 0, this.getWidth()-1, this.getHeight()-1, 10, 10);
+        g2d.setColor(Color.BLACK);
+        g2d.drawRoundRect(0, 0, this.getWidth()-1, this.getHeight()-1, 10, 10);
+        g2d.dispose();
+	}
+	
 	public void layoutPipePropertiesOnGrid() {
 		for (int i = 0; i < this.pipeProperties.size(); i++) {
 			@SuppressWarnings("rawtypes")
 			PipePropertyRepr property = this.pipeProperties.get(i);
 			property.layoutOnGrid(this.contentPanel, i);
 		}
-	}
-	
-	@Override
-	public void paint(Graphics g) {
-		Graphics2D g2d = (Graphics2D)g.create();
-		g2d.setColor(LIGHT_CYAN);
-		g2d.fillRoundRect(0, 0, this.getWidth()-1, this.getHeight()-1, 10, 10);
-		g2d.setColor(Color.BLACK);
-		g2d.drawRoundRect(0, 0, this.getWidth()-1, this.getHeight()-1, 10, 10);
-		g2d.dispose();
 	}
 	
 	public IPipe getPipe() {

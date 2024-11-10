@@ -55,11 +55,4 @@ public class ProjectRepr extends Panel {
 		this.revalidate();
 		this.repaint();
 	}
-	
-	public void addDataFlowRepr(DataFlowRepr dataFlow) {
-		this.add(dataFlow);
-		this.setComponentZOrder(dataFlow, 0);
-		this.revalidate();
-		this.repaint();
-	}
 }
