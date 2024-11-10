@@ -73,14 +73,14 @@ public abstract class AbstractPipeRepr extends WavyPanel implements IPipeRepr {
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
         Graphics2D g2d = (Graphics2D)g.create();
-        g2d.setColor(this.getBackground());
-        g2d.fillRoundRect(0, 0, this.getWidth()-1, this.getHeight()-1, 10, 10);
+//        g2d.setColor(this.getBackground());
+//        g2d.fillRoundRect(0, 0, this.getWidth()-1, this.getHeight()-1, 10, 10);
         g2d.setColor(Color.BLACK);
         g2d.drawRoundRect(0, 0, this.getWidth()-1, this.getHeight()-1, 10, 10);
         g2d.dispose();
 	}
 	
-	public void layoutPipePropertiesOnGrid() {
+	protected void layoutPipePropertiesOnGrid() {
 		for (int i = 0; i < this.pipeProperties.size(); i++) {
 			@SuppressWarnings("rawtypes")
 			PipePropertyRepr property = this.pipeProperties.get(i);
@@ -105,6 +105,10 @@ public abstract class AbstractPipeRepr extends WavyPanel implements IPipeRepr {
 	public void setName(String name) {
 		this.pipeName = name;
 		this.labelName.setText(this.pipeName);
+	}
+	
+	public String getPipeName() {
+		return pipeName;
 	}
 	
 	public synchronized void setIsBeingMoved(boolean newValue) {

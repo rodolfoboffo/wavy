@@ -1,6 +1,5 @@
 package com.terpomo.wavy.ui.awt.pipes;
 
-import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.EventQueue;
@@ -13,31 +12,31 @@ import java.beans.PropertyChangeListener;
 
 import com.terpomo.wavy.flow.IPort;
 import com.terpomo.wavy.ui.awt.UIController;
+import com.terpomo.wavy.ui.awt.components.WavyPanel;
 
-public class PortRepr extends Canvas {
+public class PortRepr extends WavyPanel {
 
 	private static final long serialVersionUID = -4561025309986054679L;
 	private static final String IS_BEING_HOVERED_PROPERTY = "IS_BEING_HOVERED";
 	private static final String IS_SELECTED_PROPERTY = "IS_SELECTED";
 	private static final String LINKED_PORT_PROPERTY = "LINKED_PORT";
+	private static final Dimension PANEL_DIMENSION = new Dimension(14, 14);
+	private static final Dimension PORT_DIMENSION = new Dimension(10, 10);
 	private static final Color UNUSED_PORT_COLOR = new Color(200, 200, 200);
 	private static final Color LINKED_PORT_COLOR = new Color(20, 200, 20);
 
-	private Dimension size;
 	private IPort port;
-	private IPipeRepr parentPipeRepr;
+	private AbstractPipeRepr parentPipeRepr;
 	private PortRepr linkedPortRepr;
 	private boolean isBeingHovered;
 	private boolean isSelected;
 	
-	public PortRepr(IPort port, IPipeRepr parentPipeRepr) {
+	public PortRepr(IPort port, AbstractPipeRepr parentPipeRepr) {
 		super();
-		this.size = new Dimension(18, 18);
 		this.port = port;
 		this.parentPipeRepr = parentPipeRepr;
 		this.isBeingHovered = false;
 		this.isSelected = false;
-		this.setSize(11, 11);
 		this.addMouseListener(new PortMouseListener());
 		this.addPropertyChangeListener(IS_BEING_HOVERED_PROPERTY, new RepaintOnPropertyChangedListener());
 		this.addPropertyChangeListener(IS_SELECTED_PROPERTY, new RepaintOnPropertyChangedListener());
@@ -65,29 +64,40 @@ public class PortRepr extends Canvas {
 		}
 	}
 	
+	public AbstractPipeRepr getParentPipeRepr() {
+		return parentPipeRepr;
+	}
+	
 	@Override
-	public void paint(Graphics g) {
+	public String getToolTipText() {
+		if (this.linkedPortRepr != null)
+			this.linkedPortRepr.getParentPipeRepr().getPipeName();
+		return null;
+	}
+	
+	@Override
+	protected void paintComponent(Graphics g) {
+		super.paintComponent(g);
 		Graphics2D g2d = (Graphics2D)g.create();
 		if (this.isBeingHovered || this.isSelected) {
 			g2d.setColor(Color.BLACK);
-			g2d.fillRoundRect(2, 2, 14, 14, 4, 4);
+			g2d.fillRoundRect(0, 0, PANEL_DIMENSION.width, PANEL_DIMENSION.width, 2, 2);
 		}
 		Color bgColor = this.getPortColor();
 		g2d.setColor(bgColor);
-		g2d.fillRoundRect(4, 4, 10, 10, 2, 2);
+		g2d.fillRoundRect((PANEL_DIMENSION.width-PORT_DIMENSION.width)/2,(PANEL_DIMENSION.height-PORT_DIMENSION.height)/2, PORT_DIMENSION.width, PORT_DIMENSION.height, 2, 2);
 		g2d.setColor(Color.BLACK);
-		g2d.drawRoundRect(4, 4, 10, 10, 2, 2);
+		g2d.drawRoundRect((PANEL_DIMENSION.width-PORT_DIMENSION.width)/2,(PANEL_DIMENSION.height-PORT_DIMENSION.height)/2, PORT_DIMENSION.width, PORT_DIMENSION.height, 2, 2);
 		g2d.dispose();
+	}
+	
+	public Dimension getPreferredSize() {
+		return PANEL_DIMENSION;
 	}
 	
 	@Override
 	public Dimension getSize() {
-		return this.size;
-	}
-	
-	@Override
-	public Dimension getPreferredSize() {
-		return this.getSize();
+		return PANEL_DIMENSION;
 	}
 	
 	public boolean isBeingHovered() {

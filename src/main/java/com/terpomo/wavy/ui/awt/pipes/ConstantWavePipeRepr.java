@@ -19,11 +19,11 @@ public class ConstantWavePipeRepr extends AbstractSignalPipeRepr<ConstantWave, C
 		this.contentLayout = new GridBagLayout();
 		this.contentPanel.setLayout(this.contentLayout);
 		
-		PipePropertyRepr<Float> frequencyProperty = new PipePropertyRepr<Float>(this, null, FREQUENCY, pipe.getSignal().getFrequency(), null);
+		PipePropertyRepr<Float> frequencyProperty = new PipePropertyRepr<Float>(Float.class, this, null, FREQUENCY, pipe.getSignal().getFrequency(), null, this.pipe::setFrequency);
 		this.addPipeProperty(frequencyProperty);
 		
 		@SuppressWarnings({ "rawtypes", "unchecked" })
-		PipePropertyRepr signalOutputProperty = new PipePropertyRepr(this, null, OUTPUT_SIGNAL, null, pipe.getOutputPort());
+		PipePropertyRepr signalOutputProperty = new PipePropertyRepr(null, this, null, OUTPUT_SIGNAL, null, pipe.getOutputPort());
 		this.addPipeProperty(signalOutputProperty);
 		
 		this.layoutPipePropertiesOnGrid();

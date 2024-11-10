@@ -3,7 +3,7 @@ package com.terpomo.wavy.flow;
 public class Worker extends Thread {
 
 	protected PipeController controller;
-	private static final int SLEEP_TIME_MILLIS = 100;
+	private static final int SLEEP_TIME_MILLIS = 50;
 	
 	public Worker(PipeController controller) {
 		this.controller = controller;

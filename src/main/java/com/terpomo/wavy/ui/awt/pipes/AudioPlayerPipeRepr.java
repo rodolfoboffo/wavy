@@ -18,7 +18,7 @@ public class AudioPlayerPipeRepr extends AbstractPipeRepr {
 			IPort port = pipe.getInputPorts().get(i);
 			String propertyName = String.format("Channel %d", i+1);
 			@SuppressWarnings({ "rawtypes", "unchecked" })
-			PipePropertyRepr pipeProperty = new PipePropertyRepr(this, port, propertyName, null, null);
+			PipePropertyRepr pipeProperty = new PipePropertyRepr(null, this, port, propertyName, null, null);
 			this.addPipeProperty(pipeProperty);
 		}
 	}

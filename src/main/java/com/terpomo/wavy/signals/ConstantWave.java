@@ -35,15 +35,19 @@ public class ConstantWave extends Signal {
 	public final float getAmplitude() {
 		return amplitude;
 	}
+	
+	synchronized public void setFrequency(float frequency) {
+		this.frequency = frequency;
+	}
 
 	@Override
-	public float getValue(long index) {
+	synchronized public float getValue(long index) {
 		float frac = (float) index / this.sampleRate * MathConstants.PI2 * this.frequency % MathConstants.PI2;
 		float value = this.amplitude * this.sineTable.getSineValue(frac);
 		return this.clamp(value);
 	}
 	
-	public float getNextValue() {
+	synchronized public float getNextValue() {
 		this.phase = (1.0f / this.sampleRate * MathConstants.PI2 * this.frequency + this.phase) % MathConstants.PI2;
 		float value = this.amplitude * this.sineTable.getSineValue(this.phase);
 		return this.clamp(value);
