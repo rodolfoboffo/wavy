@@ -50,9 +50,14 @@ public class ProjectRepr extends Panel {
 		this.project = project;
 	}
 	
+	public void setOnTop(AbstractPipeRepr pipeRepr) {
+		this.setComponentZOrder(pipeRepr, 0);
+	}
+	
 	public void addPipeRepr(AbstractPipeRepr pipeRepr) {
 		this.pipesRepr.add(pipeRepr);
 		this.add(pipeRepr);
+		this.setOnTop(pipeRepr);
 		this.revalidate();
 		this.repaint();
 	}

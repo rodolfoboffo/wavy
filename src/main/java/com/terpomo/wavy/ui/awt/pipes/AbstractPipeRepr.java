@@ -2,6 +2,7 @@ package com.terpomo.wavy.ui.awt.pipes;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.EventQueue;
 import java.awt.Graphics;
@@ -77,18 +78,20 @@ public abstract class AbstractPipeRepr extends WavyPanel implements IPipeRepr {
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
         Graphics2D g2d = (Graphics2D)g.create();
-//        g2d.setColor(this.getBackground());
-//        g2d.fillRoundRect(0, 0, this.getWidth()-1, this.getHeight()-1, 10, 10);
         g2d.setColor(Color.BLACK);
         g2d.drawRoundRect(0, 0, this.getWidth()-1, this.getHeight()-1, 10, 10);
         g2d.dispose();
 	}
 	
 	protected void layoutPipePropertiesOnGrid() {
+		this.layoutPipePropertiesOnGrid(this.contentPanel);
+	}
+	
+	protected void layoutPipePropertiesOnGrid(Container container) {
 		for (int i = 0; i < this.pipeProperties.size(); i++) {
 			@SuppressWarnings("rawtypes")
 			PipePropertyRepr property = this.pipeProperties.get(i);
-			property.layoutOnGrid(this.contentPanel, i);
+			property.layoutOnGrid(container, i);
 		}
 	}
 	
@@ -143,6 +146,8 @@ public abstract class AbstractPipeRepr extends WavyPanel implements IPipeRepr {
 	
 	protected void bringToTop() {
 		this.getParent().setComponentZOrder(this, 0);
+		this.revalidate();
+		this.repaint();
 	}
 	
 	class IsBeingMovedListener implements PropertyChangeListener {
