@@ -1,31 +1,22 @@
 package com.terpomo.wavy.flow;
 
-import java.util.Queue;
-import java.util.concurrent.ArrayBlockingQueue;
-
 public abstract class Port implements IPort {
 
-	protected IPipe pipe;
+	private final IPipe pipe;
+	private final Buffer buffer;
 	protected IPort linkedPort;
-	protected Queue<Float> buffer;
-	protected final int bufferCapacity;
 	
 	public Port(IPipe pipe) {
 		super();
 		this.pipe = pipe;
-		this.bufferCapacity = DEFAULT_DATASTREAM_BUFER_SIZE;
-		this.buffer = new ArrayBlockingQueue<Float>(this.bufferCapacity);
+		this.buffer = new Buffer();
 	}
 	
 	public IPipe getPipe() {
 		return pipe;
 	}
-	public Queue<Float> getBuffer() {
+	public Buffer getBuffer() {
 		return buffer;
-	}
-	
-	public int getBufferCapacity() {
-		return bufferCapacity;
 	}
 
 	@Override

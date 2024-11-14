@@ -1,6 +1,7 @@
 package com.terpomo.wavy.ui.pipes;
 
 import com.terpomo.wavy.flow.IPort;
+import com.terpomo.wavy.flow.InputPort;
 import com.terpomo.wavy.pipes.OscilloscopePipe;
 import com.terpomo.wavy.ui.util.GuiUpdaterWorker;
 import org.jfree.chart.ChartFactory;
@@ -16,10 +17,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.random.RandomGenerator;
 
+import static java.awt.EventQueue.invokeLater;
+
 public class OscilloscopePipeRepr extends AbstractPipeRepr {
 
 	@Serial
 	private static final long serialVersionUID = 7368297233394330359L;
+	private final OscilloscopePipe pipe;
 	private final JFreeChart lineChart;
 	private final LayoutManager contentLayout;
 	private final JPanel portsPanel;
@@ -27,10 +31,10 @@ public class OscilloscopePipeRepr extends AbstractPipeRepr {
 	private final XYSeriesCollection dataset;
 	private final XYSeries channel1Series;
 	private final GuiUpdaterWorker updaterWorker;
-	public int i = 0;
 
 	public OscilloscopePipeRepr(OscilloscopePipe pipe, String name) {
 		super(pipe, name);
+		this.pipe = pipe;
 		JPanel panel = this.getContentPanel();
 		this.contentLayout = new GridBagLayout();
 		panel.setLayout(this.contentLayout);
@@ -62,12 +66,12 @@ public class OscilloscopePipeRepr extends AbstractPipeRepr {
 	}
 
 	private void updateGui() {
-		EventQueue.invokeLater(new Runnable() {
+		InputPort portChannel1 = this.pipe.getInputPorts().get(0);
+		portChannel1.getBuffer().
+
+		invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				int ii = OscilloscopePipeRepr.this.i + 1;
-				OscilloscopePipeRepr.this.i = ii;
-				OscilloscopePipeRepr.this.channel1Series.add(ii, RandomGenerator.getDefault().nextFloat(-1, 1));
 			}
 		});
 	}
