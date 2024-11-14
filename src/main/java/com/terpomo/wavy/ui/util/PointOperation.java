@@ -1,4 +1,4 @@
-package com.terpomo.wavy.ui.awt.util;
+package com.terpomo.wavy.ui.util;
 
 import java.awt.Point;
 

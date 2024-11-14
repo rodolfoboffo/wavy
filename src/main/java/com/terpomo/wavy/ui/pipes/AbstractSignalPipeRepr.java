@@ -1,4 +1,4 @@
-package com.terpomo.wavy.ui.awt.pipes;
+package com.terpomo.wavy.ui.pipes;
 
 import com.terpomo.wavy.pipes.AbstractSignalSourcePipe;
 import com.terpomo.wavy.signals.Signal;

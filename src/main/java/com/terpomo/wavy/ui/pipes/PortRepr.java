@@ -1,4 +1,4 @@
-package com.terpomo.wavy.ui.awt.pipes;
+package com.terpomo.wavy.ui.pipes;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -11,8 +11,8 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import com.terpomo.wavy.flow.IPort;
-import com.terpomo.wavy.ui.awt.UIController;
-import com.terpomo.wavy.ui.awt.components.WavyPanel;
+import com.terpomo.wavy.ui.UIController;
+import com.terpomo.wavy.ui.components.WavyPanel;
 
 public class PortRepr extends WavyPanel {
 

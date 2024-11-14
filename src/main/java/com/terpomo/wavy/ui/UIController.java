@@ -1,21 +1,24 @@
-package com.terpomo.wavy.ui.awt;
+package com.terpomo.wavy.ui;
 
 import java.awt.Component;
 import java.beans.PropertyChangeListener;
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.terpomo.wavy.WavyDisposable;
 import com.terpomo.wavy.flow.IPipe;
 import com.terpomo.wavy.flow.PipeController;
 import com.terpomo.wavy.flow.PipeTypeEnum;
 import com.terpomo.wavy.flow.Project;
-import com.terpomo.wavy.ui.awt.frames.ProjectRepr;
-import com.terpomo.wavy.ui.awt.pipes.AbstractPipeRepr;
-import com.terpomo.wavy.ui.awt.pipes.PipeReprFactory;
-import com.terpomo.wavy.ui.awt.pipes.PortRepr;
+import com.terpomo.wavy.ui.frames.ProjectRepr;
+import com.terpomo.wavy.ui.pipes.AbstractPipeRepr;
+import com.terpomo.wavy.ui.pipes.PipeReprFactory;
+import com.terpomo.wavy.ui.pipes.PortRepr;
 
-public class UIController extends Component {
+public class UIController extends Component implements WavyDisposable {
 
+	@Serial
 	private static final long serialVersionUID = 2929056922201884170L;
 	private final static UIController instance = new UIController();
 	public static final String PROPERTY_SELECTED_PROJECT = "PROPERTY_SELECTED_PROJECT";
@@ -37,6 +40,7 @@ public class UIController extends Component {
 	public void exit() {
 		try {
 			this.controller.shutdown();
+			this.wavyDispose();
 			System.exit(0);
 		} catch (InterruptedException e) {
 			System.exit(-1);
@@ -116,5 +120,12 @@ public class UIController extends Component {
 		boolean oldValue = this.isPaused();
 		boolean newValue = this.controller.togglePause();
 		this.firePropertyChange(PROPERTY_IS_PAUSED, oldValue, newValue);
+	}
+
+	@Override
+	public void wavyDispose() {
+		for (ProjectRepr project : this.projectsRepr) {
+			project.wavyDispose();
+		}
 	}
 }

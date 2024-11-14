@@ -1,4 +1,4 @@
-package com.terpomo.wavy.ui.awt.frames;
+package com.terpomo.wavy.ui.frames;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -10,10 +10,11 @@ import java.beans.PropertyChangeListener;
 import javax.swing.JFrame;
 import javax.swing.JToolBar;
 
-import com.terpomo.wavy.ui.awt.UIController;
-import com.terpomo.wavy.ui.awt.util.DefaultWindowListener;
+import com.terpomo.wavy.WavyDisposable;
+import com.terpomo.wavy.ui.UIController;
+import com.terpomo.wavy.ui.util.DefaultWindowListener;
 
-public class MainWindow extends JFrame {
+public class MainWindow extends JFrame implements WavyDisposable {
 
 	private static final long serialVersionUID = 6740298435235868036L;
 	private static final String WAVY = "Wavy";
@@ -55,7 +56,11 @@ public class MainWindow extends JFrame {
 	public void showApp() {
 		this.setVisible(true);
 	}
-	
+
+	@Override
+	public void wavyDispose() {
+	}
+
 	class SelectedProjectChangedListener implements PropertyChangeListener {
 
 		@Override
@@ -64,6 +69,6 @@ public class MainWindow extends JFrame {
 				MainWindow.this.setProject((ProjectRepr) evt.getNewValue());
 			});
 		}
-		
+
 	}
 }

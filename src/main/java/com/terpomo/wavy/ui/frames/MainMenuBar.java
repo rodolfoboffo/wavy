@@ -1,4 +1,4 @@
-package com.terpomo.wavy.ui.awt.frames;
+package com.terpomo.wavy.ui.frames;
 
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
@@ -13,7 +13,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
 import com.terpomo.wavy.flow.PipeTypeEnum;
-import com.terpomo.wavy.ui.awt.UIController;
+import com.terpomo.wavy.ui.UIController;
 
 public class MainMenuBar extends JMenuBar {
 

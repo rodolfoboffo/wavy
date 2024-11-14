@@ -1,8 +1,9 @@
 package com.terpomo.wavy.ui.awt;
 
-import com.terpomo.wavy.ui.awt.frames.MainWindow;
+import com.terpomo.wavy.WavyDisposable;
+import com.terpomo.wavy.ui.frames.MainWindow;
 
-public class UIApplication {
+public class UIApplication implements WavyDisposable {
 	
 	protected MainWindow main;
 	
@@ -10,7 +11,12 @@ public class UIApplication {
 		this.main = new MainWindow();
 		this.main.showApp();
 	}
-	
+
+	@Override
+	public void wavyDispose() {
+		this.main.dispose();
+	}
+
 	public static void main(String[] args) {
 		UIApplication app = new UIApplication();
 		app.start();

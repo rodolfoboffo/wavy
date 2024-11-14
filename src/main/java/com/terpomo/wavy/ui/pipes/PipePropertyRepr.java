@@ -1,4 +1,4 @@
-package com.terpomo.wavy.ui.awt.pipes;
+package com.terpomo.wavy.ui.pipes;
 
 import java.awt.Container;
 import java.awt.Font;

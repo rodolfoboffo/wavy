@@ -1,4 +1,4 @@
-package com.terpomo.wavy.ui.awt.pipes;
+package com.terpomo.wavy.ui.pipes;
 
 import com.terpomo.wavy.flow.AbstractPipe;
 import com.terpomo.wavy.flow.PipeFactory;

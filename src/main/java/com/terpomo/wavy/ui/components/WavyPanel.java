@@ -1,4 +1,4 @@
-package com.terpomo.wavy.ui.awt.components;
+package com.terpomo.wavy.ui.components;
 
 import java.awt.Dimension;
 import java.awt.Graphics;

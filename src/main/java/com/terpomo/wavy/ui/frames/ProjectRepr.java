@@ -1,26 +1,28 @@
-package com.terpomo.wavy.ui.awt.frames;
+package com.terpomo.wavy.ui.frames;
 
-import java.awt.Color;
-import java.awt.Panel;
+import java.awt.*;
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.terpomo.wavy.WavyDisposable;
 import com.terpomo.wavy.flow.PipeTypeEnum;
 import com.terpomo.wavy.flow.Project;
-import com.terpomo.wavy.ui.awt.pipes.AbstractPipeRepr;
-import com.terpomo.wavy.ui.awt.util.AbsoluteLayout;
+import com.terpomo.wavy.ui.pipes.AbstractPipeRepr;
+import com.terpomo.wavy.ui.util.AbsoluteLayout;
 
-public class ProjectRepr extends Panel {
+public class ProjectRepr extends Panel implements WavyDisposable {
 
+	@Serial
 	private static final long serialVersionUID = -3136424835205807021L;
 	public static final String PROPERTY_SELECTED_PROJECT = "PROPERTY_SELECTED_PROJECT";
 	
 	private Project project;
-	private AbsoluteLayout layout;
-	protected List<AbstractPipeRepr> pipesRepr;
-	private Map<PipeTypeEnum, Integer> pipeTypeCountMap;
+	private final AbsoluteLayout layout;
+	protected final List<AbstractPipeRepr> pipesRepr;
+	private final Map<PipeTypeEnum, Integer> pipeTypeCountMap;
 	
 	public ProjectRepr() {
 		this.layout = new AbsoluteLayout();
@@ -60,5 +62,16 @@ public class ProjectRepr extends Panel {
 		this.setOnTop(pipeRepr);
 		this.revalidate();
 		this.repaint();
+	}
+
+	@Override
+	public void wavyDispose() {
+		for (AbstractPipeRepr pipe : this.pipesRepr) {
+			pipe.wavyDispose();
+		}
+		Container parent = this.getParent();
+		if (parent != null) {
+			parent.remove(this);
+		}
 	}
 }

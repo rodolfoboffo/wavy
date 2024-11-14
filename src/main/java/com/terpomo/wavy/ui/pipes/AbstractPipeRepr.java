@@ -1,4 +1,4 @@
-package com.terpomo.wavy.ui.awt.pipes;
+package com.terpomo.wavy.ui.pipes;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -14,6 +14,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,33 +22,30 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import com.terpomo.wavy.flow.IPipe;
-import com.terpomo.wavy.ui.awt.components.WavyPanel;
-import com.terpomo.wavy.ui.awt.util.PointOperation;
+import com.terpomo.wavy.ui.components.WavyPanel;
+import com.terpomo.wavy.ui.util.PointOperation;
 
 public abstract class AbstractPipeRepr extends WavyPanel implements IPipeRepr {
 
+	@Serial
 	private static final long serialVersionUID = -4460157397034830356L;
 	private static final int DEFAULT_INSET_SIZE = 8;
 	private static final String IS_BEING_MOVED = "IS_BEING_MOVED";
 	
 	private LayoutManager mainLayout;
-	@SuppressWarnings("rawtypes")
-	private List<PipePropertyRepr> pipeProperties;
 	
 	protected IPipe pipe;
 	private String pipeName;
 	private JLabel labelName;
 
-	private JPanel contentPanel;
+	private final JPanel contentPanel;
 	
 	private boolean isBeingMoved;
 	private Point originMousePosition;
 	private Point originPipePosition;
 	
-	@SuppressWarnings("rawtypes")
 	public AbstractPipeRepr(IPipe pipe, String name) {
 		super(DEFAULT_INSET_SIZE);
-		this.pipeProperties = new ArrayList<PipePropertyRepr>();
 		this.pipe = pipe;
 		
 		this.mainLayout = new BorderLayout();
@@ -83,30 +81,20 @@ public abstract class AbstractPipeRepr extends WavyPanel implements IPipeRepr {
         g2d.dispose();
 	}
 	
-	protected void layoutPipePropertiesOnGrid() {
-		this.layoutPipePropertiesOnGrid(this.contentPanel);
+	protected void layoutPipePropertiesOnGrid(List<PipePropertyRepr> pipeProperties) {
+		this.layoutPipePropertiesOnGrid(this.contentPanel, pipeProperties);
 	}
-	
-	protected void layoutPipePropertiesOnGrid(Container container) {
-		for (int i = 0; i < this.pipeProperties.size(); i++) {
+
+	protected void layoutPipePropertiesOnGrid(Container container, List<PipePropertyRepr> pipeProperties) {
+		for (int i = 0; i < pipeProperties.size(); i++) {
 			@SuppressWarnings("rawtypes")
-			PipePropertyRepr property = this.pipeProperties.get(i);
+			PipePropertyRepr property = pipeProperties.get(i);
 			property.layoutOnGrid(container, i);
 		}
 	}
 	
 	public IPipe getPipe() {
 		return pipe;
-	}
-	
-	@SuppressWarnings("rawtypes")
-	public List<PipePropertyRepr> getPipeProperties() {
-		return pipeProperties;
-	}
-	
-	@SuppressWarnings("rawtypes")
-	protected void addPipeProperty(PipePropertyRepr pipeProperty) {
-		this.pipeProperties.add(pipeProperty);
 	}
 	
 	public void setName(String name) {
@@ -149,7 +137,15 @@ public abstract class AbstractPipeRepr extends WavyPanel implements IPipeRepr {
 		this.revalidate();
 		this.repaint();
 	}
-	
+
+	@Override
+	public void wavyDispose() {
+		Container parent = this.getParent();
+		if (parent != null) {
+			parent.remove(this);
+		}
+	}
+
 	class IsBeingMovedListener implements PropertyChangeListener {
 
 		@Override
@@ -169,7 +165,7 @@ public abstract class AbstractPipeRepr extends WavyPanel implements IPipeRepr {
 		}
 		
 	}
-	
+
 	class PipeMouseListener implements MouseListener {
 
 		@Override

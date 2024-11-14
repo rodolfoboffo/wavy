@@ -1,4 +1,4 @@
-package com.terpomo.wavy.ui.awt.frames;
+package com.terpomo.wavy.ui.frames;
 
 
 import java.awt.EventQueue;
@@ -10,7 +10,7 @@ import java.beans.PropertyChangeListener;
 import javax.swing.JButton;
 import javax.swing.JToolBar;
 
-import com.terpomo.wavy.ui.awt.UIController;
+import com.terpomo.wavy.ui.UIController;
 
 public class ControllerToolbar extends JToolBar {
 	
