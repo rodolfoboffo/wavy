@@ -61,19 +61,13 @@ public class OscilloscopePipeRepr extends AbstractPipeRepr {
 		constraints.gridy = 1;
 		panel.add(this.chartPanel, constraints);
 
-		this.updaterWorker = new GuiUpdaterWorker(this::updateGui, 50);
+		this.updaterWorker = new GuiUpdaterWorker(this::updateGui, 1000);
 		this.updaterWorker.start();
 	}
 
 	private void updateGui() {
-		InputPort portChannel1 = this.pipe.getInputPorts().get(0);
-		portChannel1.getBuffer().
-
-		invokeLater(new Runnable() {
-			@Override
-			public void run() {
-			}
-		});
+		List<Float> content = this.pipe.getBuffer().getAll();
+		EventQueue.invokeLater(new PipeUpdater(content));
 	}
 
 	@SuppressWarnings("rawtypes")
@@ -99,4 +93,22 @@ public class OscilloscopePipeRepr extends AbstractPipeRepr {
             throw new RuntimeException(e);
         }
     }
+
+	class PipeUpdater implements Runnable {
+
+		private List<Float> values;
+
+		public PipeUpdater(List<Float> values) {
+			this.values = values;
+		}
+
+		@Override
+		public void run() {
+			XYSeries series1 = OscilloscopePipeRepr.this.channel1Series;
+			series1.clear();
+			for (int i = 0; i < values.size(); i++) {
+				series1.add(i, values.get(i));
+			}
+		}
+	}
 }

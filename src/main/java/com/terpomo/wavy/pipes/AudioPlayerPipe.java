@@ -1,18 +1,14 @@
 package com.terpomo.wavy.pipes;
 
-import java.util.Queue;
-
-import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.DataLine;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.SourceDataLine;
-
 import com.terpomo.wavy.Constants;
 import com.terpomo.wavy.flow.AbstractPipe;
+import com.terpomo.wavy.flow.Buffer;
 import com.terpomo.wavy.flow.InputPort;
 import com.terpomo.wavy.sound.Encoder;
 import com.terpomo.wavy.sound.LPCMEncoder;
+
+import javax.sound.sampled.*;
+import java.util.Queue;
 
 public class AudioPlayerPipe extends AbstractPipe {
 	
@@ -23,17 +19,16 @@ public class AudioPlayerPipe extends AbstractPipe {
 	protected boolean initialized = false;
 	protected boolean playing = true;
 	protected Encoder encoder;
-	protected Queue<Float>[] buffers;
+	protected Buffer[] buffers;
 	protected SourceDataLine line;
 	
 	public AudioPlayerPipe() {
 		this(DEFAULT_NUM_CHANNELS, Constants.DEFAULT_SAMPLE_RATE);
 	}
 	
-	@SuppressWarnings("unchecked")
 	public AudioPlayerPipe(int numOfChannels, int sampleRate) {
 		this.numOfChannels = numOfChannels;
-		this.buffers = new Queue[this.numOfChannels];
+		this.buffers = new Buffer[this.numOfChannels];
 		this.sampleRate = sampleRate;
 		for (int i = 0; i < numOfChannels; i++) {
 			InputPort p = new InputPort(this);
@@ -103,8 +98,8 @@ public class AudioPlayerPipe extends AbstractPipe {
 
 	protected int numOfFramesAvailable() {
 		int frames = Integer.MAX_VALUE;
-		for (Queue<Float> b : this.buffers) {
-			int bufferSize = b.size();
+		for (Buffer b : this.buffers) {
+			int bufferSize = b.getSize();
 			frames = bufferSize < frames ? bufferSize : frames;
 		}
 		return frames;

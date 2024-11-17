@@ -1,8 +1,9 @@
 package com.terpomo.wavy.sound;
 
+import com.terpomo.wavy.flow.Buffer;
+
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.util.Queue;
 
 import javax.sound.sampled.AudioFormat;
 
@@ -14,17 +15,17 @@ public class LPCMEncoder extends Encoder {
 	protected boolean signed;
 	protected boolean bigEndian = false;
 
-	public LPCMEncoder(int sampleRate, int bitsPerSample, boolean signed, Queue<Float>[] buffers) {
+	public LPCMEncoder(int sampleRate, int bitsPerSample, boolean signed, Buffer[] buffers) {
 		super(sampleRate, buffers);
 		this.bitsPerSample = bitsPerSample;
 		this.signed = signed;
 	}
 	
-	public LPCMEncoder(int sampleRate, int bitsPerSample, Queue<Float>[] buffers) {
+	public LPCMEncoder(int sampleRate, int bitsPerSample, Buffer[] buffers) {
 		this(sampleRate, bitsPerSample, DEFAULT_SIGNED, buffers);
 	}
 	
-	public LPCMEncoder(int sampleRate, Queue<Float>[] buffers) {
+	public LPCMEncoder(int sampleRate, Buffer[] buffers) {
 		this(sampleRate, DEFAULT_BITS_PER_SAMPLE, DEFAULT_SIGNED, buffers);
 	}
 
@@ -48,9 +49,9 @@ public class LPCMEncoder extends Encoder {
 		for (int iFrame = 0; iFrame < n; iFrame++) {
 			frameInt = 0;
 			buffer.clear();
-			for (Queue<Float> b : this.buffers) {
+			for (Buffer b : this.buffers) {
 				frameInt <<= this.bitsPerSample;
-				float v = b.poll();
+				float v = b.pick();
 				int sampleInt = (int) ((v * SIGNED_MAX) % SIGNED_MAX);
 				if (!this.signed)
 					sampleInt += SIGNED_MAX;
