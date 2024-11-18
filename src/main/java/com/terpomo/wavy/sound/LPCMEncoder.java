@@ -51,7 +51,7 @@ public class LPCMEncoder extends Encoder {
 			buffer.clear();
 			for (Buffer b : this.buffers) {
 				frameInt <<= this.bitsPerSample;
-				float v = b.pick();
+				float v = b.pickOne();
 				int sampleInt = (int) ((v * SIGNED_MAX) % SIGNED_MAX);
 				if (!this.signed)
 					sampleInt += SIGNED_MAX;

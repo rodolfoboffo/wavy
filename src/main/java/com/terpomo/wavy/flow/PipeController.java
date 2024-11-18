@@ -43,8 +43,19 @@ public class PipeController {
 	public boolean togglePause() {
 		synchronized (this) {
 			this.isPaused = !this.isPaused;
+			if(!this.isPaused) {
+				this.notifyWorkers();
+			}
 			return this.isPaused;
 		}
+	}
+
+	private void notifyWorkers() {
+        for (Worker worker : this.workers) {
+            synchronized (worker) {
+                worker.notify();
+            }
+        }
 	}
 	
 	public void addPipe(Project project, IPipe p) {
@@ -55,21 +66,25 @@ public class PipeController {
 				project.setPipes(newPipes);
 			}
 		}
+		this.notifyWorkers();
 	}
 	
 	public Project createNewProject() {
+		Project p;
 		synchronized (this) {
-			Project p = new Project();
+			p = new Project();
 			List<Project> newProjects = new ArrayList<Project>(this.projects);
 			newProjects.add(p);
 			this.setProjects(newProjects);
-			return p;
 		}
+		this.notifyWorkers();
+		return p;
 	}
 	
 	public void shutdown() throws InterruptedException {
 		this.isPaused = true;
 		this.isActive = false;
+		this.notifyWorkers();
 		for (Worker w : this.workers) {
 			w.join();
 		}
@@ -80,5 +95,6 @@ public class PipeController {
 			throw new RuntimeException("Links can be made between Input and Output ports only");
 		}
 		portA.setLinkedPort(portB);
+		this.notifyWorkers();
 	}
 }

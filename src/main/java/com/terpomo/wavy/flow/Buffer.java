@@ -30,7 +30,7 @@ public class Buffer {
         return this.capacity - this.buffer.size();
     }
 
-    synchronized public Float pick() {
+    synchronized public Float pickOne() {
         Float v = this.buffer.get(0);
         this.buffer.remove(0);
         return v;
@@ -48,10 +48,10 @@ public class Buffer {
     }
 
     synchronized public List<Float> fetch(int count) {
-        List<Float> subList = this.buffer.subList(0, Math.min(count, this.buffer.size()));
-        List<Float> cloneBuffer = new ArrayList<>(subList);
-        this.buffer.removeAll(subList);
-        return cloneBuffer;
+        int minIndex = Math.min(count, this.buffer.size());
+        List<Float> subList = this.buffer.subList(0, minIndex);
+        this.buffer = this.buffer.subList(minIndex, this.buffer.size());
+        return subList;
     }
 
     synchronized public void put(Float value) {
@@ -59,6 +59,11 @@ public class Buffer {
     }
 
     synchronized public void putAll(List<Float> values) {
-        this.buffer.addAll(values);
+        List<Float> subList = values.subList(0, Math.min(this.getRemainingCapacity(), values.size()));
+        this.buffer.addAll(subList);
+    }
+
+    synchronized public void clear() {
+        this.buffer.clear();
     }
 }

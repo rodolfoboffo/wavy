@@ -1,7 +1,7 @@
 package com.terpomo.wavy.ui.pipes;
 
 import com.terpomo.wavy.flow.IPort;
-import com.terpomo.wavy.flow.InputPort;
+import com.terpomo.wavy.oscilloscope.TimeValuePair;
 import com.terpomo.wavy.pipes.OscilloscopePipe;
 import com.terpomo.wavy.ui.util.GuiUpdaterWorker;
 import org.jfree.chart.ChartFactory;
@@ -15,9 +15,6 @@ import java.awt.*;
 import java.io.Serial;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.random.RandomGenerator;
-
-import static java.awt.EventQueue.invokeLater;
 
 public class OscilloscopePipeRepr extends AbstractPipeRepr {
 
@@ -29,7 +26,8 @@ public class OscilloscopePipeRepr extends AbstractPipeRepr {
 	private final JPanel portsPanel;
 	private final ChartPanel chartPanel;
 	private final XYSeriesCollection dataset;
-	private final XYSeries channel1Series;
+	private XYSeries channel1Series;
+	private XYSeries channel1SeriesSwap;
 	private final GuiUpdaterWorker updaterWorker;
 
 	public OscilloscopePipeRepr(OscilloscopePipe pipe, String name) {
@@ -50,6 +48,7 @@ public class OscilloscopePipeRepr extends AbstractPipeRepr {
 		this.layoutPipePropertiesOnGrid(this.portsPanel, properties);
 		this.dataset = new XYSeriesCollection();
 		this.channel1Series = new XYSeries("Channel 1");
+		this.channel1SeriesSwap = new XYSeries("Channel 1");
 		this.dataset.addSeries(this.channel1Series);
 		this.lineChart = ChartFactory.createXYLineChart(null, null, null, this.dataset);
 		this.chartPanel = new ChartPanel(this.lineChart);
@@ -66,8 +65,13 @@ public class OscilloscopePipeRepr extends AbstractPipeRepr {
 	}
 
 	private void updateGui() {
-		List<Float> content = this.pipe.getBuffer().getAll();
-		EventQueue.invokeLater(new PipeUpdater(content));
+		List<TimeValuePair> content = this.pipe.getValues();
+		this.channel1SeriesSwap.clear();
+		for (int i = 0; i < content.size(); i++) {
+			TimeValuePair timeValuePair = content.get(i);
+			this.channel1SeriesSwap.add(timeValuePair.getTime(), timeValuePair.getValue());
+		}
+		EventQueue.invokeLater(new PipeUpdater());
 	}
 
 	@SuppressWarnings("rawtypes")
@@ -96,19 +100,13 @@ public class OscilloscopePipeRepr extends AbstractPipeRepr {
 
 	class PipeUpdater implements Runnable {
 
-		private List<Float> values;
-
-		public PipeUpdater(List<Float> values) {
-			this.values = values;
-		}
-
 		@Override
 		public void run() {
-			XYSeries series1 = OscilloscopePipeRepr.this.channel1Series;
-			series1.clear();
-			for (int i = 0; i < values.size(); i++) {
-				series1.add(i, values.get(i));
-			}
+			XYSeries auxSeries = OscilloscopePipeRepr.this.channel1Series;
+			OscilloscopePipeRepr.this.channel1Series = OscilloscopePipeRepr.this.channel1SeriesSwap;
+			OscilloscopePipeRepr.this.channel1SeriesSwap = auxSeries;
+			OscilloscopePipeRepr.this.dataset.removeAllSeries();
+			OscilloscopePipeRepr.this.dataset.addSeries(OscilloscopePipeRepr.this.channel1Series);
 		}
 	}
 }
