@@ -60,7 +60,7 @@ public class OscilloscopePipeRepr extends AbstractPipeRepr {
 		constraints.gridy = 1;
 		panel.add(this.chartPanel, constraints);
 
-		this.updaterWorker = new GuiUpdaterWorker(this::updateGui, 1000);
+		this.updaterWorker = new GuiUpdaterWorker(this::updateGui, 100);
 		this.updaterWorker.start();
 	}
 

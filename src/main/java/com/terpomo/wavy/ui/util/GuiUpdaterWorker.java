@@ -4,7 +4,7 @@ import com.terpomo.wavy.WavyDisposable;
 
 public class GuiUpdaterWorker extends Thread implements WavyDisposable {
 
-    private static final int GUI_UPDATER_INTERVAL = 1000;
+    private static final int GUI_UPDATER_INTERVAL = 100;
     private boolean isRunning;
     private final int interval;
     private final Runnable runnable;

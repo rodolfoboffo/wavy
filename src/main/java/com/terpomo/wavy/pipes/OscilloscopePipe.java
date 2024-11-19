@@ -6,48 +6,50 @@ import com.terpomo.wavy.flow.Buffer;
 import com.terpomo.wavy.flow.InputPort;
 import com.terpomo.wavy.oscilloscope.TimeValuePair;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalField;
 import java.util.ArrayList;
 import java.util.List;
 
 public class OscilloscopePipe extends AbstractPipe {
 
-	private static final int DEFAULT_OSCILLOSCOPE_BUFFER_SIZE = 102400;
 	private final InputPort inputPort;
 	private final Buffer buffer;
 	private final int sampleRate;
-	private final float timeFrameInSec;
-	private final int timeFrameInSamples;
 	private final Object lock;
-	private List<TimeValuePair> values;
-	private boolean isDataReady;
+	private LocalDateTime timestamp;
 	
 	public OscilloscopePipe() {
 		this.inputPort = new InputPort(this);
 		this.lock = new Object();
 		this.inputPorts.add(this.inputPort);
 		this.sampleRate = Constants.DEFAULT_SAMPLE_RATE;
-		this.timeFrameInSec = 0.1f;
-		this.timeFrameInSamples = (int) (this.sampleRate * this.timeFrameInSec);
-		this.buffer = new Buffer(this.timeFrameInSamples);
-		this.values = new ArrayList<>(this.timeFrameInSamples);
-		this.isDataReady = false;
+		this.buffer = new Buffer(Constants.DEFAULT_SAMPLE_RATE);
 	}
-	
+
+	@Override
+	public void initialize() {
+		this.timestamp = LocalDateTime.now();
+		super.initialize();
+	}
+
 	@Override
 	protected void doWork() {
-		if (this.buffer.getCapacity() >= this.timeFrameInSamples) {
-			synchronized (this.lock) {
-				if (this.buffer.getRemainingCapacity() < this.inputPort.getBuffer().getSize()) {
-					this.buffer.fetch(this.inputPort.getBuffer().getSize() - this.buffer.getRemainingCapacity());
-				}
-				this.buffer.putAll(this.inputPort.getBuffer().fetchAll());
-				this.values = this.generateTimeValuePairs(this.buffer);
+		synchronized (this.lock) {
+			LocalDateTime now = LocalDateTime.now();
+			long intervalMillis = ChronoUnit.MILLIS.between(this.timestamp, now);
+			this.timestamp = now;
+			int samplesToFetch = (int)(1.0f / 1000 * intervalMillis * this.sampleRate);
+			if (this.buffer.getRemainingCapacity() < samplesToFetch) {
+				this.buffer.fetch(samplesToFetch - this.buffer.getRemainingCapacity());
 			}
+			this.buffer.putAll(this.inputPort.getBuffer().fetch(samplesToFetch));
 		}
 	}
 
 	private ArrayList<TimeValuePair> generateTimeValuePairs(Buffer buffer) {
-		ArrayList<TimeValuePair> pairs = new ArrayList<TimeValuePair>();
+		ArrayList<TimeValuePair> pairs = new ArrayList<>();
 		List<Float> clonedBuffer = buffer.getAll();
 		for (int i = 0; i < clonedBuffer.size(); i++) {
 			pairs.add(new TimeValuePair((float)i/this.sampleRate, clonedBuffer.get(i)));
@@ -57,12 +59,8 @@ public class OscilloscopePipe extends AbstractPipe {
 
 	public List<TimeValuePair> getValues() {
 		synchronized (this.lock) {
-			this.isDataReady = false;
+			ArrayList<TimeValuePair> values = this.generateTimeValuePairs(this.buffer);
 			return values;
 		}
-	}
-
-	public boolean isDataReady() {
-		return isDataReady;
 	}
 }

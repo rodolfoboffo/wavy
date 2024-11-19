@@ -49,8 +49,8 @@ public class Buffer {
 
     synchronized public List<Float> fetch(int count) {
         int minIndex = Math.min(count, this.buffer.size());
-        List<Float> subList = this.buffer.subList(0, minIndex);
-        this.buffer = this.buffer.subList(minIndex, this.buffer.size());
+        List<Float> subList = new ArrayList<>(this.buffer.subList(0, minIndex));
+        this.buffer = new ArrayList<>(this.buffer.subList(minIndex, this.buffer.size()));
         return subList;
     }
 

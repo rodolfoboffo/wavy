@@ -7,6 +7,7 @@ public abstract class AbstractPipe implements IPipe {
 
 	protected List<InputPort> inputPorts;
 	protected List<OutputPort> outputPorts;
+	private boolean isInitialized;
 	private boolean busy = false;
 	
 	public boolean isBusy() {
@@ -16,8 +17,14 @@ public abstract class AbstractPipe implements IPipe {
 	public AbstractPipe() {
 		this.inputPorts = new ArrayList<InputPort>();
 		this.outputPorts = new ArrayList<OutputPort>();
+		this.isInitialized = false;
 	}
-	
+
+	@Override
+	public boolean isInitialized() {
+		return isInitialized;
+	}
+
 	@Override
 	public List<OutputPort> getOutputPorts() {
 		return this.outputPorts;
@@ -29,11 +36,16 @@ public abstract class AbstractPipe implements IPipe {
 	}
 
 	@Override
-	public void initialize() {}
+	public void initialize() {
+		this.isInitialized = true;
+	}
 	
 	@Override
 	public synchronized final void process() {
 		this.busy = true;
+		if (!this.isInitialized()) {
+			this.initialize();
+		}
 		this.doWork();
 		this.busy = false;
 	};

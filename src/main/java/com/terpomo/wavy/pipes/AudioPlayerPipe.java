@@ -16,7 +16,6 @@ public class AudioPlayerPipe extends AbstractPipe {
 	protected int sampleRate;
 	protected int numOfChannels;
 	protected int audioBufferSize;
-	protected boolean initialized = false;
 	protected boolean playing = true;
 	protected Encoder encoder;
 	protected Buffer[] buffers;
@@ -41,16 +40,15 @@ public class AudioPlayerPipe extends AbstractPipe {
 	
 	@Override
 	public void initialize() {
-		super.initialize();
 		AudioFormat format = this.encoder.getAudioFormat();
 		DataLine.Info sourceLineInfo = new DataLine.Info(SourceDataLine.class, format);
-		Boolean isSupported = AudioSystem.isLineSupported(sourceLineInfo);
+		boolean isSupported = AudioSystem.isLineSupported(sourceLineInfo);
 		if (isSupported) {
 			try {
 				this.line = (SourceDataLine)AudioSystem.getLine(sourceLineInfo);
 				this.line.open();
 				this.line.start();
-				this.initialized = true;
+				super.initialize();
 			} catch (LineUnavailableException e1) {
 				throw new RuntimeException("Could not open audio line.", e1);
 			}
@@ -72,7 +70,6 @@ public class AudioPlayerPipe extends AbstractPipe {
 				this.line.close();
 			}
 			this.line = null;
-			this.initialized = false;
 		}
 	}
 	
@@ -108,9 +105,6 @@ public class AudioPlayerPipe extends AbstractPipe {
 	@Override
 	public void doWork() {
 		if (this.isPlaying()) {
-			if (!this.initialized) {
-				this.initialize();
-			}
 			if (this.line.available() >= this.audioBufferSize && this.numOfFramesAvailable() >= this.audioBufferSize) {
 				byte[] buffer = this.encoder.getNumOfFrames(this.audioBufferSize);
 				this.line.write(buffer, 0, buffer.length);
