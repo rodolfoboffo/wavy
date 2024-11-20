@@ -22,6 +22,7 @@ public class OscilloscopePipe extends AbstractPipe {
 	private final Object lock;
 	private LocalDateTime timestamp;
 	private float scale;
+	private int pointSkip;
 	
 	public OscilloscopePipe(float scale) {
 		this.lock = new Object();
@@ -29,7 +30,8 @@ public class OscilloscopePipe extends AbstractPipe {
 		this.inputPorts.add(this.inputPort);
 		this.sampleRate = Constants.DEFAULT_SAMPLE_RATE;
 		this.scale = scale;
-		this.buffer = new Buffer(Constants.DEFAULT_SAMPLE_RATE, true);
+		this.pointSkip = 20;
+		this.buffer = new Buffer((int)(Constants.DEFAULT_SAMPLE_RATE*this.scale), true);
 	}
 
 	public OscilloscopePipe() {
@@ -56,7 +58,7 @@ public class OscilloscopePipe extends AbstractPipe {
 	private ArrayList<TimeValuePair> generateTimeValuePairs(Buffer buffer) {
 		ArrayList<TimeValuePair> pairs = new ArrayList<>();
 		Float[] clonedBuffer = buffer.getAll();
-		for (int i = 0; i < clonedBuffer.length; i++) {
+		for (int i = 0; i < clonedBuffer.length; i += this.pointSkip) {
 			pairs.add(new TimeValuePair((float)i/this.sampleRate, clonedBuffer[i]));
 		}
 		return pairs;
