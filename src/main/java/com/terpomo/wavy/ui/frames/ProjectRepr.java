@@ -1,7 +1,6 @@
 package com.terpomo.wavy.ui.frames;
 
 import java.awt.*;
-import java.io.Serial;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,7 +14,6 @@ import com.terpomo.wavy.ui.util.AbsoluteLayout;
 
 public class ProjectRepr extends Panel implements WavyDisposable {
 
-	@Serial
 	private static final long serialVersionUID = -3136424835205807021L;
 	public static final String PROPERTY_SELECTED_PROJECT = "PROPERTY_SELECTED_PROJECT";
 	

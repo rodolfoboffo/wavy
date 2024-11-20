@@ -2,7 +2,6 @@ package com.terpomo.wavy.ui;
 
 import java.awt.Component;
 import java.beans.PropertyChangeListener;
-import java.io.Serial;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,7 +17,6 @@ import com.terpomo.wavy.ui.pipes.PortRepr;
 
 public class UIController extends Component implements WavyDisposable {
 
-	@Serial
 	private static final long serialVersionUID = 2929056922201884170L;
 	private final static UIController instance = new UIController();
 	public static final String PROPERTY_SELECTED_PROJECT = "PROPERTY_SELECTED_PROJECT";

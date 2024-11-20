@@ -14,7 +14,6 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.Serial;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +26,6 @@ import com.terpomo.wavy.ui.util.PointOperation;
 
 public abstract class AbstractPipeRepr extends WavyPanel implements IPipeRepr {
 
-	@Serial
 	private static final long serialVersionUID = -4460157397034830356L;
 	private static final int DEFAULT_INSET_SIZE = 8;
 	private static final String IS_BEING_MOVED = "IS_BEING_MOVED";

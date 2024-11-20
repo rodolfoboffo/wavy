@@ -31,12 +31,12 @@ public class LPCMEncoder extends Encoder {
 
 	@Override
 	public AudioFormat getAudioFormat() {
-		return new AudioFormat(this.sampleRate, this.bitsPerSample, this.buffers.length, this.signed, this.bigEndian);
+		return new AudioFormat(this.getSampleRate(), this.bitsPerSample, this.getBuffers().length, this.signed, this.bigEndian);
 	}
 	
 	@Override
 	public byte[] getNumOfFrames(int n) {
-		int bitsPerFrame = this.buffers.length*this.bitsPerSample;
+		int bitsPerFrame = this.getBuffers().length*this.bitsPerSample;
 		if (bitsPerFrame % 8 != 0)
 			throw new RuntimeException("Number of bits per frame should be multiple of 8.");
 		int bytesPerFrame = bitsPerFrame / 8;
@@ -49,7 +49,7 @@ public class LPCMEncoder extends Encoder {
 		for (int iFrame = 0; iFrame < n; iFrame++) {
 			frameInt = 0;
 			buffer.clear();
-			for (Buffer b : this.buffers) {
+			for (Buffer b : this.getBuffers()) {
 				frameInt <<= this.bitsPerSample;
 				float v = b.pickOne();
 				int sampleInt = (int) ((v * SIGNED_MAX) % SIGNED_MAX);

@@ -3,13 +3,11 @@ package com.terpomo.wavy.ui.pipes;
 import com.terpomo.wavy.flow.IPort;
 import com.terpomo.wavy.pipes.AudioPlayerPipe;
 
-import java.io.Serial;
 import java.util.ArrayList;
 import java.util.List;
 
 public class AudioPlayerPipeRepr extends AbstractPipeRepr {
 
-	@Serial
 	private static final long serialVersionUID = -7694706800995003061L;
 	
 	public AudioPlayerPipeRepr(AudioPlayerPipe pipe, String name) {

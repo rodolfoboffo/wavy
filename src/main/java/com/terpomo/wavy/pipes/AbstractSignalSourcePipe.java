@@ -1,6 +1,7 @@
 package com.terpomo.wavy.pipes;
 
 import com.terpomo.wavy.flow.AbstractPipe;
+import com.terpomo.wavy.flow.Buffer;
 import com.terpomo.wavy.flow.OutputPort;
 import com.terpomo.wavy.flow.Port;
 import com.terpomo.wavy.signals.Signal;
@@ -23,10 +24,14 @@ public abstract class AbstractSignalSourcePipe<T extends Signal> extends Abstrac
 
 	@Override
 	protected void doWork() {
-		if (this.outputPort.getLinkedPort() != null &&
-				this.outputPort.getLinkedPort().getBuffer().getSize() < this.outputPort.getLinkedPort().getBuffer().getCapacity()) {
-			float v = this.signal.getNextValue();
-			this.outputPort.getLinkedPort().getBuffer().put(v);
+		if (this.outputPort.getLinkedPort() != null) {
+			Buffer buffer = this.outputPort.getLinkedPort().getBuffer();
+			synchronized (buffer) {
+				if (!buffer.isFull()) {
+					float v = this.signal.getNextValue();
+					this.outputPort.getLinkedPort().getBuffer().put(v);
+				}
+			}
 		}
 	}
 	

@@ -12,13 +12,11 @@ import org.jfree.data.xy.XYSeriesCollection;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.Serial;
 import java.util.ArrayList;
 import java.util.List;
 
 public class OscilloscopePipeRepr extends AbstractPipeRepr {
 
-	@Serial
 	private static final long serialVersionUID = 7368297233394330359L;
 	private final OscilloscopePipe pipe;
 	private final JFreeChart lineChart;

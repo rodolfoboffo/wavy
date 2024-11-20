@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PipeController {
-	public static int DEFAULT_NUM_OF_WORKERS = 5;
+	public static int DEFAULT_NUM_OF_WORKERS = 2;
 	private List<Worker> workers;
 	private List<Project> projects;
 	private boolean isActive = true;

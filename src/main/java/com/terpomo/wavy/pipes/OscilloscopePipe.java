@@ -14,18 +14,26 @@ import java.util.List;
 
 public class OscilloscopePipe extends AbstractPipe {
 
+	private static final float MAX_SCALE = 3.0f;
+	private static final float DEFAULT_SCALE = 1.0f;
 	private final InputPort inputPort;
 	private final Buffer buffer;
 	private final int sampleRate;
 	private final Object lock;
 	private LocalDateTime timestamp;
+	private float scale;
 	
-	public OscilloscopePipe() {
-		this.inputPort = new InputPort(this);
+	public OscilloscopePipe(float scale) {
 		this.lock = new Object();
+		this.inputPort = new InputPort(this);
 		this.inputPorts.add(this.inputPort);
 		this.sampleRate = Constants.DEFAULT_SAMPLE_RATE;
-		this.buffer = new Buffer(Constants.DEFAULT_SAMPLE_RATE);
+		this.scale = scale;
+		this.buffer = new Buffer(Constants.DEFAULT_SAMPLE_RATE, true);
+	}
+
+	public OscilloscopePipe() {
+		this(DEFAULT_SCALE);
 	}
 
 	@Override
@@ -41,18 +49,15 @@ public class OscilloscopePipe extends AbstractPipe {
 			long intervalMillis = ChronoUnit.MILLIS.between(this.timestamp, now);
 			this.timestamp = now;
 			int samplesToFetch = (int)(1.0f / 1000 * intervalMillis * this.sampleRate);
-			if (this.buffer.getRemainingCapacity() < samplesToFetch) {
-				this.buffer.fetch(samplesToFetch - this.buffer.getRemainingCapacity());
-			}
 			this.buffer.putAll(this.inputPort.getBuffer().fetch(samplesToFetch));
 		}
 	}
 
 	private ArrayList<TimeValuePair> generateTimeValuePairs(Buffer buffer) {
 		ArrayList<TimeValuePair> pairs = new ArrayList<>();
-		List<Float> clonedBuffer = buffer.getAll();
-		for (int i = 0; i < clonedBuffer.size(); i++) {
-			pairs.add(new TimeValuePair((float)i/this.sampleRate, clonedBuffer.get(i)));
+		Float[] clonedBuffer = buffer.getAll();
+		for (int i = 0; i < clonedBuffer.length; i++) {
+			pairs.add(new TimeValuePair((float)i/this.sampleRate, clonedBuffer[i]));
 		}
 		return pairs;
 	}
