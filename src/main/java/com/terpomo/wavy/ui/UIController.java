@@ -89,11 +89,36 @@ public class UIController extends Component implements WavyDisposable {
 			this.unselectPort();
 		}
 		else {
-			this.controller.linkPorts(portRepr.getPort(), this.selectedPort.getPort());
-			this.selectedPort.setLinkedPortRepr(portRepr);
-			portRepr.setLinkedPortRepr(this.selectedPort);
-			this.unselectPort();
+			if (portRepr.getLinkedPortRepr() == this.selectedPort) {
+				this.unlinkPort(portRepr);
+				this.unselectPort();
+			}
+			else {
+				this.unlinkPort(this.selectedPort);
+				this.unlinkPort(portRepr);
+				this.linkPorts(portRepr, this.selectedPort);
+				this.unselectPort();
+			}
 		}
+	}
+
+	private void linkPorts(PortRepr portReprA, PortRepr portReprB) {
+		this.controller.linkPorts(portReprA.getPort(), portReprB.getPort());
+		portReprA.setLinkedPortRepr(portReprB);
+		portReprB.setLinkedPortRepr(portReprA);
+	}
+
+	private void unlinkPort(PortRepr portRepr) {
+		this.controller.unlinkPort(portRepr.getPort());
+		PortRepr linkedPort = portRepr.getLinkedPortRepr();
+		if (linkedPort != null) {
+			portRepr.getLinkedPortRepr().setLinkedPortRepr(null);
+			linkedPort.revalidate();
+			linkedPort.repaint();
+		}
+		portRepr.setLinkedPortRepr(null);
+		portRepr.revalidate();
+		portRepr.repaint();
 	}
 	
 	private void selectPort(PortRepr portRepr) {

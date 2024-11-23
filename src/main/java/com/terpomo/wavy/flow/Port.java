@@ -26,10 +26,11 @@ public abstract class Port implements IPort {
 	
 	@Override
 	public void setLinkedPort(IPort p) {
-		if (this.linkedPort != null && p != this.linkedPort) {
-			this.linkedPort.setLinkedPort(null);
-		}
+		IPort previousLinkedPort = this.linkedPort;
 		this.linkedPort = p;
+		if (previousLinkedPort != null && p != previousLinkedPort) {
+			previousLinkedPort.setLinkedPort(null);
+		}
 		if (p != null && p.getLinkedPort() != this) {
 			p.setLinkedPort(this);
 		}

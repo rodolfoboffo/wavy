@@ -6,6 +6,7 @@ import com.terpomo.wavy.flow.PipeTypeEnum;
 import com.terpomo.wavy.pipes.AudioPlayerPipe;
 import com.terpomo.wavy.pipes.ConstantWavePipe;
 import com.terpomo.wavy.pipes.OscilloscopePipe;
+import com.terpomo.wavy.pipes.SplitterPipe;
 
 public class PipeReprFactory {
 
@@ -23,6 +24,10 @@ public class PipeReprFactory {
 		}
 		case OSCILLOSCOPE_PIPE_ENUM: {
 			pipeRepr = new OscilloscopePipeRepr((OscilloscopePipe) pipe, pipeName);
+			return pipeRepr;
+		}
+		case SPLITTER_PIPE_ENUM: {
+			pipeRepr = new SplitterPipeRepr((SplitterPipe) pipe, pipeName);
 			return pipeRepr;
 		}
 		default:

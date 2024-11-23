@@ -1,10 +1,6 @@
 package com.terpomo.wavy.ui.pipes;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.EventQueue;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
+import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.beans.PropertyChangeEvent;
@@ -13,6 +9,8 @@ import java.beans.PropertyChangeListener;
 import com.terpomo.wavy.flow.IPort;
 import com.terpomo.wavy.ui.UIController;
 import com.terpomo.wavy.ui.components.WavyPanel;
+
+import javax.swing.*;
 
 public class PortRepr extends WavyPanel {
 
@@ -30,10 +28,12 @@ public class PortRepr extends WavyPanel {
 	private PortRepr linkedPortRepr;
 	private boolean isBeingHovered;
 	private boolean isSelected;
+	private PortContextMenu contextMenu;
 	
 	public PortRepr(IPort port, AbstractPipeRepr parentPipeRepr) {
 		super();
 		this.port = port;
+		this.contextMenu = new PortContextMenu();
 		this.parentPipeRepr = parentPipeRepr;
 		this.isBeingHovered = false;
 		this.isSelected = false;
@@ -135,12 +135,20 @@ public class PortRepr extends WavyPanel {
 		}
 		
 	}
-	
-	class PortMouseListener implements MouseListener {
+
+	private class PortContextMenu extends JPopupMenu {
+
+	}
+
+	private class PortMouseListener implements MouseListener {
 
 		@Override
 		public void mouseClicked(MouseEvent e) {
-			UIController.getInstance().onPortClicked(PortRepr.this);
+			if (e.getButton() == MouseEvent.BUTTON1) {
+				UIController.getInstance().onPortClicked(PortRepr.this);
+			} else if (e.getButton() == MouseEvent.BUTTON2) {
+				PortRepr.this.contextMenu.show(e.getComponent(), e.getX(), e.getY());
+			}
 		}
 
 		@Override

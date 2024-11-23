@@ -97,4 +97,10 @@ public class PipeController {
 		portA.setLinkedPort(portB);
 		this.notifyWorkers();
 	}
+
+	public void unlinkPort(IPort port) {
+		if (port.getLinkedPort() != null) {
+			port.setLinkedPort(null);
+		}
+	}
 }

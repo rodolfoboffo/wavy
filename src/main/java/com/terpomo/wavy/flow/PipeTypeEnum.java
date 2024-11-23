@@ -6,7 +6,8 @@ public enum PipeTypeEnum {
 	
 	CONSTANT_WAVE_SIGNAL_PIPE_ENUM(Constants.CONSTANT_WAVE),
 	AUDIO_PLAYER_PIPE_ENUM(Constants.AUDIO_PLAYER),
-	OSCILLOSCOPE_PIPE_ENUM(Constants.OSCILLOSCOPE);
+	OSCILLOSCOPE_PIPE_ENUM(Constants.OSCILLOSCOPE),
+	SPLITTER_PIPE_ENUM(Constants.SPLITTER);
 	
 	private final String friendlyName;
 	

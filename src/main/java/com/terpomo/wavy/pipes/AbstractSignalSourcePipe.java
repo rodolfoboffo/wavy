@@ -15,7 +15,7 @@ public abstract class AbstractSignalSourcePipe<T extends Signal> extends Abstrac
 		super();
 		this.signal = signal;
 		this.outputPort = new OutputPort(this);
-		this.outputPorts.add(this.outputPort);
+		this.getOutputPorts().add(this.outputPort);
 	}
 	
 	public Port getOutputPort() {

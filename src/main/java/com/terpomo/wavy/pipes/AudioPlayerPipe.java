@@ -31,7 +31,7 @@ public class AudioPlayerPipe extends AbstractPipe {
 		this.sampleRate = sampleRate;
 		for (int i = 0; i < numOfChannels; i++) {
 			InputPort p = new InputPort(this);
-			this.inputPorts.add(p);
+			this.getInputPorts().add(p);
 			this.buffers[i] = p.getBuffer();
 		}
 		this.audioBufferSize = (int)(this.sampleRate*0.001);

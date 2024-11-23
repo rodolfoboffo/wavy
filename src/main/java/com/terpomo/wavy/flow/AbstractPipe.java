@@ -5,8 +5,8 @@ import java.util.List;
 
 public abstract class AbstractPipe implements IPipe {
 
-	protected List<InputPort> inputPorts;
-	protected List<OutputPort> outputPorts;
+	private List<InputPort> inputPorts;
+	private List<OutputPort> outputPorts;
 	private boolean isInitialized;
 	private boolean busy = false;
 	
@@ -30,9 +30,19 @@ public abstract class AbstractPipe implements IPipe {
 		return this.outputPorts;
 	}
 
+	public void setOutputPorts(List<OutputPort> outputPorts) {
+		this.outputPorts.clear();
+		this.outputPorts.addAll(outputPorts);
+	}
+
 	@Override
 	public List<InputPort> getInputPorts() {
 		return this.inputPorts;
+	}
+
+	public void setInputPorts(List<InputPort> inputPorts) {
+		this.inputPorts.clear();
+		this.inputPorts.addAll(inputPorts);
 	}
 
 	@Override
