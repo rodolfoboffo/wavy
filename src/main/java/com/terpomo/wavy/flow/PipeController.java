@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PipeController {
-	public static int DEFAULT_NUM_OF_WORKERS = 4;
-	private List<Worker> workers;
+	public static int DEFAULT_NUM_OF_WORKERS = 2;
+	private final List<Worker> workers;
 	private List<Project> projects;
 	private boolean isActive = true;
 	private boolean isPaused = true;
