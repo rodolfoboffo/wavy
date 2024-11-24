@@ -1,14 +1,11 @@
 package com.terpomo.wavy.flow;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Buffer {
 
     public static final int DEFAULT_DATASTREAM_BUFER_SIZE = 10240;
     private final boolean endless;
     private Float[] buffer;
-    private final int capacity;
+    private int capacity;
     private int startIndex, finishIndex;
 
     public Buffer(int capacity, boolean endless) {
@@ -28,6 +25,21 @@ public class Buffer {
 
     public Buffer() {
         this(DEFAULT_DATASTREAM_BUFER_SIZE, false);
+    }
+
+    synchronized public void resizeBuffer(int newCapacity) {
+        if (this.capacity != newCapacity) {
+            Float[] newBuffer = new Float[newCapacity + 1];
+            int currentSize = this.getSize();
+            int n = Math.min(currentSize, newCapacity);
+            for (int i = 0; i < n; i++) {
+                newBuffer[n-i-1] = this.getValue(currentSize-i-1);
+            }
+            this.startIndex = 0;
+            this.finishIndex = n;
+            this.buffer = newBuffer;
+            this.capacity = newCapacity;
+        }
     }
 
     synchronized public int getSize() {
@@ -69,6 +81,12 @@ public class Buffer {
             subList[i] = this.buffer[(this.startIndex + i) % this.buffer.length];
         }
         return subList;
+    }
+
+    synchronized public Float getValue(int index) {
+        if (index >= this.getSize())
+            throw new RuntimeException("Index out of buffer.");
+        return this.buffer[(this.startIndex + index) % this.buffer.length];
     }
 
     synchronized public Float[] fetch(int count) {

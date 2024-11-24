@@ -1,34 +1,30 @@
 package com.terpomo.wavy.ui.pipes;
 
-import java.awt.Container;
-import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
+import com.terpomo.wavy.flow.IPort;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.function.Consumer;
-
-import javax.swing.JLabel;
-import javax.swing.JTextField;
-
-import com.terpomo.wavy.flow.IPort;
 
 public class PipePropertyRepr<T> {
 
 	private static final int FIELD_PADDING = 4;
 	private static final Font DEFAULT_FONT = new Font(null, Font.PLAIN, 12);
-	private Class<T> clazz;
-	private AbstractPipeRepr parentPipe;
-	private IPort inputPort;
-	private PortRepr inputPortRepr;
-	private String propertyName;
-	private JLabel propertyLabel;
+	private final Class<T> clazz;
+	private final AbstractPipeRepr parentPipe;
+	private final IPort inputPort;
+	private final PortRepr inputPortRepr;
+	private final String propertyName;
+	private final JLabel propertyLabel;
 	private T value;
-	private JTextField valueField;
-	private IPort outputPort;
-	private PortRepr outputPortRepr;
-	private Consumer<T> callback;
+	private final JTextField valueField;
+	private final IPort outputPort;
+	private final PortRepr outputPortRepr;
+	private final Consumer<T> callback;
 	
 	public PipePropertyRepr(Class<T> clazz, AbstractPipeRepr parentPipe, IPort inputPort, String propertyName, T value, IPort outputPort, Consumer<T> callback) {
 		super();
@@ -42,8 +38,12 @@ public class PipePropertyRepr<T> {
 		this.propertyLabel.setFont(DEFAULT_FONT);
 		this.value = value;
 		if (value != null) {
-			this.valueField = new JTextField(this.value.toString());
+			String textValue = this.getTextValue(value);
+			this.valueField = new JTextField(textValue);
 			this.valueField.addFocusListener(new ValueFieldFocusListener());
+		}
+		else {
+			this.valueField = null;
 		}
 		this.outputPort = outputPort;
 		this.outputPortRepr = outputPort != null ? new PortRepr(this.outputPort, this.parentPipe) : null;
@@ -90,11 +90,20 @@ public class PipePropertyRepr<T> {
 	}
 	
 	@SuppressWarnings("unchecked")
-	protected T parseTextValue(String textValue) {
+	protected T parseTextValue(String textValue) throws ParseException {
 		Object value = null;
 		if (this.clazz.equals(Float.class))
-			value = Float.parseFloat(textValue);
+			value = NumberFormat.getInstance().parse(textValue).floatValue();
+		if (this.clazz.equals(Integer.class))
+			value = NumberFormat.getInstance().parse(textValue).intValue();
 		return (T)value;
+	}
+
+	public String getTextValue(T value) {
+		String text = "";
+		if (this.clazz.equals(Float.class))
+			text = NumberFormat.getInstance().format(value);
+		return text;
 	}
 	
 	class ValueFieldFocusListener implements FocusListener {
@@ -107,8 +116,13 @@ public class PipePropertyRepr<T> {
 		public void focusLost(FocusEvent e) {
 			JTextField field = (JTextField) e.getComponent();
 			String valueText = field.getText();
-			T value = PipePropertyRepr.this.parseTextValue(valueText);
-			PipePropertyRepr.this.callback.accept(value);
+            T value = null;
+            try {
+                value = PipePropertyRepr.this.parseTextValue(valueText);
+				PipePropertyRepr.this.callback.accept(value);
+            } catch (ParseException ex) {
+                throw new RuntimeException(ex);
+            }
 		}
 		
 	}

@@ -74,8 +74,8 @@
 								<addClasspath>true</addClasspath>
 								<classpathPrefix>libs/</classpathPrefix>
 								<mainClass>
-									com.terpomo.wavy.ui.awt.UIApplication
-								</mainClass>
+                                    com.terpomo.wavy.ui.UIApplication
+                                </mainClass>
 							</manifest>
 						</archive>
 					</configuration>

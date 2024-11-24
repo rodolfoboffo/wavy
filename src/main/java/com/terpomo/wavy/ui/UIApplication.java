@@ -1,4 +1,4 @@
-package com.terpomo.wavy.ui.awt;
+package com.terpomo.wavy.ui;
 
 import com.terpomo.wavy.WavyDisposable;
 import com.terpomo.wavy.ui.frames.MainWindow;

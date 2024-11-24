@@ -3,12 +3,12 @@ package com.terpomo.wavy.ui.pipes;
 import com.terpomo.wavy.flow.IPort;
 import com.terpomo.wavy.oscilloscope.TimeValuePair;
 import com.terpomo.wavy.pipes.OscilloscopePipe;
+import com.terpomo.wavy.util.RepeatableTask;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
-import com.terpomo.wavy.util.RepeatableTask;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,6 +17,8 @@ import java.util.List;
 
 public class OscilloscopePipeRepr extends AbstractPipeRepr {
 
+	private static final String DEFINITION = "Definition";
+	private static final String SCALE = "Scale";
 	private static final long serialVersionUID = 7368297233394330359L;
 	private final OscilloscopePipe pipe;
 	private final JFreeChart lineChart;
@@ -36,6 +38,7 @@ public class OscilloscopePipeRepr extends AbstractPipeRepr {
 		panel.setLayout(this.contentLayout);
 		
 		this.portsPanel = new JPanel();
+		this.portsPanel.setLayout(new GridBagLayout());
 		GridBagConstraints constraints = new GridBagConstraints();
 		constraints.gridx = 0;
 		constraints.gridy = 0;
@@ -44,6 +47,7 @@ public class OscilloscopePipeRepr extends AbstractPipeRepr {
 		@SuppressWarnings("rawtypes")
 		List<PipePropertyRepr> properties = this.createPipePropertiesForInputs(pipe);
 		this.layoutPipePropertiesOnGrid(this.portsPanel, properties);
+
 		this.dataset = new XYSeriesCollection();
 		this.channel1Series = new XYSeries("Channel 1");
 		this.channel1SeriesSwap = new XYSeries("Channel 1");
@@ -66,7 +70,7 @@ public class OscilloscopePipeRepr extends AbstractPipeRepr {
 		List<TimeValuePair> content = this.pipe.getValues();
 		this.channel1SeriesSwap.clear();
         for (TimeValuePair timeValuePair : content) {
-            this.channel1SeriesSwap.add(timeValuePair.getTime(), timeValuePair.getValue());
+            this.channel1SeriesSwap.add(timeValuePair.getTimeInMillisec(), timeValuePair.getValue());
         }
 		EventQueue.invokeLater(new PipeUpdater());
 	}
@@ -74,6 +78,13 @@ public class OscilloscopePipeRepr extends AbstractPipeRepr {
 	@SuppressWarnings("rawtypes")
 	protected List<PipePropertyRepr> createPipePropertiesForInputs(OscilloscopePipe pipe) {
 		List<PipePropertyRepr> pipeProperties = new ArrayList<>();
+
+		PipePropertyRepr<Float> definitionProperty = new PipePropertyRepr<Float>(Float.class, this, null, DEFINITION, this.pipe.getQuality(), null, this.pipe::setQuality);
+		pipeProperties.add(definitionProperty);
+
+		PipePropertyRepr<Float> scaleProperty = new PipePropertyRepr<Float>(Float.class, this, null, SCALE, this.pipe.getScale(), null, this.pipe::setScale);
+		pipeProperties.add(scaleProperty);
+		
 		for (int i = 0; i < pipe.getInputPorts().size(); i++) {
 			IPort port = pipe.getInputPorts().get(i);
 			String propertyName = String.format("Channel %d", i+1);

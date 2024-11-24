@@ -10,7 +10,7 @@ public class TimeValuePair {
         this.value = value;
     }
 
-    public float getTime() {
+    public float getTimeInMillisec() {
         return time;
     }
 
