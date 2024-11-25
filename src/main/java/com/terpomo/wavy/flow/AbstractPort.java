@@ -1,12 +1,15 @@
 package com.terpomo.wavy.flow;
 
-public abstract class Port implements IPort {
+import com.terpomo.wavy.core.ObservableObject;
 
+public abstract class AbstractPort extends ObservableObject implements IPort {
+
+	public static final String LINKED_PORT_PROPERTY = "LINKED_PORT_PROPERTY";
 	private final IPipe pipe;
 	private final Buffer buffer;
 	protected IPort linkedPort;
 	
-	public Port(IPipe pipe) {
+	public AbstractPort(IPipe pipe) {
 		super();
 		this.pipe = pipe;
 		this.buffer = new Buffer();
@@ -34,6 +37,7 @@ public abstract class Port implements IPort {
 		if (p != null && p.getLinkedPort() != this) {
 			p.setLinkedPort(this);
 		}
+		this.firePropertyChange(LINKED_PORT_PROPERTY, previousLinkedPort, p);
 	}
 	
 }
