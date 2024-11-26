@@ -72,7 +72,16 @@ public class OscilloscopePipeRepr extends AbstractPipeRepr {
         for (TimeValuePair timeValuePair : content) {
             this.channel1SeriesSwap.add(timeValuePair.getTimeInMillisec(), timeValuePair.getValue());
         }
-		EventQueue.invokeLater(new PipeUpdater());
+		EventQueue.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				XYSeries auxSeries = OscilloscopePipeRepr.this.channel1Series;
+				OscilloscopePipeRepr.this.channel1Series = OscilloscopePipeRepr.this.channel1SeriesSwap;
+				OscilloscopePipeRepr.this.channel1SeriesSwap = auxSeries;
+				OscilloscopePipeRepr.this.dataset.removeAllSeries();
+				OscilloscopePipeRepr.this.dataset.addSeries(OscilloscopePipeRepr.this.channel1Series);
+			}
+		});
 	}
 
 	@SuppressWarnings("rawtypes")
@@ -100,16 +109,4 @@ public class OscilloscopePipeRepr extends AbstractPipeRepr {
 		super.wavyDispose();
 		this.updaterWorker.wavyDispose();
     }
-
-	class PipeUpdater implements Runnable {
-
-		@Override
-		public void run() {
-			XYSeries auxSeries = OscilloscopePipeRepr.this.channel1Series;
-			OscilloscopePipeRepr.this.channel1Series = OscilloscopePipeRepr.this.channel1SeriesSwap;
-			OscilloscopePipeRepr.this.channel1SeriesSwap = auxSeries;
-			OscilloscopePipeRepr.this.dataset.removeAllSeries();
-			OscilloscopePipeRepr.this.dataset.addSeries(OscilloscopePipeRepr.this.channel1Series);
-		}
-	}
 }

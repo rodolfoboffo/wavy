@@ -1,9 +1,11 @@
 package com.terpomo.wavy.flow;
 
+import com.terpomo.wavy.core.IWavyModel;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class Project {
+public class Project implements IWavyModel {
 
 	protected List<IPipe> pipes;
 	

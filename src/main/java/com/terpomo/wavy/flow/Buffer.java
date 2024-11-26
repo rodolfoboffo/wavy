@@ -1,6 +1,10 @@
 package com.terpomo.wavy.flow;
 
-public class Buffer {
+import com.terpomo.wavy.core.IObservableObject;
+import com.terpomo.wavy.core.IWavyModel;
+import com.terpomo.wavy.core.ObservableObject;
+
+public class Buffer extends ObservableObject implements IWavyModel, IObservableObject {
 
     public static final int DEFAULT_DATASTREAM_BUFER_SIZE = 10240;
     private final boolean endless;
