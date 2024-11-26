@@ -9,14 +9,15 @@ import java.util.Map;
 import com.terpomo.wavy.WavyDisposable;
 import com.terpomo.wavy.flow.PipeTypeEnum;
 import com.terpomo.wavy.flow.Project;
+import com.terpomo.wavy.ui.UIController;
+import com.terpomo.wavy.ui.components.IWavyRepr;
 import com.terpomo.wavy.ui.pipes.AbstractPipeRepr;
 import com.terpomo.wavy.ui.util.AbsoluteLayout;
 
-public class ProjectRepr extends Panel implements WavyDisposable {
+public class ProjectRepr extends Panel implements WavyDisposable, IWavyRepr {
 
 	private static final long serialVersionUID = -3136424835205807021L;
-	public static final String PROPERTY_SELECTED_PROJECT = "PROPERTY_SELECTED_PROJECT";
-	
+
 	private Project project;
 	private final AbsoluteLayout layout;
 	protected final List<AbstractPipeRepr> pipesRepr;
@@ -48,6 +49,7 @@ public class ProjectRepr extends Panel implements WavyDisposable {
 	
 	public void setProject(Project project) {
 		this.project = project;
+		UIController.getInstance().addModelToReprMapEntry(project, this);
 	}
 	
 	public void setOnTop(AbstractPipeRepr pipeRepr) {

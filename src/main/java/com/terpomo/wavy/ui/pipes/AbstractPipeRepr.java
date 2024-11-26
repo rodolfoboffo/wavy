@@ -14,17 +14,18 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import com.terpomo.wavy.flow.IPipe;
+import com.terpomo.wavy.ui.UIController;
 import com.terpomo.wavy.ui.components.WavyPanel;
+import com.terpomo.wavy.ui.components.IWavyRepr;
 import com.terpomo.wavy.ui.util.PointOperation;
 
-public abstract class AbstractPipeRepr extends WavyPanel implements IPipeRepr {
+public abstract class AbstractPipeRepr extends WavyPanel implements IPipeRepr, IWavyRepr {
 
 	private static final long serialVersionUID = -4460157397034830356L;
 	private static final int DEFAULT_INSET_SIZE = 8;
@@ -45,6 +46,7 @@ public abstract class AbstractPipeRepr extends WavyPanel implements IPipeRepr {
 	public AbstractPipeRepr(IPipe pipe, String name) {
 		super(DEFAULT_INSET_SIZE);
 		this.pipe = pipe;
+		UIController.getInstance().addModelToReprMapEntry(pipe, this);
 		
 		this.mainLayout = new BorderLayout();
 		this.setLayout(this.mainLayout);

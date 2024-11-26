@@ -6,22 +6,28 @@ import java.awt.event.MouseListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+import com.terpomo.wavy.core.IWavyModel;
 import com.terpomo.wavy.flow.IPort;
 import com.terpomo.wavy.ui.UIController;
 import com.terpomo.wavy.ui.components.WavyPanel;
+import com.terpomo.wavy.ui.components.IWavyRepr;
+import com.terpomo.wavy.util.RepeatableTask;
 
 import javax.swing.*;
 
-public class PortRepr extends WavyPanel {
+public class PortRepr extends WavyPanel implements IWavyRepr {
 
 	private static final long serialVersionUID = -4561025309986054679L;
 	private static final String IS_BEING_HOVERED_PROPERTY = "IS_BEING_HOVERED";
 	private static final String IS_SELECTED_PROPERTY = "IS_SELECTED";
-	private static final String LINKED_PORT_PROPERTY = "LINKED_PORT";
+	private static final String LINKED_PORT_REPR_PROPERTY = "LINKED_PORT";
+	private static final String IS_BUFFER_FULL_PROPERTY = "IS_BUFFER_FULL_PROPERTY";
 	private static final Dimension PANEL_DIMENSION = new Dimension(14, 14);
 	private static final Dimension PORT_DIMENSION = new Dimension(10, 10);
 	private static final Color UNUSED_PORT_COLOR = new Color(200, 200, 200);
 	private static final Color LINKED_PORT_COLOR = new Color(20, 200, 20);
+	private static final Color FULL_BUFFER_PORT_COLOR = new Color(200, 10, 10);
+	private final RepeatableTask updaterWorker;
 
 	private IPort port;
 	private AbstractPipeRepr parentPipeRepr;
@@ -29,10 +35,13 @@ public class PortRepr extends WavyPanel {
 	private boolean isBeingHovered;
 	private boolean isSelected;
 	private PortContextMenu contextMenu;
-	
+	private boolean isBufferFull;
+
 	public PortRepr(IPort port, AbstractPipeRepr parentPipeRepr) {
 		super();
 		this.port = port;
+		UIController.getInstance().addModelToReprMapEntry(this.port, this);
+		this.isBufferFull = this.port.getBuffer().isFull();
 		this.contextMenu = new PortContextMenu();
 		this.parentPipeRepr = parentPipeRepr;
 		this.isBeingHovered = false;
@@ -40,11 +49,34 @@ public class PortRepr extends WavyPanel {
 		this.addMouseListener(new PortMouseListener());
 		this.addPropertyChangeListener(IS_BEING_HOVERED_PROPERTY, new RepaintOnPropertyChangedListener());
 		this.addPropertyChangeListener(IS_SELECTED_PROPERTY, new RepaintOnPropertyChangedListener());
-		this.addPropertyChangeListener(LINKED_PORT_PROPERTY, new RepaintOnPropertyChangedListener());
+		this.addPropertyChangeListener(LINKED_PORT_REPR_PROPERTY, new RepaintOnPropertyChangedListener());
+		this.port.addPropertyChangeListener(IPort.LINKED_PORT_PROPERTY, new LinkedPortPropertyChangedListener());
+		this.port.addPropertyChangeListener(IS_BUFFER_FULL_PROPERTY, new RepaintOnPropertyChangedListener());
+
+		this.updaterWorker = new RepeatableTask(this::updatePortState, 100);
+		this.updaterWorker.start();
 	}
-	
+
+	private void updatePortState() {
+		this.setBufferFull(this.port.getBuffer().isFull());
+	}
+
+	private void setBufferFull(boolean bufferFull) {
+		boolean oldValue = this.isBufferFull;
+		isBufferFull = bufferFull;
+		this.firePropertyChange(IS_BUFFER_FULL_PROPERTY, oldValue, bufferFull);
+	}
+
 	public void setLinkedPortRepr(PortRepr linkedPortRepr) {
+		PortRepr oldValue = this.linkedPortRepr;
 		this.linkedPortRepr = linkedPortRepr;
+		if (linkedPortRepr != null) {
+			this.setToolTipText(linkedPortRepr.getParentPipeRepr().getPipeName());
+		}
+		else {
+			this.setToolTipText(null);
+		}
+		this.firePropertyChange(LINKED_PORT_REPR_PROPERTY, oldValue, linkedPortRepr);
 	}
 	
 	public PortRepr getLinkedPortRepr() {
@@ -60,19 +92,15 @@ public class PortRepr extends WavyPanel {
 			return UNUSED_PORT_COLOR;
 		}
 		else {
-			return LINKED_PORT_COLOR;
+			if (this.port.getBuffer().isFull())
+				return LINKED_PORT_COLOR;
+			else
+				return FULL_BUFFER_PORT_COLOR;
 		}
 	}
 	
 	public AbstractPipeRepr getParentPipeRepr() {
 		return parentPipeRepr;
-	}
-	
-	@Override
-	public String getToolTipText() {
-		if (this.linkedPortRepr != null)
-			this.linkedPortRepr.getParentPipeRepr().getPipeName();
-		return null;
 	}
 	
 	@Override
@@ -119,19 +147,31 @@ public class PortRepr extends WavyPanel {
 		this.isSelected = isSelected;
 		this.firePropertyChange(IS_SELECTED_PROPERTY, oldValue, isSelected);
 	}
-	
+
+	class LinkedPortPropertyChangedListener implements PropertyChangeListener {
+
+		@Override
+		public void propertyChange(PropertyChangeEvent evt) {
+			IWavyModel modelObj = (IWavyModel) evt.getNewValue();
+			IWavyRepr reprObj = UIController.getInstance().getReprFromModelObj(modelObj);
+			PortRepr.this.setLinkedPortRepr((PortRepr) reprObj);
+		}
+	}
+
+	class RepaintRunnable implements Runnable {
+
+		@Override
+		public void run() {
+			PortRepr.this.revalidate();
+			PortRepr.this.repaint();
+		}
+	}
+
 	class RepaintOnPropertyChangedListener implements PropertyChangeListener {
 
 		@Override
 		public void propertyChange(PropertyChangeEvent evt) {
-			EventQueue.invokeLater(new Runnable() {
-				
-				@Override
-				public void run() {
-					PortRepr.this.revalidate();
-					PortRepr.this.repaint();
-				}
-			});
+			EventQueue.invokeLater(new RepaintRunnable());
 		}
 		
 	}

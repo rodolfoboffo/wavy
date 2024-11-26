@@ -3,13 +3,17 @@ package com.terpomo.wavy.ui;
 import java.awt.Component;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.terpomo.wavy.WavyDisposable;
+import com.terpomo.wavy.core.IWavyModel;
 import com.terpomo.wavy.flow.IPipe;
 import com.terpomo.wavy.flow.PipeController;
 import com.terpomo.wavy.flow.PipeTypeEnum;
 import com.terpomo.wavy.flow.Project;
+import com.terpomo.wavy.ui.components.IWavyRepr;
 import com.terpomo.wavy.ui.frames.ProjectRepr;
 import com.terpomo.wavy.ui.pipes.AbstractPipeRepr;
 import com.terpomo.wavy.ui.pipes.PipeReprFactory;
@@ -21,14 +25,16 @@ public class UIController extends Component implements WavyDisposable {
 	private final static UIController instance = new UIController();
 	public static final String PROPERTY_SELECTED_PROJECT = "PROPERTY_SELECTED_PROJECT";
 	public static final String PROPERTY_IS_PAUSED = "PROPERTY_IS_PAUSED";
-	private List<ProjectRepr> projectsRepr;
+	private final List<ProjectRepr> projectsRepr;
 	private ProjectRepr selectedProjectRepr;
 	private PortRepr selectedPort;
-	private PipeController controller;
+	private final PipeController controller;
+	private final Map<IWavyModel, IWavyRepr> modelToReprMap;
 	
 	private UIController() {
 		this.controller = new PipeController();
 		this.projectsRepr = new ArrayList<ProjectRepr>();
+		this.modelToReprMap = new HashMap<>();
 	}
 	
 	public static UIController getInstance() {
@@ -59,6 +65,14 @@ public class UIController extends Component implements WavyDisposable {
 	
 	public void onSelectedProjectChanged(PropertyChangeListener l) {
 		this.addPropertyChangeListener(PROPERTY_SELECTED_PROJECT, l);
+	}
+
+	public void addModelToReprMapEntry(IWavyModel modelObj, IWavyRepr reprObj) {
+		this.modelToReprMap.put(modelObj, reprObj);
+	}
+
+	public IWavyRepr getReprFromModelObj(IWavyModel modelObj) {
+		return this.modelToReprMap.get(modelObj);
 	}
 	
 	public ProjectRepr createNewProjectRepr() {
@@ -104,21 +118,10 @@ public class UIController extends Component implements WavyDisposable {
 
 	private void linkPorts(PortRepr portReprA, PortRepr portReprB) {
 		this.controller.linkPorts(portReprA.getPort(), portReprB.getPort());
-		portReprA.setLinkedPortRepr(portReprB);
-		portReprB.setLinkedPortRepr(portReprA);
 	}
 
 	private void unlinkPort(PortRepr portRepr) {
 		this.controller.unlinkPort(portRepr.getPort());
-		PortRepr linkedPort = portRepr.getLinkedPortRepr();
-		if (linkedPort != null) {
-			portRepr.getLinkedPortRepr().setLinkedPortRepr(null);
-			linkedPort.revalidate();
-			linkedPort.repaint();
-		}
-		portRepr.setLinkedPortRepr(null);
-		portRepr.revalidate();
-		portRepr.repaint();
 	}
 	
 	private void selectPort(PortRepr portRepr) {

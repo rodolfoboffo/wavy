@@ -4,7 +4,6 @@ import com.terpomo.wavy.core.ObservableObject;
 
 public abstract class AbstractPort extends ObservableObject implements IPort {
 
-	public static final String LINKED_PORT_PROPERTY = "LINKED_PORT_PROPERTY";
 	private final IPipe pipe;
 	private final Buffer buffer;
 	protected IPort linkedPort;

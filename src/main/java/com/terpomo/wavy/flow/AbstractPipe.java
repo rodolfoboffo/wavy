@@ -7,8 +7,8 @@ import java.util.List;
 
 public abstract class AbstractPipe extends ObservableObject implements IPipe {
 
-	private List<InputPort> inputPorts;
-	private List<OutputPort> outputPorts;
+	private final List<InputPort> inputPorts;
+	private final List<OutputPort> outputPorts;
 	private boolean isInitialized;
 	private boolean busy = false;
 	
