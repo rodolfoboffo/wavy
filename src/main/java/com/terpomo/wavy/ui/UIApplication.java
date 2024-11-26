@@ -1,9 +1,9 @@
 package com.terpomo.wavy.ui;
 
-import com.terpomo.wavy.WavyDisposable;
+import com.terpomo.wavy.IWavyDisposable;
 import com.terpomo.wavy.ui.frames.MainWindow;
 
-public class UIApplication implements WavyDisposable {
+public class UIApplication implements IWavyDisposable {
 	
 	protected MainWindow main;
 	

@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.terpomo.wavy.WavyDisposable;
+import com.terpomo.wavy.IWavyDisposable;
 import com.terpomo.wavy.core.IWavyModel;
 import com.terpomo.wavy.flow.IPipe;
 import com.terpomo.wavy.flow.PipeController;
@@ -19,7 +19,7 @@ import com.terpomo.wavy.ui.pipes.AbstractPipeRepr;
 import com.terpomo.wavy.ui.pipes.PipeReprFactory;
 import com.terpomo.wavy.ui.pipes.PortRepr;
 
-public class UIController extends Component implements WavyDisposable {
+public class UIController extends Component implements IWavyDisposable {
 
 	private static final long serialVersionUID = 2929056922201884170L;
 	private final static UIController instance = new UIController();

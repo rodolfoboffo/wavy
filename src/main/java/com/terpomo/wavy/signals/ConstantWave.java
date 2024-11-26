@@ -35,7 +35,11 @@ public class ConstantWave extends Signal {
 	public final float getAmplitude() {
 		return amplitude;
 	}
-	
+
+	public void setAmplitude(float amplitude) {
+		this.amplitude = amplitude;
+	}
+
 	synchronized public void setFrequency(float frequency) {
 		this.frequency = frequency;
 	}

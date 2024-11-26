@@ -7,6 +7,8 @@ import java.util.List;
 
 public abstract class AbstractPipe extends ObservableObject implements IPipe {
 
+	public final static String PROPERTY_PIPE_INPUT_PORTS = "PROPERTY_PIPE_INPUT_PORTS";
+	public final static String PROPERTY_PIPE_OUTPUT_PORTS = "PROPERTY_PIPE_OUTPUT_PORTS";
 	private final List<InputPort> inputPorts;
 	private final List<OutputPort> outputPorts;
 	private boolean isInitialized;
@@ -32,7 +34,7 @@ public abstract class AbstractPipe extends ObservableObject implements IPipe {
 		return this.outputPorts;
 	}
 
-	public void setOutputPorts(List<OutputPort> outputPorts) {
+	synchronized public void setOutputPorts(List<OutputPort> outputPorts) {
 		this.outputPorts.clear();
 		this.outputPorts.addAll(outputPorts);
 	}
@@ -42,18 +44,18 @@ public abstract class AbstractPipe extends ObservableObject implements IPipe {
 		return this.inputPorts;
 	}
 
-	public void setInputPorts(List<InputPort> inputPorts) {
+	synchronized public void setInputPorts(List<InputPort> inputPorts) {
 		this.inputPorts.clear();
 		this.inputPorts.addAll(inputPorts);
 	}
 
 	@Override
-	public void initialize() {
+	synchronized public void initialize() {
 		this.isInitialized = true;
 	}
 	
 	@Override
-	public synchronized final void process() {
+	synchronized public final void process() {
 		this.busy = true;
 		if (!this.isInitialized()) {
 			this.initialize();
@@ -65,5 +67,7 @@ public abstract class AbstractPipe extends ObservableObject implements IPipe {
 	protected abstract void doWork();
 
 	@Override
-	public void dispose() {}
+	synchronized public void dispose() {
+		this.isInitialized = false;
+	}
 }

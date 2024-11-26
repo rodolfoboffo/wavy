@@ -15,7 +15,7 @@ public class PipePropertyRepr<T> {
 	private static final int FIELD_PADDING = 4;
 	private static final Font DEFAULT_FONT = new Font(null, Font.PLAIN, 12);
 	private final Class<T> clazz;
-	private final AbstractPipeRepr parentPipe;
+	private final AbstractPipeRepr<?> parentPipe;
 	private final IPort inputPort;
 	private final PortRepr inputPortRepr;
 	private final String propertyName;
@@ -26,7 +26,7 @@ public class PipePropertyRepr<T> {
 	private final PortRepr outputPortRepr;
 	private final Consumer<T> callback;
 	
-	public PipePropertyRepr(Class<T> clazz, AbstractPipeRepr parentPipe, IPort inputPort, String propertyName, T value, IPort outputPort, Consumer<T> callback) {
+	public PipePropertyRepr(Class<T> clazz, AbstractPipeRepr<?> parentPipe, IPort inputPort, String propertyName, T value, IPort outputPort, Consumer<T> callback) {
 		super();
 		this.clazz = clazz;
 		this.callback = callback;
@@ -49,7 +49,7 @@ public class PipePropertyRepr<T> {
 		this.outputPortRepr = outputPort != null ? new PortRepr(this.outputPort, this.parentPipe) : null;
 	}
 	
-	public PipePropertyRepr(Class<T> clzz, AbstractPipeRepr parentPipe, IPort inputPort, String propertyName, T value, IPort outputPort) {
+	public PipePropertyRepr(Class<T> clzz, AbstractPipeRepr<?> parentPipe, IPort inputPort, String propertyName, T value, IPort outputPort) {
 		this(clzz, parentPipe, inputPort, propertyName, value, outputPort, null);
 	}
 	
@@ -102,6 +102,8 @@ public class PipePropertyRepr<T> {
 	public String getTextValue(T value) {
 		String text = "";
 		if (this.clazz.equals(Float.class))
+			text = NumberFormat.getInstance().format(value);
+		if (this.clazz.equals(Integer.class))
 			text = NumberFormat.getInstance().format(value);
 		return text;
 	}

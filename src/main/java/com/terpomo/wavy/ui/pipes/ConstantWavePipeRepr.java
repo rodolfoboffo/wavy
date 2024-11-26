@@ -11,20 +11,25 @@ public class ConstantWavePipeRepr extends AbstractSignalPipeRepr<ConstantWave, C
 
 	private static final long serialVersionUID = 8289652143621889982L;
 	public static final String FREQUENCY = "Frequency";
+	public static final String AMPLITUDE = "Amplitude";
 	
 	GridBagLayout contentLayout;
-	protected ConstantWavePipe pipe;
 
 	public ConstantWavePipeRepr(ConstantWavePipe pipe, String name) {
 		super(pipe, name);
-		this.pipe = (ConstantWavePipe) super.pipe;
 		this.contentLayout = new GridBagLayout();
 		this.getContentPanel().setLayout(this.contentLayout);
 
 		@SuppressWarnings("rawtypes")
 		List<PipePropertyRepr> pipeProperties = new ArrayList<>();
+		PipePropertyRepr<Integer> sampleRateProperty = new PipePropertyRepr<Integer>(Integer.class, this, null, AbstractPipeRepr.SAMPLE_RATE, pipe.getSignal().getSampleRate(), null, this.getPipe()::setSampleRate);
+		pipeProperties.add(sampleRateProperty);
+
 		PipePropertyRepr<Float> frequencyProperty = new PipePropertyRepr<Float>(Float.class, this, null, FREQUENCY, pipe.getSignal().getFrequency(), null, this.pipe::setFrequency);
 		pipeProperties.add(frequencyProperty);
+
+		PipePropertyRepr<Float> amplitudeProperty = new PipePropertyRepr<Float>(Float.class, this, null, AMPLITUDE, pipe.getSignal().getAmplitude(), null, this.pipe::setAmplitude);
+		pipeProperties.add(amplitudeProperty);
 		
 		@SuppressWarnings({ "rawtypes", "unchecked" })
 		PipePropertyRepr signalOutputProperty = new PipePropertyRepr(null, this, null, OUTPUT_SIGNAL, null, pipe.getOutputPort());

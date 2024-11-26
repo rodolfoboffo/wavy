@@ -13,7 +13,11 @@ public abstract class Signal {
 	public final int getSampleRate() {
 		return sampleRate;
 	}
-	
+
+	public void setSampleRate(int sampleRate) {
+		this.sampleRate = sampleRate;
+	}
+
 	public float getValue(long index) {
 		return 0;
 	}

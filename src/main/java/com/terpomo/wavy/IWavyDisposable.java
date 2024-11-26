@@ -1,5 +1,5 @@
 package com.terpomo.wavy;
 
-public interface WavyDisposable {
+public interface IWavyDisposable {
 	public void wavyDispose();
 }
