@@ -1,6 +1,7 @@
 package com.terpomo.wavy.flow;
 
 import com.terpomo.wavy.core.ObservableObject;
+import com.terpomo.wavy.util.ListUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +23,30 @@ public abstract class AbstractPipe extends ObservableObject implements IPipe {
 		this.inputPorts = new ArrayList<InputPort>();
 		this.outputPorts = new ArrayList<OutputPort>();
 		this.isInitialized = false;
+	}
+	
+	synchronized public void buildInputPipes(int numOfPipes) {
+		this.dispose();
+        try {
+			List<InputPort> newInputPorts = null;
+            newInputPorts = ListUtils.buildNewList(numOfPipes, InputPort.class, this.getInputPorts(), InputPort.class.getDeclaredConstructor(IPipe.class), new Object[]{this});
+			this.setInputPorts(newInputPorts);
+			this.firePropertyChange(PROPERTY_PIPE_INPUT_PORTS, null, this.getInputPorts());
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
+	}
+
+	synchronized public void buildOutputPipes(int numOfPipes) {
+		this.dispose();
+        try {
+			List<OutputPort> newOutputPorts = null;
+            newOutputPorts = ListUtils.buildNewList(numOfPipes, OutputPort.class, this.getOutputPorts(), OutputPort.class.getDeclaredConstructor(IPipe.class), new Object[]{this});
+			this.setOutputPorts(newOutputPorts);
+			this.firePropertyChange(PROPERTY_PIPE_OUTPUT_PORTS, null, this.getOutputPorts());
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
 	}
 
 	@Override
@@ -57,11 +82,15 @@ public abstract class AbstractPipe extends ObservableObject implements IPipe {
 	@Override
 	synchronized public final void process() {
 		this.busy = true;
-		if (!this.isInitialized()) {
-			this.initialize();
-		}
-		this.doWork();
-		this.busy = false;
+		try {
+			if (!this.isInitialized()) {
+				this.initialize();
+			}
+			this.doWork();
+		} catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        this.busy = false;
 	};
 	
 	protected abstract void doWork();

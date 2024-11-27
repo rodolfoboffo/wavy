@@ -34,7 +34,7 @@ public abstract class AbstractPipeRepr<T extends IPipe> extends WavyPanel implem
 	
 	private LayoutManager mainLayout;
 	
-	protected T pipe;
+	private final T pipe;
 	private String pipeName;
 	private JLabel labelName;
 

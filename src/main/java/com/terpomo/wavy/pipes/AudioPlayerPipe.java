@@ -34,17 +34,12 @@ public class AudioPlayerPipe extends AbstractPipe {
 
 	synchronized private void buildPipes() {
 		this.dispose();
+		this.buildInputPipes(this.numOfChannels);
 		this.buffers = new Buffer[this.numOfChannels];
-		for (IPort port : this.getInputPorts()) {
-			port.wavyDispose();
-		}
-		this.getInputPorts().clear();
 		for (int i = 0; i < this.numOfChannels; i++) {
-			InputPort p = new InputPort(this);
-			this.getInputPorts().add(p);
+			InputPort p = this.getInputPorts().get(i);
 			this.buffers[i] = p.getBuffer();
 		}
-		this.firePropertyChange(PROPERTY_PIPE_INPUT_PORTS, null, this.getInputPorts());
 	}
 
 	synchronized private void buildEncoder() {
@@ -56,6 +51,7 @@ public class AudioPlayerPipe extends AbstractPipe {
 	synchronized public void setNumOfChannels(int numOfChannels) {
 		this.numOfChannels = numOfChannels;
 		this.buildPipes();
+		this.buildEncoder();
 	}
 
 	public int getNumOfChannels() {

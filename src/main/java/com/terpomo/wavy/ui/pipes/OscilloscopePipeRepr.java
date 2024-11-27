@@ -15,43 +15,46 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OscilloscopePipeRepr extends AbstractPipeRepr {
+public class OscilloscopePipeRepr extends AbstractPipeRepr<OscilloscopePipe> {
 
 	private static final String DEFINITION = "Definition";
 	private static final String SCALE = "Scale";
 	private static final long serialVersionUID = 7368297233394330359L;
-	private final OscilloscopePipe pipe;
 	private final JFreeChart lineChart;
 	private final LayoutManager contentLayout;
-	private final JPanel portsPanel;
+	private final JPanel inputPanel;
 	private final ChartPanel chartPanel;
 	private final XYSeriesCollection dataset;
-	private XYSeries channel1Series;
-	private XYSeries channel1SeriesSwap;
+	private List<XYSeries> channelSeries;
+	private List<XYSeries> channelSwapSeries;
 	private final RepeatableTask updaterWorker;
 
 	public OscilloscopePipeRepr(OscilloscopePipe pipe, String name) {
 		super(pipe, name);
-		this.pipe = pipe;
 		JPanel panel = this.getContentPanel();
 		this.contentLayout = new GridBagLayout();
 		panel.setLayout(this.contentLayout);
 		
-		this.portsPanel = new JPanel();
-		this.portsPanel.setLayout(new GridBagLayout());
+		this.inputPanel = new JPanel();
+		this.inputPanel.setLayout(new GridBagLayout());
 		GridBagConstraints constraints = new GridBagConstraints();
 		constraints.gridx = 0;
 		constraints.gridy = 0;
-		panel.add(this.portsPanel, constraints);
+		panel.add(this.inputPanel, constraints);
 
 		@SuppressWarnings("rawtypes")
 		List<PipePropertyRepr> properties = this.createPipePropertiesForInputs(pipe);
-		this.layoutPipePropertiesOnGrid(this.portsPanel, properties);
+		this.layoutPipePropertiesOnGrid(this.inputPanel, properties);
 
 		this.dataset = new XYSeriesCollection();
-		this.channel1Series = new XYSeries("Channel 1");
-		this.channel1SeriesSwap = new XYSeries("Channel 1");
-		this.dataset.addSeries(this.channel1Series);
+		this.channelSeries = new ArrayList<>();
+		this.channelSwapSeries = new ArrayList<>();
+		this.channelSeries.add(new XYSeries("Channel 1"));
+		this.channelSeries.add(new XYSeries("Channel 2"));
+		this.channelSwapSeries.add(new XYSeries("Channel 1"));
+		this.channelSwapSeries.add(new XYSeries("Channel 2"));
+		this.dataset.addSeries(this.channelSeries.get(0));
+		this.dataset.addSeries(this.channelSeries.get(1));
 		this.lineChart = ChartFactory.createXYLineChart(null, null, null, this.dataset);
 		this.chartPanel = new ChartPanel(this.lineChart);
 		this.chartPanel.setLayout(new BorderLayout());
@@ -66,20 +69,24 @@ public class OscilloscopePipeRepr extends AbstractPipeRepr {
 		this.updaterWorker.start();
 	}
 
-	private void updateGui() {
-		List<TimeValuePair> content = this.pipe.getValues();
-		this.channel1SeriesSwap.clear();
-        for (TimeValuePair timeValuePair : content) {
-            this.channel1SeriesSwap.add(timeValuePair.getTimeInMillisec(), timeValuePair.getValue());
-        }
+	synchronized private void updateGui() {
+		for (int i = 0; i < this.getPipe().getNumberOfChannels(); i++) {
+			List<TimeValuePair> content = this.getPipe().getValuesForChannel(i);
+			this.channelSwapSeries.get(i).clear();
+			for (TimeValuePair timeValuePair : content) {
+				this.channelSwapSeries.get(i).add(timeValuePair.getTimeInMillisec(), timeValuePair.getValue());
+			}
+		}
 		EventQueue.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				XYSeries auxSeries = OscilloscopePipeRepr.this.channel1Series;
-				OscilloscopePipeRepr.this.channel1Series = OscilloscopePipeRepr.this.channel1SeriesSwap;
-				OscilloscopePipeRepr.this.channel1SeriesSwap = auxSeries;
+				List<XYSeries> auxSeries = OscilloscopePipeRepr.this.channelSeries;
+				OscilloscopePipeRepr.this.channelSeries = OscilloscopePipeRepr.this.channelSwapSeries;
+				OscilloscopePipeRepr.this.channelSwapSeries = auxSeries;
 				OscilloscopePipeRepr.this.dataset.removeAllSeries();
-				OscilloscopePipeRepr.this.dataset.addSeries(OscilloscopePipeRepr.this.channel1Series);
+				for (int j = 0; j < OscilloscopePipeRepr.this.getPipe().getNumberOfChannels(); j++) {
+					OscilloscopePipeRepr.this.dataset.addSeries(OscilloscopePipeRepr.this.channelSeries.get(j));
+				}
 			}
 		});
 	}
@@ -88,10 +95,10 @@ public class OscilloscopePipeRepr extends AbstractPipeRepr {
 	protected List<PipePropertyRepr> createPipePropertiesForInputs(OscilloscopePipe pipe) {
 		List<PipePropertyRepr> pipeProperties = new ArrayList<>();
 
-		PipePropertyRepr<Float> definitionProperty = new PipePropertyRepr<Float>(Float.class, this, null, DEFINITION, this.pipe.getQuality(), null, this.pipe::setQuality);
+		PipePropertyRepr<Float> definitionProperty = new PipePropertyRepr<Float>(Float.class, this, null, DEFINITION, this.getPipe().getQuality(), null, this.getPipe()::setQuality);
 		pipeProperties.add(definitionProperty);
 
-		PipePropertyRepr<Float> scaleProperty = new PipePropertyRepr<Float>(Float.class, this, null, SCALE, this.pipe.getScale(), null, this.pipe::setScale);
+		PipePropertyRepr<Float> scaleProperty = new PipePropertyRepr<Float>(Float.class, this, null, SCALE, this.getPipe().getScale(), null, this.getPipe()::setScale);
 		pipeProperties.add(scaleProperty);
 		
 		for (int i = 0; i < pipe.getInputPorts().size(); i++) {
