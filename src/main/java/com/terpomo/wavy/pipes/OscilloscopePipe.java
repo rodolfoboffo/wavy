@@ -12,7 +12,7 @@ import java.util.List;
 public class OscilloscopePipe extends AbstractPipe {
 
 	private static final int DEFAULT_POINT_SKIP = 30;
-	private static final int DEFAULT_NUMBER_OF_CHANNELS = 2;
+	private static final int DEFAULT_NUMBER_OF_CHANNELS = 1;
 	private static final float MAX_SCALE = 3.0f;
 	private static final float DEFAULT_SCALE = 1.0f;
 	private List<Buffer> buffers;
@@ -35,16 +35,20 @@ public class OscilloscopePipe extends AbstractPipe {
 		return numberOfChannels;
 	}
 
+	public int getSampleRate() {
+		return sampleRate;
+	}
+
 	synchronized private void buildPipesAndBuffers() {
         try {
-			this.buildInputPipes(this.numberOfChannels);
             this.buffers = ListUtils.buildNewList(this.numberOfChannels, Buffer.class, this.buffers, Buffer.class.getDeclaredConstructor(int.class, boolean.class), new Object[]{(int)(this.sampleRate*this.scale), true});
+			this.buildInputPipes(this.numberOfChannels);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }
     }
 
-	public void setNumberOfChannels(int numberOfChannels) {
+	synchronized public void setNumberOfChannels(int numberOfChannels) {
 		this.numberOfChannels = numberOfChannels;
 		this.buildPipesAndBuffers();
 	}

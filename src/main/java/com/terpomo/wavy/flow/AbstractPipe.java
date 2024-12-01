@@ -4,10 +4,14 @@ import com.terpomo.wavy.core.ObservableObject;
 import com.terpomo.wavy.util.ListUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public abstract class AbstractPipe extends ObservableObject implements IPipe {
 
+	private static final Logger LOGGER = Logger.getLogger(AbstractPipe.class.getName());
 	public final static String PROPERTY_PIPE_INPUT_PORTS = "PROPERTY_PIPE_INPUT_PORTS";
 	public final static String PROPERTY_PIPE_OUTPUT_PORTS = "PROPERTY_PIPE_OUTPUT_PORTS";
 	private final List<InputPort> inputPorts;
@@ -88,7 +92,7 @@ public abstract class AbstractPipe extends ObservableObject implements IPipe {
 			}
 			this.doWork();
 		} catch (Exception e) {
-            System.out.println(e.getMessage());
+			LOGGER.log(Level.SEVERE, e.getMessage(), e);
         }
         this.busy = false;
 	};
