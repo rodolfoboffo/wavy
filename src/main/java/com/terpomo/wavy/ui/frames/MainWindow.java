@@ -10,11 +10,11 @@ import java.beans.PropertyChangeListener;
 import javax.swing.JFrame;
 import javax.swing.JToolBar;
 
-import com.terpomo.wavy.WavyDisposable;
+import com.terpomo.wavy.IWavyDisposable;
 import com.terpomo.wavy.ui.UIController;
 import com.terpomo.wavy.ui.util.DefaultWindowListener;
 
-public class MainWindow extends JFrame implements WavyDisposable {
+public class MainWindow extends JFrame implements IWavyDisposable {
 
 	private static final long serialVersionUID = 6740298435235868036L;
 	private static final String WAVY = "Wavy";

@@ -1,12 +1,19 @@
 package com.terpomo.wavy.flow;
 
 import com.terpomo.wavy.core.ObservableObject;
+import com.terpomo.wavy.util.ListUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public abstract class AbstractPipe extends ObservableObject implements IPipe {
 
+	private static final Logger LOGGER = Logger.getLogger(AbstractPipe.class.getName());
+	public final static String PROPERTY_PIPE_INPUT_PORTS = "PROPERTY_PIPE_INPUT_PORTS";
+	public final static String PROPERTY_PIPE_OUTPUT_PORTS = "PROPERTY_PIPE_OUTPUT_PORTS";
 	private final List<InputPort> inputPorts;
 	private final List<OutputPort> outputPorts;
 	private boolean isInitialized;
@@ -21,6 +28,30 @@ public abstract class AbstractPipe extends ObservableObject implements IPipe {
 		this.outputPorts = new ArrayList<OutputPort>();
 		this.isInitialized = false;
 	}
+	
+	synchronized public void buildInputPipes(int numOfPipes) {
+		this.dispose();
+        try {
+			List<InputPort> newInputPorts = null;
+            newInputPorts = ListUtils.buildNewList(numOfPipes, InputPort.class, this.getInputPorts(), InputPort.class.getDeclaredConstructor(IPipe.class), new Object[]{this});
+			this.setInputPorts(newInputPorts);
+			this.firePropertyChange(PROPERTY_PIPE_INPUT_PORTS, null, this.getInputPorts());
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
+	}
+
+	synchronized public void buildOutputPipes(int numOfPipes) {
+		this.dispose();
+        try {
+			List<OutputPort> newOutputPorts = null;
+            newOutputPorts = ListUtils.buildNewList(numOfPipes, OutputPort.class, this.getOutputPorts(), OutputPort.class.getDeclaredConstructor(IPipe.class), new Object[]{this});
+			this.setOutputPorts(newOutputPorts);
+			this.firePropertyChange(PROPERTY_PIPE_OUTPUT_PORTS, null, this.getOutputPorts());
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
+	}
 
 	@Override
 	public boolean isInitialized() {
@@ -32,7 +63,7 @@ public abstract class AbstractPipe extends ObservableObject implements IPipe {
 		return this.outputPorts;
 	}
 
-	public void setOutputPorts(List<OutputPort> outputPorts) {
+	synchronized public void setOutputPorts(List<OutputPort> outputPorts) {
 		this.outputPorts.clear();
 		this.outputPorts.addAll(outputPorts);
 	}
@@ -42,28 +73,34 @@ public abstract class AbstractPipe extends ObservableObject implements IPipe {
 		return this.inputPorts;
 	}
 
-	public void setInputPorts(List<InputPort> inputPorts) {
+	synchronized public void setInputPorts(List<InputPort> inputPorts) {
 		this.inputPorts.clear();
 		this.inputPorts.addAll(inputPorts);
 	}
 
 	@Override
-	public void initialize() {
+	synchronized public void initialize() {
 		this.isInitialized = true;
 	}
 	
 	@Override
-	public synchronized final void process() {
+	synchronized public final void process() {
 		this.busy = true;
-		if (!this.isInitialized()) {
-			this.initialize();
-		}
-		this.doWork();
-		this.busy = false;
+		try {
+			if (!this.isInitialized()) {
+				this.initialize();
+			}
+			this.doWork();
+		} catch (Exception e) {
+			LOGGER.log(Level.SEVERE, e.getMessage(), e);
+        }
+        this.busy = false;
 	};
 	
 	protected abstract void doWork();
 
 	@Override
-	public void dispose() {}
+	synchronized public void dispose() {
+		this.isInitialized = false;
+	}
 }

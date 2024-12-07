@@ -25,15 +25,16 @@ import com.terpomo.wavy.ui.components.WavyPanel;
 import com.terpomo.wavy.ui.components.IWavyRepr;
 import com.terpomo.wavy.ui.util.PointOperation;
 
-public abstract class AbstractPipeRepr extends WavyPanel implements IPipeRepr, IWavyRepr {
+public abstract class AbstractPipeRepr<T extends IPipe> extends WavyPanel implements IPipeRepr, IWavyRepr {
 
 	private static final long serialVersionUID = -4460157397034830356L;
+	public static final String SAMPLE_RATE = "Sample Rate";
 	private static final int DEFAULT_INSET_SIZE = 8;
 	private static final String IS_BEING_MOVED = "IS_BEING_MOVED";
 	
 	private LayoutManager mainLayout;
 	
-	protected IPipe pipe;
+	private final T pipe;
 	private String pipeName;
 	private JLabel labelName;
 
@@ -43,26 +44,13 @@ public abstract class AbstractPipeRepr extends WavyPanel implements IPipeRepr, I
 	private Point originMousePosition;
 	private Point originPipePosition;
 	
-	public AbstractPipeRepr(IPipe pipe, String name) {
+	public AbstractPipeRepr(T pipe, String name) {
 		super(DEFAULT_INSET_SIZE);
 		this.pipe = pipe;
-		UIController.getInstance().addModelToReprMapEntry(pipe, this);
-		
-		this.mainLayout = new BorderLayout();
-		this.setLayout(this.mainLayout);
-		
-		this.isBeingMoved = false;
-		this.originMousePosition = null;
-		this.originPipePosition = null;
-		
 		this.pipeName = name;
-		this.labelName = new JLabel(this.pipeName);
-		this.add(BorderLayout.NORTH, this.labelName);
-		
+		UIController.getInstance().addModelToReprMapEntry(pipe, this);
 		this.contentPanel = new WavyPanel(4);
-		this.add(BorderLayout.CENTER, this.contentPanel);
-		
-		this.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		this.buildBasePipeControls();
 		this.addMouseListener(new PipeMouseListener());
 		this.addMouseMotionListener(new PipeMouseMotionListener());
 		this.addPropertyChangeListener(IS_BEING_MOVED, new IsBeingMovedListener());
@@ -71,7 +59,21 @@ public abstract class AbstractPipeRepr extends WavyPanel implements IPipeRepr, I
 	public JPanel getContentPanel() {
 		return contentPanel;
 	}
-	
+
+	private void buildBasePipeControls() {
+		this.mainLayout = new BorderLayout();
+		this.setLayout(this.mainLayout);
+
+		this.isBeingMoved = false;
+		this.originMousePosition = null;
+		this.originPipePosition = null;
+
+		this.labelName = new JLabel(this.pipeName);
+		this.add(BorderLayout.NORTH, this.labelName);
+		this.add(BorderLayout.CENTER, this.contentPanel);
+		this.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+	}
+
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
@@ -86,6 +88,7 @@ public abstract class AbstractPipeRepr extends WavyPanel implements IPipeRepr, I
 	}
 
 	protected void layoutPipePropertiesOnGrid(Container container, List<PipePropertyRepr> pipeProperties) {
+		container.removeAll();
 		for (int i = 0; i < pipeProperties.size(); i++) {
 			@SuppressWarnings("rawtypes")
 			PipePropertyRepr property = pipeProperties.get(i);
@@ -93,7 +96,7 @@ public abstract class AbstractPipeRepr extends WavyPanel implements IPipeRepr, I
 		}
 	}
 	
-	public IPipe getPipe() {
+	public T getPipe() {
 		return pipe;
 	}
 	

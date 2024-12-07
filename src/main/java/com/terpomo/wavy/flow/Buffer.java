@@ -1,10 +1,11 @@
 package com.terpomo.wavy.flow;
 
+import com.terpomo.wavy.IWavyDisposable;
 import com.terpomo.wavy.core.IObservableObject;
 import com.terpomo.wavy.core.IWavyModel;
 import com.terpomo.wavy.core.ObservableObject;
 
-public class Buffer extends ObservableObject implements IWavyModel, IObservableObject {
+public class Buffer extends ObservableObject implements IWavyModel, IObservableObject, IWavyDisposable {
 
     public static final int DEFAULT_DATASTREAM_BUFER_SIZE = 10240;
     private final boolean endless;
@@ -136,5 +137,10 @@ public class Buffer extends ObservableObject implements IWavyModel, IObservableO
 
     synchronized public void clear() {
         this.startIndex = this.finishIndex = 0;
+    }
+
+    @Override
+    public void wavyDispose() {
+
     }
 }

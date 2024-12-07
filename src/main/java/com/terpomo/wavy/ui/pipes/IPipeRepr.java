@@ -1,7 +1,7 @@
 package com.terpomo.wavy.ui.pipes;
 
-import com.terpomo.wavy.WavyDisposable;
+import com.terpomo.wavy.IWavyDisposable;
 
-public interface IPipeRepr extends WavyDisposable {
+public interface IPipeRepr extends IWavyDisposable {
 
 }

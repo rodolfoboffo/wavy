@@ -12,4 +12,11 @@ public class ConstantWavePipe extends AbstractSignalSourcePipe<ConstantWave> {
 		this.signal.setFrequency(v);
 	}
 
+	public void setSampleRate(int s) {
+		this.signal.setSampleRate(s);
+	}
+
+	public void setAmplitude(float a) {
+		this.signal.setAmplitude(a);
+	}
 }

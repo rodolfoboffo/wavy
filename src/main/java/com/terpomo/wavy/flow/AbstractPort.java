@@ -38,5 +38,9 @@ public abstract class AbstractPort extends ObservableObject implements IPort {
 		}
 		this.firePropertyChange(LINKED_PORT_PROPERTY, previousLinkedPort, p);
 	}
-	
+
+	@Override
+	public void wavyDispose() {
+		this.setLinkedPort(null);
+	}
 }

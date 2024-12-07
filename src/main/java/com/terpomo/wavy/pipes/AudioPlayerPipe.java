@@ -3,12 +3,12 @@ package com.terpomo.wavy.pipes;
 import com.terpomo.wavy.Constants;
 import com.terpomo.wavy.flow.AbstractPipe;
 import com.terpomo.wavy.flow.Buffer;
+import com.terpomo.wavy.flow.IPort;
 import com.terpomo.wavy.flow.InputPort;
 import com.terpomo.wavy.sound.Encoder;
 import com.terpomo.wavy.sound.LPCMEncoder;
 
 import javax.sound.sampled.*;
-import java.util.Queue;
 
 public class AudioPlayerPipe extends AbstractPipe {
 	
@@ -27,19 +27,48 @@ public class AudioPlayerPipe extends AbstractPipe {
 	
 	public AudioPlayerPipe(int numOfChannels, int sampleRate) {
 		this.numOfChannels = numOfChannels;
-		this.buffers = new Buffer[this.numOfChannels];
 		this.sampleRate = sampleRate;
-		for (int i = 0; i < numOfChannels; i++) {
-			InputPort p = new InputPort(this);
-			this.getInputPorts().add(p);
+		this.buildPipes();
+		this.buildEncoder();
+	}
+
+	synchronized private void buildPipes() {
+		this.dispose();
+		this.buildInputPipes(this.numOfChannels);
+		this.buffers = new Buffer[this.numOfChannels];
+		for (int i = 0; i < this.numOfChannels; i++) {
+			InputPort p = this.getInputPorts().get(i);
 			this.buffers[i] = p.getBuffer();
 		}
-		this.audioBufferSize = (int)(this.sampleRate*0.001);
+	}
+
+	synchronized private void buildEncoder() {
+		this.dispose();
+		this.audioBufferSize = (int)(this.sampleRate*0.01);
 		this.encoder = new LPCMEncoder(this.sampleRate, this.buffers);
 	}
-	
+
+	synchronized public void setNumOfChannels(int numOfChannels) {
+		this.numOfChannels = numOfChannels;
+		this.buildPipes();
+		this.buildEncoder();
+	}
+
+	public int getNumOfChannels() {
+		return numOfChannels;
+	}
+
+	synchronized public void setSampleRate(int sampleRate) {
+		this.sampleRate = sampleRate;
+		this.buildEncoder();
+	}
+
+	public int getSampleRate() {
+		return sampleRate;
+	}
+
 	@Override
-	public void initialize() {
+	synchronized public void initialize() {
 		AudioFormat format = this.encoder.getAudioFormat();
 		DataLine.Info sourceLineInfo = new DataLine.Info(SourceDataLine.class, format);
 		boolean isSupported = AudioSystem.isLineSupported(sourceLineInfo);
@@ -59,7 +88,7 @@ public class AudioPlayerPipe extends AbstractPipe {
 	}
 	
 	@Override
-	public void dispose() {
+	synchronized public void dispose() {
 		super.dispose();
 		if (this.line != null) {
 			this.line.flush();
@@ -76,34 +105,30 @@ public class AudioPlayerPipe extends AbstractPipe {
 	public boolean isPlaying() {
 		return this.playing;
 	}
-	
-	public void play() {
-		synchronized (this) {
-			if (!this.playing) {
-				this.playing = true;
-			}
-		}
-	}
-	
-	public void stop() throws InterruptedException {
-		synchronized (this) {
-			if (this.playing) {
-				this.playing = false;
-			}
+
+	synchronized public void play() {
+		if (!this.playing) {
+			this.playing = true;
 		}
 	}
 
-	protected int numOfFramesAvailable() {
+	synchronized public void stop() throws InterruptedException {
+		if (this.playing) {
+			this.playing = false;
+		}
+	}
+
+	synchronized protected int numOfFramesAvailable() {
 		int frames = Integer.MAX_VALUE;
 		for (Buffer b : this.buffers) {
 			int bufferSize = b.getSize();
-			frames = bufferSize < frames ? bufferSize : frames;
+			frames = Math.min(bufferSize, frames);
 		}
 		return frames;
 	}
 	
 	@Override
-	public void doWork() {
+	synchronized public void doWork() {
 		if (this.isPlaying()) {
 			if (this.line.available() >= this.audioBufferSize && this.numOfFramesAvailable() >= this.audioBufferSize) {
 				byte[] buffer = this.encoder.getNumOfFrames(this.audioBufferSize);

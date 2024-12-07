@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.terpomo.wavy.WavyDisposable;
+import com.terpomo.wavy.IWavyDisposable;
 import com.terpomo.wavy.flow.PipeTypeEnum;
 import com.terpomo.wavy.flow.Project;
 import com.terpomo.wavy.ui.UIController;
@@ -14,7 +14,7 @@ import com.terpomo.wavy.ui.components.IWavyRepr;
 import com.terpomo.wavy.ui.pipes.AbstractPipeRepr;
 import com.terpomo.wavy.ui.util.AbsoluteLayout;
 
-public class ProjectRepr extends Panel implements WavyDisposable, IWavyRepr {
+public class ProjectRepr extends Panel implements IWavyDisposable, IWavyRepr {
 
 	private static final long serialVersionUID = -3136424835205807021L;
 
