@@ -4,7 +4,6 @@ import com.terpomo.wavy.core.ObservableObject;
 import com.terpomo.wavy.util.ListUtils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -30,7 +29,6 @@ public abstract class AbstractPipe extends ObservableObject implements IPipe {
 	}
 	
 	synchronized public void buildInputPipes(int numOfPipes) {
-		this.dispose();
         try {
 			List<InputPort> newInputPorts = null;
             newInputPorts = ListUtils.buildNewList(numOfPipes, InputPort.class, this.getInputPorts(), InputPort.class.getDeclaredConstructor(IPipe.class), new Object[]{this});
@@ -42,7 +40,6 @@ public abstract class AbstractPipe extends ObservableObject implements IPipe {
 	}
 
 	synchronized public void buildOutputPipes(int numOfPipes) {
-		this.dispose();
         try {
 			List<OutputPort> newOutputPorts = null;
             newOutputPorts = ListUtils.buildNewList(numOfPipes, OutputPort.class, this.getOutputPorts(), OutputPort.class.getDeclaredConstructor(IPipe.class), new Object[]{this});

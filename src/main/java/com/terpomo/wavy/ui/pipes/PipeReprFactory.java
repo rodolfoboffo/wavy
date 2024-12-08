@@ -3,16 +3,13 @@ package com.terpomo.wavy.ui.pipes;
 import com.terpomo.wavy.flow.AbstractPipe;
 import com.terpomo.wavy.flow.PipeFactory;
 import com.terpomo.wavy.flow.PipeTypeEnum;
-import com.terpomo.wavy.pipes.AudioPlayerPipe;
-import com.terpomo.wavy.pipes.ConstantWavePipe;
-import com.terpomo.wavy.pipes.OscilloscopePipe;
-import com.terpomo.wavy.pipes.SplitterPipe;
+import com.terpomo.wavy.pipes.*;
 
 public class PipeReprFactory {
 
-	public static AbstractPipeRepr createPipeRepr(PipeTypeEnum pipeType, String pipeName) {
+	public static AbstractPipeRepr<?> createPipeRepr(PipeTypeEnum pipeType, String pipeName) {
 		AbstractPipe pipe = PipeFactory.createPipe(pipeType);
-		AbstractPipeRepr pipeRepr;
+		AbstractPipeRepr<?> pipeRepr;
 		switch (pipeType) {
 		case CONSTANT_WAVE_SIGNAL_PIPE_ENUM: {
 			pipeRepr = new ConstantWavePipeRepr((ConstantWavePipe) pipe, pipeName);
@@ -28,6 +25,10 @@ public class PipeReprFactory {
 		}
 		case SPLITTER_PIPE_ENUM: {
 			pipeRepr = new SplitterPipeRepr((SplitterPipe) pipe, pipeName);
+			return pipeRepr;
+		}
+		case FILE_READER_PIPE_ENUM: {
+			pipeRepr = new FileReaderPipeRepr((FileReaderPipe) pipe, pipeName);
 			return pipeRepr;
 		}
 		default:

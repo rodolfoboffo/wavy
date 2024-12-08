@@ -25,11 +25,13 @@ public class PipePropertyRepr<T> {
 	private final IPort outputPort;
 	private final PortRepr outputPortRepr;
 	private final Consumer<T> callback;
+	private final boolean readOnly;
 	
-	public PipePropertyRepr(Class<T> clazz, AbstractPipeRepr<?> parentPipe, IPort inputPort, String propertyName, T value, IPort outputPort, Consumer<T> callback) {
+	public PipePropertyRepr(Class<T> clazz, AbstractPipeRepr<?> parentPipe, IPort inputPort, String propertyName, T value, IPort outputPort, Consumer<T> callback, boolean readOnly) {
 		super();
 		this.clazz = clazz;
 		this.callback = callback;
+		this.readOnly = readOnly;
 		this.parentPipe = parentPipe;
 		this.inputPort = inputPort;
 		this.inputPortRepr = inputPort != null ? new PortRepr(this.inputPort, this.parentPipe) : null;
@@ -41,6 +43,7 @@ public class PipePropertyRepr<T> {
 			String textValue = this.getTextValue(value);
 			this.valueField = new JTextField(textValue);
 			this.valueField.addFocusListener(new ValueFieldFocusListener());
+			this.valueField.setEnabled(!readOnly);
 		}
 		else {
 			this.valueField = null;
@@ -49,8 +52,16 @@ public class PipePropertyRepr<T> {
 		this.outputPortRepr = outputPort != null ? new PortRepr(this.outputPort, this.parentPipe) : null;
 	}
 	
-	public PipePropertyRepr(Class<T> clzz, AbstractPipeRepr<?> parentPipe, IPort inputPort, String propertyName, T value, IPort outputPort) {
-		this(clzz, parentPipe, inputPort, propertyName, value, outputPort, null);
+	public PipePropertyRepr(Class<T> clazz, AbstractPipeRepr<?> parentPipe, IPort inputPort, String propertyName, T value, IPort outputPort) {
+		this(clazz, parentPipe, inputPort, propertyName, value, outputPort, null, false);
+	}
+
+	public PipePropertyRepr(Class<T> clazz, AbstractPipeRepr<?> parentPipe, IPort inputPort, String propertyName, T value, IPort outputPort, boolean readOnly) {
+		this(clazz, parentPipe, inputPort, propertyName, value, outputPort, null, readOnly);
+	}
+
+	public PipePropertyRepr(Class<T> clazz, AbstractPipeRepr<?> parentPipe, IPort inputPort, String propertyName, T value, IPort outputPort, Consumer<T> callback) {
+		this(clazz, parentPipe, inputPort, propertyName, value, outputPort, callback, false);
 	}
 	
 	public void layoutOnGrid(Container container, int rowIndex) {

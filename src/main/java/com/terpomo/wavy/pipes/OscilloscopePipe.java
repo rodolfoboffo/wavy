@@ -41,6 +41,7 @@ public class OscilloscopePipe extends AbstractPipe {
 
 	synchronized private void buildPipesAndBuffers() {
         try {
+			this.dispose();
             this.buffers = ListUtils.buildNewList(this.numberOfChannels, Buffer.class, this.buffers, Buffer.class.getDeclaredConstructor(int.class, boolean.class), new Object[]{(int)(this.sampleRate*this.scale), true});
 			this.buildInputPipes(this.numberOfChannels);
         } catch (NoSuchMethodException e) {

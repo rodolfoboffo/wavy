@@ -71,7 +71,6 @@ public abstract class AbstractPipeRepr<T extends IPipe> extends WavyPanel implem
 		this.labelName = new JLabel(this.pipeName);
 		this.add(BorderLayout.NORTH, this.labelName);
 		this.add(BorderLayout.CENTER, this.contentPanel);
-		this.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 	}
 
 	@Override
@@ -161,7 +160,7 @@ public abstract class AbstractPipeRepr<T extends IPipe> extends WavyPanel implem
 						AbstractPipeRepr.this.setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
 					}
 					else {
-						AbstractPipeRepr.this.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+						AbstractPipeRepr.this.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 					}
 				}
 			});
