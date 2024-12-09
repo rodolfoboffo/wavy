@@ -3,10 +3,9 @@ package com.terpomo.wavy.pipes;
 import com.terpomo.wavy.Constants;
 import com.terpomo.wavy.flow.AbstractPipe;
 import com.terpomo.wavy.flow.Buffer;
-import com.terpomo.wavy.flow.IPort;
 import com.terpomo.wavy.flow.InputPort;
-import com.terpomo.wavy.sound.Encoder;
-import com.terpomo.wavy.sound.LPCMEncoder;
+import com.terpomo.wavy.sound.Codec;
+import com.terpomo.wavy.sound.LPCMCodec;
 
 import javax.sound.sampled.*;
 
@@ -17,7 +16,7 @@ public class AudioPlayerPipe extends AbstractPipe {
 	protected int numOfChannels;
 	protected int audioBufferSize;
 	protected boolean playing = true;
-	protected Encoder encoder;
+	protected Codec encoder;
 	protected Buffer[] buffers;
 	protected SourceDataLine line;
 	
@@ -45,7 +44,7 @@ public class AudioPlayerPipe extends AbstractPipe {
 	synchronized private void buildEncoder() {
 		this.dispose();
 		this.audioBufferSize = (int)(this.sampleRate*0.01);
-		this.encoder = new LPCMEncoder(this.sampleRate, this.buffers);
+		this.encoder = new LPCMCodec(this.sampleRate, this.buffers);
 	}
 
 	synchronized public void setNumOfChannels(int numOfChannels) {
@@ -131,7 +130,7 @@ public class AudioPlayerPipe extends AbstractPipe {
 	synchronized public void doWork() {
 		if (this.isPlaying()) {
 			if (this.line.available() >= this.audioBufferSize && this.numOfFramesAvailable() >= this.audioBufferSize) {
-				byte[] buffer = this.encoder.getNumOfFrames(this.audioBufferSize);
+				byte[] buffer = this.encoder.encode(this.audioBufferSize);
 				this.line.write(buffer, 0, buffer.length);
 			}
 		}

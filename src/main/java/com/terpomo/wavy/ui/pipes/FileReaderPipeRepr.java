@@ -98,7 +98,7 @@ public class FileReaderPipeRepr extends AbstractPipeRepr<FileReaderPipe> {
         List<PipePropertyRepr> pipeProperties = new ArrayList<>();
 
         if (this.getPipe().isFileOpen()) {
-            PipePropertyRepr<Float> sampleRatePropertyRepr = new PipePropertyRepr<>(Float.class, this, null, SAMPLE_RATE, this.getPipe().getSampleRate(), null, true);
+            PipePropertyRepr<Integer> sampleRatePropertyRepr = new PipePropertyRepr<Integer>(Integer.class, this, null, SAMPLE_RATE, this.getPipe().getSampleRate(), null, true);
             pipeProperties.add(sampleRatePropertyRepr);
 
             for (int i = 0; i < this.getPipe().getOutputPorts().size(); i++) {
