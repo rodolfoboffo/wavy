@@ -45,16 +45,16 @@ public class LPCMCodec extends Codec {
 		if (!this.bigEndian)
 			buffer.order(ByteOrder.LITTLE_ENDIAN);
 		int frameInt;
-		int SIGNED_MAX = 1 << this.bitsPerSample - 1;
+		int SIGNED_MAX = (1 << this.bitsPerSample) - 1;
 		for (int iFrame = 0; iFrame < numOfFrames; iFrame++) {
 			frameInt = 0;
 			buffer.clear();
 			for (Buffer b : this.getBuffers()) {
 				frameInt <<= this.bitsPerSample;
 				float v = b.pickOne();
-				int sampleInt = (int) ((v * SIGNED_MAX) % SIGNED_MAX);
+				int sampleInt = (int) ((v / 2.0f * SIGNED_MAX) % SIGNED_MAX);
 				if (!this.signed)
-					sampleInt += SIGNED_MAX;
+					sampleInt += SIGNED_MAX/2;
 				frameInt |= sampleInt;
 			}
 			buffer.putInt(frameInt);
@@ -84,11 +84,9 @@ public class LPCMCodec extends Codec {
 				longFrame = longFrame | (readBytes[(bytesPerFrame-z-1)+bytesPerFrame*iFrame]);
 			}
 			for (int jChannel = 0; jChannel < numChannels; jChannel++) {
-				int intSample = (int)(longFrame & sampleMask);
+				int intSample = ((int)(longFrame & sampleMask) + SIGNED_MAX) % SIGNED_MAX;
 				longFrame = longFrame >> this.bitsPerSample;
-				if (!this.signed)
-					intSample -= SIGNED_MAX;
-				float channelValue = 1.0f * intSample / SIGNED_MAX;
+				float channelValue = 2.0f * intSample / SIGNED_MAX - 1.0f;
 				valuesByChannel[jChannel][iFrame] = channelValue;
 			}
 		}

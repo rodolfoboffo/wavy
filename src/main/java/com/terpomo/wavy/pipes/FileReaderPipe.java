@@ -1,8 +1,8 @@
 package com.terpomo.wavy.pipes;
 
 import com.terpomo.wavy.flow.AbstractPipe;
-import com.terpomo.wavy.flow.AbstractPort;
 import com.terpomo.wavy.flow.Buffer;
+import com.terpomo.wavy.flow.IPort;
 import com.terpomo.wavy.flow.OutputPort;
 import com.terpomo.wavy.sound.LPCMCodec;
 
@@ -20,6 +20,7 @@ public class FileReaderPipe extends AbstractPipe {
     private File inputFile;
     private AudioInputStream audioStream;
     private boolean isFileOpen;
+    private boolean repeat;
     private LPCMCodec codec;
     private AudioFormat audioFormat;
     private Buffer[] outputBuffers;
@@ -27,16 +28,24 @@ public class FileReaderPipe extends AbstractPipe {
     public FileReaderPipe() {
         this.inputFilePath = "";
         this.isFileOpen = false;
+        this.repeat = true;
     }
 
     @Override
     synchronized protected void doWork() {
         try {
             Float[][] values = null;
+            if (this.audioStream.available() == 0 && this.repeat)
+                this.reopenAudioStream();
             int numOfFrames = this.audioStream.available() / this.getNumOfChannels() * 8 / this.getBitsPerSample();
             for (int i = 0; i < this.getNumOfChannels(); i++) {
-                Buffer b = this.outputBuffers[i];
-                numOfFrames = Math.min(b.getRemainingCapacity(), numOfFrames);
+                IPort linkedPort = this.getOutputPorts().get(i).getLinkedPort();
+                if (linkedPort != null) {
+                    Buffer b = linkedPort.getBuffer();
+                    numOfFrames = Math.min(b.getRemainingCapacity(), numOfFrames);
+                } else {
+                    numOfFrames = 0;
+                }
             }
             int numBytesToRead = numOfFrames * this.getBitsPerSample() / 8 * this.getNumOfChannels();
             byte[] readBytes = new byte[numBytesToRead];
@@ -46,10 +55,11 @@ public class FileReaderPipe extends AbstractPipe {
             }
             if (values != null) {
                 for (int i = 0; i < values.length; i++) {
-                    this.outputBuffers[i].putAll(values[i]);
+                    IPort linkedPort = this.getOutputPorts().get(i).getLinkedPort();
+                    linkedPort.getBuffer().putAll(values[i]);
                 }
             }
-        } catch (IOException e) {
+        } catch (IOException | UnsupportedAudioFileException e) {
             throw new RuntimeException("Could not read audio file.", e);
         }
     }
@@ -159,6 +169,10 @@ public class FileReaderPipe extends AbstractPipe {
                 this.audioStream = null;
             }
         }
+    }
+
+    synchronized private void reopenAudioStream() throws UnsupportedAudioFileException, IOException {
+        this.audioStream = AudioSystem.getAudioInputStream(inputFile);
     }
 
     synchronized private void openInputFile(String filePath) throws UnsupportedAudioFileException, IOException {
