@@ -32,7 +32,6 @@ public class AudioPlayerPipe extends AbstractPipe {
 	}
 
 	synchronized private void buildPipes() {
-		this.dispose();
 		this.buildInputPipes(this.numOfChannels);
 		this.buffers = new Buffer[this.numOfChannels];
 		for (int i = 0; i < this.numOfChannels; i++) {
@@ -42,13 +41,13 @@ public class AudioPlayerPipe extends AbstractPipe {
 	}
 
 	synchronized private void buildEncoder() {
-		this.dispose();
 		this.audioBufferSize = (int)(this.sampleRate*0.01);
 		this.encoder = new LPCMCodec(this.sampleRate, this.buffers);
 	}
 
 	synchronized public void setNumOfChannels(int numOfChannels) {
 		this.numOfChannels = numOfChannels;
+		this.dispose();
 		this.buildPipes();
 		this.buildEncoder();
 	}
@@ -58,8 +57,14 @@ public class AudioPlayerPipe extends AbstractPipe {
 	}
 
 	synchronized public void setSampleRate(int sampleRate) {
+		boolean _isPlaying = this.isPlaying();
+		this.stop();
+		this.closeLine();
 		this.sampleRate = sampleRate;
 		this.buildEncoder();
+		this.initialize();
+		if (_isPlaying)
+			this.play();
 	}
 
 	public int getSampleRate() {
@@ -68,6 +73,11 @@ public class AudioPlayerPipe extends AbstractPipe {
 
 	@Override
 	synchronized public void initialize() {
+		this.startLine();
+		super.initialize();
+	}
+
+	synchronized private void startLine() {
 		AudioFormat format = this.encoder.getAudioFormat();
 		DataLine.Info sourceLineInfo = new DataLine.Info(SourceDataLine.class, format);
 		boolean isSupported = AudioSystem.isLineSupported(sourceLineInfo);
@@ -76,7 +86,6 @@ public class AudioPlayerPipe extends AbstractPipe {
 				this.line = (SourceDataLine)AudioSystem.getLine(sourceLineInfo);
 				this.line.open();
 				this.line.start();
-				super.initialize();
 			} catch (LineUnavailableException e1) {
 				throw new RuntimeException("Could not open audio line.", e1);
 			}
@@ -85,10 +94,8 @@ public class AudioPlayerPipe extends AbstractPipe {
 			throw new RuntimeException("Audio Format not supported.");
 		}
 	}
-	
-	@Override
-	synchronized public void dispose() {
-		super.dispose();
+
+	synchronized private void closeLine() {
 		if (this.line != null) {
 			this.line.flush();
 			if (this.line.isActive()) {
@@ -99,6 +106,13 @@ public class AudioPlayerPipe extends AbstractPipe {
 			}
 			this.line = null;
 		}
+	}
+
+	@Override
+	synchronized public void dispose() {
+		super.dispose();
+		this.stop();
+		this.closeLine();
 	}
 	
 	public boolean isPlaying() {
@@ -111,7 +125,7 @@ public class AudioPlayerPipe extends AbstractPipe {
 		}
 	}
 
-	synchronized public void stop() throws InterruptedException {
+	synchronized public void stop() {
 		if (this.playing) {
 			this.playing = false;
 		}

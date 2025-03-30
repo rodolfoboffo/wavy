@@ -129,10 +129,13 @@ public class PipePropertyRepr<T> {
 		public void focusLost(FocusEvent e) {
 			JTextField field = (JTextField) e.getComponent();
 			String valueText = field.getText();
-            T value = null;
+            T newValue = null;
             try {
-                value = PipePropertyRepr.this.parseTextValue(valueText);
-				PipePropertyRepr.this.callback.accept(value);
+                newValue = PipePropertyRepr.this.parseTextValue(valueText);
+				if (newValue != PipePropertyRepr.this.value) {
+					PipePropertyRepr.this.value = newValue;
+					PipePropertyRepr.this.callback.accept(newValue);
+				}
             } catch (ParseException ex) {
                 throw new RuntimeException(ex);
             }
