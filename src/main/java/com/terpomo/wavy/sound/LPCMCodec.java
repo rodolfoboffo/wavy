@@ -72,6 +72,7 @@ public class LPCMCodec extends Codec {
 			throw new RuntimeException("Endianess not expected.");
 		int numChannels = getNumOfChannels();
 		long sampleMask = (1L << this.bitsPerSample) - 1;
+		long byteMask = ((1<<8)-1);
 		int SIGNED_MAX = (1 << this.bitsPerSample) - 1;
 		int bitsPerFrame = this.bitsPerSample * numChannels;
 		int bytesPerFrame = bitsPerFrame / 8;
@@ -79,9 +80,9 @@ public class LPCMCodec extends Codec {
 		Float[][] valuesByChannel = new Float[numChannels][numFramesRead];
 		for (int iFrame = 0; iFrame < numFramesRead; iFrame++) {
 			long longFrame = 0L;
-			for (int z = 0; z < bytesPerFrame; z++) {
+			for (int z = 1; z <= bytesPerFrame; z++) {
 				longFrame = longFrame << 8;
-				longFrame = longFrame | (readBytes[(bytesPerFrame-z-1)+bytesPerFrame*iFrame]);
+				longFrame = longFrame | (byteMask & readBytes[bytesPerFrame*(iFrame+1)-z]);
 			}
 			for (int jChannel = 0; jChannel < numChannels; jChannel++) {
 				int intSample = ((int)(longFrame & sampleMask) + SIGNED_MAX) % SIGNED_MAX;
