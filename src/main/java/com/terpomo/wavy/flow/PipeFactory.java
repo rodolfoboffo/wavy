@@ -19,8 +19,11 @@ public class PipeFactory {
 		case SPLITTER_PIPE_ENUM: {
 			return new SplitterPipe();
 		}
-			case FILE_READER_PIPE_ENUM: {
+		case FILE_READER_PIPE_ENUM: {
 			return new FileReaderPipe();
+		}
+		case FFT_PIPE_ENUM: {
+			return new FFTPipe();
 		}
 		default:
 			throw new IllegalArgumentException("Unexpected value: " + pipeType);

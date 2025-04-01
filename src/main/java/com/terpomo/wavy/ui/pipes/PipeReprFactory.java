@@ -31,6 +31,10 @@ public class PipeReprFactory {
 			pipeRepr = new FileReaderPipeRepr((FileReaderPipe) pipe, pipeName);
 			return pipeRepr;
 		}
+		case FFT_PIPE_ENUM: {
+			pipeRepr = new FFTPipeRepr((FFTPipe) pipe, pipeName);
+			return pipeRepr;
+		}
 		default:
 			throw new IllegalArgumentException("Unexpected value: " + pipeType);
 		}

@@ -3,9 +3,9 @@ package com.terpomo.wavy.oscilloscope;
 public class TimeValuePair {
 
     private final float time;
-    private final Float value;
+    private final float value;
 
-    public TimeValuePair(float time, Float value) {
+    public TimeValuePair(float time, float value) {
         this.time = time;
         this.value = value;
     }
@@ -14,7 +14,7 @@ public class TimeValuePair {
         return time;
     }
 
-    public Float getValue() {
+    public float getValue() {
         return value;
     }
 

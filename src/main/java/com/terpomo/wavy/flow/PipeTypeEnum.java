@@ -8,7 +8,8 @@ public enum PipeTypeEnum {
 	AUDIO_PLAYER_PIPE_ENUM(Constants.AUDIO_PLAYER),
 	OSCILLOSCOPE_PIPE_ENUM(Constants.OSCILLOSCOPE),
 	SPLITTER_PIPE_ENUM(Constants.SPLITTER),
-	FILE_READER_PIPE_ENUM(Constants.FILE_READER);
+	FILE_READER_PIPE_ENUM(Constants.FILE_READER),
+	FFT_PIPE_ENUM(Constants.FFT);
 	
 	private final String friendlyName;
 	
