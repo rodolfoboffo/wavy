@@ -1,10 +1,24 @@
 package com.terpomo.wavy.math;
+
+import java.util.Arrays;
+import java.util.stream.Stream;
+
 // https://introcs.cs.princeton.edu/java/97data/FFT.java.html
 public class FFT {
 
     // compute the FFT of x[], assuming its length n is a power of 2
+    public static Float[] fft(Float[] x) {
+        Complex[] complexArray = Stream.of(x).map(Complex::new).toArray(Complex[]::new);
+        Complex[] complexResults = fft(complexArray);
+        Float[] result = Stream.of(complexResults).map(Complex::abs).toArray(Float[]::new);
+        return result;
+    }
+
+    // compute the FFT of x[], assuming its length n is a power of 2
     public static Complex[] fft(Complex[] x) {
         int n = x.length;
+
+        if (n == 0) return new Complex[]{};
 
         // base case
         if (n == 1) return new Complex[] { x[0] };

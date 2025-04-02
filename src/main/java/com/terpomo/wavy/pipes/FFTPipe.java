@@ -3,63 +3,39 @@ package com.terpomo.wavy.pipes;
 import com.terpomo.wavy.Constants;
 import com.terpomo.wavy.flow.AbstractPipe;
 import com.terpomo.wavy.flow.Buffer;
-import com.terpomo.wavy.oscilloscope.TimeValuePair;
+import com.terpomo.wavy.math.FFT;
+import com.terpomo.wavy.math.Point;
 import com.terpomo.wavy.util.ListUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class FFTPipe extends AbstractPipe {
 
-	private static final int DEFAULT_NUMBER_OF_CHANNELS = 1;
-	private List<Buffer> buffers;
-	private int sampleRate;
+	private static final Logger LOGGER = Logger.getLogger(AbstractPipe.class.getName());
+	private final int MAX_RESOLUTION = 1024;
 	private int numberOfChannels;
+	private int sampleRate;
 	private long timestamp;
-	private float scale;
-	private int pointSkip;
+	private List<Buffer> buffers;
 
-	public FFTPipe(float scale) {
-		this.numberOfChannels = DEFAULT_NUMBER_OF_CHANNELS;
+	public FFTPipe() {
+		this.numberOfChannels = 1;
 		this.sampleRate = Constants.DEFAULT_SAMPLE_RATE;
-		this.scale = scale;
-		this.pointSkip = DEFAULT_POINT_SKIP;
 		this.buffers = new ArrayList<>();
 		this.buildPipesAndBuffers();
 	}
 
-	public int getNumberOfChannels() {
-		return numberOfChannels;
-	}
-
-	public int getSampleRate() {
-		return sampleRate;
-	}
-
 	synchronized private void buildPipesAndBuffers() {
-        try {
+		try {
 			this.dispose();
-            this.buffers = ListUtils.buildNewList(this.numberOfChannels, Buffer.class, this.buffers, Buffer.class.getDeclaredConstructor(int.class, boolean.class), new Object[]{(int)(this.sampleRate*this.scale), true});
+			this.buffers = ListUtils.buildNewList(this.numberOfChannels, Buffer.class, this.buffers, Buffer.class.getDeclaredConstructor(int.class, boolean.class), new Object[]{(int)(this.MAX_RESOLUTION), true});
 			this.buildInputPipes(this.numberOfChannels);
-        } catch (NoSuchMethodException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-	synchronized public void setNumberOfChannels(int numberOfChannels) {
-		this.numberOfChannels = numberOfChannels;
-		this.buildPipesAndBuffers();
-	}
-
-	synchronized public void setSampleRate(int sampleRate) {
-		this.sampleRate = sampleRate;
-		for(Buffer b : this.buffers) {
-			b.resizeBuffer((int) (this.sampleRate * this.scale));
+		} catch (NoSuchMethodException e) {
+			throw new RuntimeException(e);
 		}
-	}
-
-	public FFTPipe() {
-		this(DEFAULT_SCALE);
 	}
 
 	@Override
@@ -83,48 +59,28 @@ public class FFTPipe extends AbstractPipe {
 		}
 	}
 
-	public int getPointSkip() {
-		return pointSkip;
-	}
-
-	synchronized public void setPointSkip(int pointSkip) {
-		int newPointSkip = Math.max(pointSkip, 0);
-		this.pointSkip = newPointSkip;
-	}
-
-	synchronized public void setQuality(float quality) {
-        float newQuality = Math.max(Math.min(quality, 100f), 0.05f);
-        int newPointSkip = Math.max((int) (100f / newQuality - 1), 0);
-        this.setPointSkip(newPointSkip);
-    }
-
-	synchronized public float getQuality() {
-		return 100f / (this.pointSkip + 1);
-	}
-
-	public float getScale() {
-		return scale;
-	}
-
-	synchronized public void setScale(float scale) {
-		float newScale = Math.min(scale, MAX_SCALE);
-		this.scale = scale;
-		for (int i = 0; i < this.numberOfChannels; i++) {
-			this.buffers.get(i).resizeBuffer((int)(newScale*this.sampleRate));
+	private List<Point> getPointsFromFFTResult(Float[] result, int sampleRate) {
+		ArrayList<Point> values = new ArrayList<>();
+		float step = 1.0f * sampleRate / result.length;
+		for (int i = 0; i < result.length/2; i++) {
+			values.add(new Point(step * i, result[i]));
 		}
-	}
-
-	synchronized private ArrayList<TimeValuePair> generateTimeValuePairs(Buffer buffer) {
-		ArrayList<TimeValuePair> pairs = new ArrayList<>();
-		Float[] clonedBuffer = buffer.getAll();
-		for (int i = 0; i < clonedBuffer.length; i += this.pointSkip+1) {
-			pairs.add(new TimeValuePair((float)i/this.sampleRate, clonedBuffer[i]));
-		}
-		return pairs;
-	}
-
-	synchronized public List<TimeValuePair> getValuesForChannel(int channelIndex) {
-		ArrayList<TimeValuePair> values = this.generateTimeValuePairs(this.buffers.get(channelIndex));
 		return values;
+	}
+
+	synchronized public List<Point> getValuesForChannel(int channelIndex) {
+		try {
+			Float[] samples = this.buffers.get(channelIndex).getAll();
+			Float[] result = FFT.fft(samples);
+			List<Point> points = this.getPointsFromFFTResult(result, this.sampleRate);
+			return points;
+		} catch (IllegalArgumentException e) {
+			LOGGER.log(Level.WARNING, String.format("Could not calculate fft for channel %d.", channelIndex+1), e);
+			return null;
+		}
+	}
+
+	public int getNumberOfChannels() {
+		return numberOfChannels;
 	}
 }

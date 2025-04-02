@@ -2,6 +2,7 @@ package com.terpomo.wavy.ui.pipes;
 
 import com.terpomo.wavy.flow.AbstractPipe;
 import com.terpomo.wavy.flow.IPort;
+import com.terpomo.wavy.math.Point;
 import com.terpomo.wavy.oscilloscope.TimeValuePair;
 import com.terpomo.wavy.pipes.FFTPipe;
 import com.terpomo.wavy.util.RepeatableTask;
@@ -83,10 +84,11 @@ public class FFTPipeRepr extends AbstractPipeRepr<FFTPipe> {
 
 	synchronized private void updateGui() {
 		for (int i = 0; i < this.getPipe().getNumberOfChannels(); i++) {
-			List<TimeValuePair> content = this.getPipe().getValuesForChannel(i);
+			List<Point> content = this.getPipe().getValuesForChannel(i);
+			if (content == null) continue;
 			this.channelSwapSeries.get(i).clear();
-			for (TimeValuePair timeValuePair : content) {
-				this.channelSwapSeries.get(i).add(timeValuePair.getTimeInMillisec(), timeValuePair.getValue());
+			for (Point point : content) {
+				this.channelSwapSeries.get(i).add(point.getX(), point.getY());
 			}
 		}
 		EventQueue.invokeLater(new Runnable() {
@@ -106,12 +108,6 @@ public class FFTPipeRepr extends AbstractPipeRepr<FFTPipe> {
 	@SuppressWarnings("rawtypes")
 	protected List<PipePropertyRepr> createPipePropertiesForInputs() {
 		List<PipePropertyRepr> pipeProperties = new ArrayList<>();
-
-		PipePropertyRepr<Integer> sampleRateProperty = new PipePropertyRepr<Integer>(Integer.class, this, null, SAMPLE_RATE, this.getPipe().getSampleRate(), null, this.getPipe()::setSampleRate);
-		pipeProperties.add(sampleRateProperty);
-
-		PipePropertyRepr<Float> definitionProperty = new PipePropertyRepr<Float>(Float.class, this, null, DEFINITION, this.getPipe().getQuality(), null, this.getPipe()::setQuality);
-		pipeProperties.add(definitionProperty);
 		
 		for (int i = 0; i < this.getPipe().getInputPorts().size(); i++) {
 			IPort port = this.getPipe().getInputPorts().get(i);
