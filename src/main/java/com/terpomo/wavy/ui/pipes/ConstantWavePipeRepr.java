@@ -22,13 +22,13 @@ public class ConstantWavePipeRepr extends AbstractSignalPipeRepr<ConstantWave, C
 
 		@SuppressWarnings("rawtypes")
 		List<PipePropertyRepr> pipeProperties = new ArrayList<>();
-		PipePropertyRepr<Integer> sampleRateProperty = new PipePropertyRepr<Integer>(Integer.class, this, null, AbstractPipeRepr.SAMPLE_RATE, pipe.getSignal().getSampleRate(), null, this.getPipe()::setSampleRate);
+		PipePropertyRepr<Integer> sampleRateProperty = new PipePropertyRepr<Integer>(Integer.class, this, null, AbstractPipeRepr.SAMPLE_RATE, pipe.getSignal()::getSampleRate, null, this.getPipe()::setSampleRate);
 		pipeProperties.add(sampleRateProperty);
 
-		PipePropertyRepr<Float> frequencyProperty = new PipePropertyRepr<Float>(Float.class, this, null, FREQUENCY, pipe.getSignal().getFrequency(), null, this.getPipe()::setFrequency);
+		PipePropertyRepr<Float> frequencyProperty = new PipePropertyRepr<Float>(Float.class, this, null, FREQUENCY, pipe.getSignal()::getFrequency, null, this.getPipe()::setFrequency);
 		pipeProperties.add(frequencyProperty);
 
-		PipePropertyRepr<Float> amplitudeProperty = new PipePropertyRepr<Float>(Float.class, this, null, AMPLITUDE, pipe.getSignal().getAmplitude(), null, this.getPipe()::setAmplitude);
+		PipePropertyRepr<Float> amplitudeProperty = new PipePropertyRepr<Float>(Float.class, this, null, AMPLITUDE, pipe.getSignal()::getAmplitude, null, this.getPipe()::setAmplitude);
 		pipeProperties.add(amplitudeProperty);
 		
 		@SuppressWarnings({ "rawtypes", "unchecked" })

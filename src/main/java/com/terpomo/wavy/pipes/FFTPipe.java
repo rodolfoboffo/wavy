@@ -15,14 +15,16 @@ import java.util.logging.Logger;
 public class FFTPipe extends AbstractPipe {
 
 	private static final Logger LOGGER = Logger.getLogger(AbstractPipe.class.getName());
-	private final int MAX_RESOLUTION = 1024;
+	private static final int MAX_RESOLUTION = 2048;
 	private int numberOfChannels;
+	private int resolution;
 	private int sampleRate;
 	private long timestamp;
 	private List<Buffer> buffers;
 
 	public FFTPipe() {
 		this.numberOfChannels = 1;
+		this.resolution = MAX_RESOLUTION;
 		this.sampleRate = Constants.DEFAULT_SAMPLE_RATE;
 		this.buffers = new ArrayList<>();
 		this.buildPipesAndBuffers();
@@ -70,17 +72,47 @@ public class FFTPipe extends AbstractPipe {
 
 	synchronized public List<Point> getValuesForChannel(int channelIndex) {
 		try {
-			Float[] samples = this.buffers.get(channelIndex).getAll();
-			Float[] result = FFT.fft(samples);
-			List<Point> points = this.getPointsFromFFTResult(result, this.sampleRate);
-			return points;
+			Float[] samples = this.buffers.get(channelIndex).fetch(this.resolution);
+			if (samples.length > 0) {
+				Float[] result = FFT.fft(samples);
+				List<Point> points = this.getPointsFromFFTResult(result, this.sampleRate);
+				return points;
+			}
 		} catch (IllegalArgumentException e) {
 			LOGGER.log(Level.WARNING, String.format("Could not calculate fft for channel %d.", channelIndex+1), e);
-			return null;
 		}
+		return null;
 	}
 
 	public int getNumberOfChannels() {
 		return numberOfChannels;
+	}
+
+	synchronized public void setNumberOfChannels(int numberOfChannels) {
+		this.numberOfChannels = numberOfChannels;
+		this.buildPipesAndBuffers();
+	}
+
+	public int getResolution() {
+		return resolution;
+	}
+
+	private int getNearestPowerOfTwo(int n) {
+		int result = 1;
+		while(result < n) result *= 2;
+		return Math.min(result, this.MAX_RESOLUTION);
+	}
+
+	synchronized public void setResolution(int resolution) {
+		int r = this.getNearestPowerOfTwo(resolution);
+		this.resolution = r;
+	}
+
+	public int getSampleRate() {
+		return sampleRate;
+	}
+
+	synchronized public void setSampleRate(int sampleRate) {
+		this.sampleRate = sampleRate;
 	}
 }

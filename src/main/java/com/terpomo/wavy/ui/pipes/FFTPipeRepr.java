@@ -3,7 +3,6 @@ package com.terpomo.wavy.ui.pipes;
 import com.terpomo.wavy.flow.AbstractPipe;
 import com.terpomo.wavy.flow.IPort;
 import com.terpomo.wavy.math.Point;
-import com.terpomo.wavy.oscilloscope.TimeValuePair;
 import com.terpomo.wavy.pipes.FFTPipe;
 import com.terpomo.wavy.util.RepeatableTask;
 import org.jfree.chart.ChartFactory;
@@ -21,7 +20,8 @@ import java.util.List;
 
 public class FFTPipeRepr extends AbstractPipeRepr<FFTPipe> {
 
-	private static final String DEFINITION = "Definition";
+	private static final String RESOLUTION = "Resolution";
+	private static final String NUMBER_OF_CHANNELS = "# of Channels";
 	private final JFreeChart lineChart;
 	private final LayoutManager contentLayout;
 	private final JPanel inputPanel;
@@ -85,7 +85,8 @@ public class FFTPipeRepr extends AbstractPipeRepr<FFTPipe> {
 	synchronized private void updateGui() {
 		for (int i = 0; i < this.getPipe().getNumberOfChannels(); i++) {
 			List<Point> content = this.getPipe().getValuesForChannel(i);
-			if (content == null) continue;
+			if (content == null)
+				continue;
 			this.channelSwapSeries.get(i).clear();
 			for (Point point : content) {
 				this.channelSwapSeries.get(i).add(point.getX(), point.getY());
@@ -108,7 +109,16 @@ public class FFTPipeRepr extends AbstractPipeRepr<FFTPipe> {
 	@SuppressWarnings("rawtypes")
 	protected List<PipePropertyRepr> createPipePropertiesForInputs() {
 		List<PipePropertyRepr> pipeProperties = new ArrayList<>();
-		
+
+		PipePropertyRepr<Integer> sampleRateProperty = new PipePropertyRepr<Integer>(Integer.class, this, null, SAMPLE_RATE, this.getPipe()::getSampleRate, null, this.getPipe()::setSampleRate);
+		pipeProperties.add(sampleRateProperty);
+
+		PipePropertyRepr<Integer> numOfChannelsProperty = new PipePropertyRepr<Integer>(Integer.class, this, null, NUMBER_OF_CHANNELS, this.getPipe()::getNumberOfChannels, null, this.getPipe()::setNumberOfChannels);
+		pipeProperties.add(numOfChannelsProperty);
+
+		PipePropertyRepr<Integer> definitionProperty = new PipePropertyRepr<Integer>(Integer.class, this, null, RESOLUTION, this.getPipe()::getResolution, null, this.getPipe()::setResolution);
+		pipeProperties.add(definitionProperty);
+
 		for (int i = 0; i < this.getPipe().getInputPorts().size(); i++) {
 			IPort port = this.getPipe().getInputPorts().get(i);
 			String propertyName = String.format("Channel %d", i+1);

@@ -110,16 +110,16 @@ public class OscilloscopePipeRepr extends AbstractPipeRepr<OscilloscopePipe> {
 	protected List<PipePropertyRepr> createPipePropertiesForInputs() {
 		List<PipePropertyRepr> pipeProperties = new ArrayList<>();
 
-		PipePropertyRepr<Integer> sampleRateProperty = new PipePropertyRepr<Integer>(Integer.class, this, null, SAMPLE_RATE, this.getPipe().getSampleRate(), null, this.getPipe()::setSampleRate);
+		PipePropertyRepr<Integer> sampleRateProperty = new PipePropertyRepr<Integer>(Integer.class, this, null, SAMPLE_RATE, this.getPipe()::getSampleRate, null, this.getPipe()::setSampleRate);
 		pipeProperties.add(sampleRateProperty);
 
-		PipePropertyRepr<Integer> numOfChannelsProperty = new PipePropertyRepr<Integer>(Integer.class, this, null, NUMBER_OF_CHANNELS, this.getPipe().getNumberOfChannels(), null, this.getPipe()::setNumberOfChannels);
+		PipePropertyRepr<Integer> numOfChannelsProperty = new PipePropertyRepr<Integer>(Integer.class, this, null, NUMBER_OF_CHANNELS, this.getPipe()::getNumberOfChannels, null, this.getPipe()::setNumberOfChannels);
 		pipeProperties.add(numOfChannelsProperty);
 
-		PipePropertyRepr<Float> definitionProperty = new PipePropertyRepr<Float>(Float.class, this, null, DEFINITION, this.getPipe().getQuality(), null, this.getPipe()::setQuality);
+		PipePropertyRepr<Float> definitionProperty = new PipePropertyRepr<Float>(Float.class, this, null, DEFINITION, this.getPipe()::getQuality, null, this.getPipe()::setQuality);
 		pipeProperties.add(definitionProperty);
 
-		PipePropertyRepr<Float> scaleProperty = new PipePropertyRepr<Float>(Float.class, this, null, SCALE, this.getPipe().getScale(), null, this.getPipe()::setScale);
+		PipePropertyRepr<Float> scaleProperty = new PipePropertyRepr<Float>(Float.class, this, null, SCALE, this.getPipe()::getScale, null, this.getPipe()::setScale);
 		pipeProperties.add(scaleProperty);
 		
 		for (int i = 0; i < this.getPipe().getInputPorts().size(); i++) {

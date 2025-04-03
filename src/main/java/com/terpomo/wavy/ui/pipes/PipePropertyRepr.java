@@ -9,6 +9,8 @@ import java.awt.event.FocusListener;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class PipePropertyRepr<T> {
 
@@ -20,17 +22,18 @@ public class PipePropertyRepr<T> {
 	private final PortRepr inputPortRepr;
 	private final String propertyName;
 	private final JLabel propertyLabel;
+	private final Supplier<T> getter;
 	private T value;
 	private final JTextField valueField;
 	private final IPort outputPort;
 	private final PortRepr outputPortRepr;
-	private final Consumer<T> callback;
+	private final Consumer<T> setter;
 	private final boolean readOnly;
 	
-	public PipePropertyRepr(Class<T> clazz, AbstractPipeRepr<?> parentPipe, IPort inputPort, String propertyName, T value, IPort outputPort, Consumer<T> callback, boolean readOnly) {
+	public PipePropertyRepr(Class<T> clazz, AbstractPipeRepr<?> parentPipe, IPort inputPort, String propertyName, Supplier<T> getter, IPort outputPort, Consumer<T> setter, boolean readOnly) {
 		super();
 		this.clazz = clazz;
-		this.callback = callback;
+		this.setter = setter;
 		this.readOnly = readOnly;
 		this.parentPipe = parentPipe;
 		this.inputPort = inputPort;
@@ -38,7 +41,8 @@ public class PipePropertyRepr<T> {
 		this.propertyName = propertyName;
 		this.propertyLabel = new JLabel(this.propertyName);
 		this.propertyLabel.setFont(DEFAULT_FONT);
-		this.value = value;
+		this.getter = getter;
+		this.value = this.getter != null ? this.getter.get() : null;
 		if (value != null) {
 			String textValue = this.getTextValue(value);
 			this.valueField = new JTextField(textValue);
@@ -52,16 +56,16 @@ public class PipePropertyRepr<T> {
 		this.outputPortRepr = outputPort != null ? new PortRepr(this.outputPort, this.parentPipe) : null;
 	}
 	
-	public PipePropertyRepr(Class<T> clazz, AbstractPipeRepr<?> parentPipe, IPort inputPort, String propertyName, T value, IPort outputPort) {
-		this(clazz, parentPipe, inputPort, propertyName, value, outputPort, null, false);
+	public PipePropertyRepr(Class<T> clazz, AbstractPipeRepr<?> parentPipe, IPort inputPort, String propertyName, Supplier<T> getter, IPort outputPort) {
+		this(clazz, parentPipe, inputPort, propertyName, getter, outputPort, null, false);
 	}
 
-	public PipePropertyRepr(Class<T> clazz, AbstractPipeRepr<?> parentPipe, IPort inputPort, String propertyName, T value, IPort outputPort, boolean readOnly) {
-		this(clazz, parentPipe, inputPort, propertyName, value, outputPort, null, readOnly);
+	public PipePropertyRepr(Class<T> clazz, AbstractPipeRepr<?> parentPipe, IPort inputPort, String propertyName, Supplier<T> getter, IPort outputPort, boolean readOnly) {
+		this(clazz, parentPipe, inputPort, propertyName, getter, outputPort, null, readOnly);
 	}
 
-	public PipePropertyRepr(Class<T> clazz, AbstractPipeRepr<?> parentPipe, IPort inputPort, String propertyName, T value, IPort outputPort, Consumer<T> callback) {
-		this(clazz, parentPipe, inputPort, propertyName, value, outputPort, callback, false);
+	public PipePropertyRepr(Class<T> clazz, AbstractPipeRepr<?> parentPipe, IPort inputPort, String propertyName, Supplier<T> getter, IPort outputPort, Consumer<T> callback) {
+		this(clazz, parentPipe, inputPort, propertyName, getter, outputPort, callback, false);
 	}
 	
 	public void layoutOnGrid(Container container, int rowIndex) {
@@ -133,8 +137,10 @@ public class PipePropertyRepr<T> {
             try {
                 newValue = PipePropertyRepr.this.parseTextValue(valueText);
 				if (newValue != PipePropertyRepr.this.value) {
-					PipePropertyRepr.this.value = newValue;
-					PipePropertyRepr.this.callback.accept(newValue);
+					PipePropertyRepr.this.setter.accept(newValue);
+					T acceptedValue = PipePropertyRepr.this.getter.get();
+					PipePropertyRepr.this.value = acceptedValue;
+					field.setText(PipePropertyRepr.this.getTextValue(acceptedValue));
 				}
             } catch (ParseException ex) {
                 throw new RuntimeException(ex);

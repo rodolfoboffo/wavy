@@ -41,7 +41,7 @@ public class SplitterPipeRepr extends AbstractPipeRepr {
         PipePropertyRepr inputChannelProperty = new PipePropertyRepr<>(null, this, this.splitter.getInputPort(), INPUT_CHANNEL, null, null, null);
         pipeProperties.add(inputChannelProperty);
 
-        PipePropertyRepr numOfChannelsProperty = new PipePropertyRepr<Integer>(Integer.class, this, null, NUMBER_OF_OUTPUTS, this.splitter.getNumberOfChannels(), null, this.splitter::setNumberOfChannels);
+        PipePropertyRepr numOfChannelsProperty = new PipePropertyRepr<Integer>(Integer.class, this, null, NUMBER_OF_OUTPUTS, this.splitter::getNumberOfChannels, null, this.splitter::setNumberOfChannels);
         pipeProperties.add(numOfChannelsProperty);
 
         for (int i = 0; i < this.splitter.getOutputPorts().size(); i++) {
