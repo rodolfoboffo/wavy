@@ -9,7 +9,8 @@ public enum PipeTypeEnum {
 	OSCILLOSCOPE_PIPE_ENUM(Constants.OSCILLOSCOPE),
 	SPLITTER_PIPE_ENUM(Constants.SPLITTER),
 	FILE_READER_PIPE_ENUM(Constants.FILE_READER),
-	FFT_PIPE_ENUM(Constants.FFT);
+	FFT_PIPE_ENUM(Constants.FFT),
+	COMBINATION_PIPE_ENUM(Constants.COMBINATION);
 	
 	private final String friendlyName;
 	

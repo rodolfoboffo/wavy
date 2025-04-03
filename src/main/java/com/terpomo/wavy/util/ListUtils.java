@@ -9,7 +9,7 @@ import java.util.List;
 
 public class ListUtils {
 
-    public static <T extends IWavyDisposable> List<T> buildNewList(int numOfItems, Class<T> objType, List<T> currentObjs, Constructor<T> constructor, Object[] initArgs) {
+    public static <T> List<T> buildNewList(int numOfItems, Class<T> objType, List<T> currentObjs, Constructor<T> constructor, Object[] initArgs) {
         T p = null;
         int currentSize = currentObjs.size();
         List<T> newList = new ArrayList<>();
@@ -18,7 +18,8 @@ public class ListUtils {
         }
         for (int i = 0; i < currentSize-numOfItems; i++) {
             p = currentObjs.get(currentObjs.size()-1);
-            p.wavyDispose();
+            if (p instanceof IWavyDisposable)
+                ((IWavyDisposable)p).wavyDispose();
             currentObjs.remove(p);
         }
         for (int i = 0; i < numOfItems-currentSize; i++) {

@@ -134,7 +134,7 @@ public class FileReaderPipe extends AbstractPipe {
         if (!this.inputFilePath.isEmpty()) {
             try {
                 this.openInputFile(this.inputFilePath);
-                this.buildOutputPipes(this.getNumOfChannels());
+                this.buildOutputPorts(this.getNumOfChannels());
                 AudioFormat.Encoding encoding = this.getEncoding();
                 if (encoding != AudioFormat.Encoding.PCM_UNSIGNED && encoding != AudioFormat.Encoding.PCM_SIGNED) {
                     throw new RuntimeException(String.format("Encoding not expected. %s", encoding.toString()));
@@ -145,7 +145,7 @@ public class FileReaderPipe extends AbstractPipe {
                 super.initialize();
             } catch (UnsupportedAudioFileException | IOException e) {
                 this.dispose();
-                this.buildOutputPipes(0);
+                this.buildOutputPorts(0);
                 throw new RuntimeException(e);
             }
         }

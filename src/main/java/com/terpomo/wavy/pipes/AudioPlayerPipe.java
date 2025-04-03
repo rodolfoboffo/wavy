@@ -32,7 +32,7 @@ public class AudioPlayerPipe extends AbstractPipe {
 	}
 
 	synchronized private void buildPipes() {
-		this.buildInputPipes(this.numOfChannels);
+		this.buildInputPorts(this.numOfChannels);
 		this.buffers = new Buffer[this.numOfChannels];
 		for (int i = 0; i < this.numOfChannels; i++) {
 			InputPort p = this.getInputPorts().get(i);

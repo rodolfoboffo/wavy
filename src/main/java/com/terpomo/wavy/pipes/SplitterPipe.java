@@ -5,8 +5,6 @@ import com.terpomo.wavy.flow.IPort;
 import com.terpomo.wavy.flow.InputPort;
 import com.terpomo.wavy.flow.OutputPort;
 
-import java.util.ArrayList;
-
 public class SplitterPipe extends AbstractPipe {
 
     private static final int DEFAULT_NUMBER_OF_CHANNELS = 2;
@@ -17,17 +15,17 @@ public class SplitterPipe extends AbstractPipe {
         this.numberOfChannels = numberOfChannels;
         this.inputPort = new InputPort(this);
         this.getInputPorts().add(this.inputPort);
-        this.buildPipes();
+        this.buildPorts();
     }
 
-    private void buildPipes() {
-        this.buildOutputPipes(this.numberOfChannels);
+    private void buildPorts() {
+        this.buildOutputPorts(this.numberOfChannels);
         this.firePropertyChange(PROPERTY_PIPE_OUTPUT_PORTS, null, this.getOutputPorts());
     }
 
     public void setNumberOfChannels(int numberOfChannels) {
         this.numberOfChannels = numberOfChannels;
-        this.buildPipes();
+        this.buildPorts();
     }
 
     public SplitterPipe() {

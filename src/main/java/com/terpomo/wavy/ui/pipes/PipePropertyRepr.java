@@ -64,8 +64,8 @@ public class PipePropertyRepr<T> {
 		this(clazz, parentPipe, inputPort, propertyName, getter, outputPort, null, readOnly);
 	}
 
-	public PipePropertyRepr(Class<T> clazz, AbstractPipeRepr<?> parentPipe, IPort inputPort, String propertyName, Supplier<T> getter, IPort outputPort, Consumer<T> callback) {
-		this(clazz, parentPipe, inputPort, propertyName, getter, outputPort, callback, false);
+	public PipePropertyRepr(Class<T> clazz, AbstractPipeRepr<?> parentPipe, IPort inputPort, String propertyName, Supplier<T> getter, IPort outputPort, Consumer<T> setter) {
+		this(clazz, parentPipe, inputPort, propertyName, getter, outputPort, setter, false);
 	}
 	
 	public void layoutOnGrid(Container container, int rowIndex) {

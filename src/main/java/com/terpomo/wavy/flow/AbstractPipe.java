@@ -28,7 +28,7 @@ public abstract class AbstractPipe extends ObservableObject implements IPipe {
 		this.isInitialized = false;
 	}
 	
-	synchronized public void buildInputPipes(int numOfPipes) {
+	synchronized public void buildInputPorts(int numOfPipes) {
         try {
 			List<InputPort> newInputPorts = null;
             newInputPorts = ListUtils.buildNewList(numOfPipes, InputPort.class, this.getInputPorts(), InputPort.class.getDeclaredConstructor(IPipe.class), new Object[]{this});
@@ -39,7 +39,7 @@ public abstract class AbstractPipe extends ObservableObject implements IPipe {
         }
 	}
 
-	synchronized public void buildOutputPipes(int numOfPipes) {
+	synchronized public void buildOutputPorts(int numOfPipes) {
         try {
 			List<OutputPort> newOutputPorts = null;
             newOutputPorts = ListUtils.buildNewList(numOfPipes, OutputPort.class, this.getOutputPorts(), OutputPort.class.getDeclaredConstructor(IPipe.class), new Object[]{this});

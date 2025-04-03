@@ -28,7 +28,7 @@ public class OscilloscopePipe extends AbstractPipe {
 		this.scale = scale;
 		this.pointSkip = DEFAULT_POINT_SKIP;
 		this.buffers = new ArrayList<>();
-		this.buildPipesAndBuffers();
+		this.buildPortsAndBuffers();
 	}
 
 	public int getNumberOfChannels() {
@@ -39,11 +39,11 @@ public class OscilloscopePipe extends AbstractPipe {
 		return sampleRate;
 	}
 
-	synchronized private void buildPipesAndBuffers() {
+	synchronized private void buildPortsAndBuffers() {
         try {
 			this.dispose();
             this.buffers = ListUtils.buildNewList(this.numberOfChannels, Buffer.class, this.buffers, Buffer.class.getDeclaredConstructor(int.class, boolean.class), new Object[]{(int)(this.sampleRate*this.scale), true});
-			this.buildInputPipes(this.numberOfChannels);
+			this.buildInputPorts(this.numberOfChannels);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }
@@ -51,7 +51,7 @@ public class OscilloscopePipe extends AbstractPipe {
 
 	synchronized public void setNumberOfChannels(int numberOfChannels) {
 		this.numberOfChannels = numberOfChannels;
-		this.buildPipesAndBuffers();
+		this.buildPortsAndBuffers();
 	}
 
 	synchronized public void setSampleRate(int sampleRate) {

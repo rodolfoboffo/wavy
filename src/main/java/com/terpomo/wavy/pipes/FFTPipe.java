@@ -27,14 +27,14 @@ public class FFTPipe extends AbstractPipe {
 		this.resolution = MAX_RESOLUTION;
 		this.sampleRate = Constants.DEFAULT_SAMPLE_RATE;
 		this.buffers = new ArrayList<>();
-		this.buildPipesAndBuffers();
+		this.buildPortsAndBuffers();
 	}
 
-	synchronized private void buildPipesAndBuffers() {
+	synchronized private void buildPortsAndBuffers() {
 		try {
 			this.dispose();
 			this.buffers = ListUtils.buildNewList(this.numberOfChannels, Buffer.class, this.buffers, Buffer.class.getDeclaredConstructor(int.class, boolean.class), new Object[]{(int)(this.MAX_RESOLUTION), true});
-			this.buildInputPipes(this.numberOfChannels);
+			this.buildInputPorts(this.numberOfChannels);
 		} catch (NoSuchMethodException e) {
 			throw new RuntimeException(e);
 		}
@@ -90,7 +90,7 @@ public class FFTPipe extends AbstractPipe {
 
 	synchronized public void setNumberOfChannels(int numberOfChannels) {
 		this.numberOfChannels = numberOfChannels;
-		this.buildPipesAndBuffers();
+		this.buildPortsAndBuffers();
 	}
 
 	public int getResolution() {

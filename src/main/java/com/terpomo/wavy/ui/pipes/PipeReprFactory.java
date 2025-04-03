@@ -35,6 +35,10 @@ public class PipeReprFactory {
 			pipeRepr = new FFTPipeRepr((FFTPipe) pipe, pipeName);
 			return pipeRepr;
 		}
+		case COMBINATION_PIPE_ENUM: {
+			pipeRepr = new CombinationPipeRepr((CombinationPipe) pipe, pipeName);
+			return pipeRepr;
+		}
 		default:
 			throw new IllegalArgumentException("Unexpected value: " + pipeType);
 		}

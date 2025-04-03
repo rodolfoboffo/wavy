@@ -25,6 +25,9 @@ public class PipeFactory {
 		case FFT_PIPE_ENUM: {
 			return new FFTPipe();
 		}
+			case COMBINATION_PIPE_ENUM: {
+			return new CombinationPipe();
+		}
 		default:
 			throw new IllegalArgumentException("Unexpected value: " + pipeType);
 		}
