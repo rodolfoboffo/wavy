@@ -1,10 +1,18 @@
 package com.terpomo.wavy.ui.pipes;
 
+import com.terpomo.wavy.flow.AbstractPipe;
 import com.terpomo.wavy.flow.IPort;
 import com.terpomo.wavy.pipes.BandPassFilterPipe;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
 
 import javax.swing.*;
 import java.awt.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,12 +21,35 @@ public class BandPassFilterPipeRepr extends AbstractPipeRepr<BandPassFilterPipe>
     private static final String LOW_FREQUENCY = "Low Frequency";
     private static final String HIGH_FREQUENCY = "High Frequency";
     private static final String RESOLUTION = "Resolution";
+    private static final String FIR_FILTER = "FIR Filter";
     private JPanel pipePropertiesPanel;
+    private XYSeriesCollection dataset;
+    private JFreeChart lineChart;
+    private ChartPanel chartPanel;
+    private XYSeries firFilterSeries;
 
     public BandPassFilterPipeRepr(BandPassFilterPipe pipe, String name) {
         super(pipe, name);
+        this.createChart();
         this.createPanels();
+        this.updateFirFilterChart();
         this.buildCustomPipeControls();
+        this.getPipe().addPropertyChangeListener(BandPassFilterPipe.PROPERTY_FIR_FILTER, new BandPassFilterPipeRepr.FirFilterPropertyChangeListener());
+    }
+
+    private void updateFirFilterChart() {
+        this.firFilterSeries.clear();
+        Float[] firFilter = this.getPipe().getFirFilter();
+        for (int i = 0; i < firFilter.length; i++) {
+            this.firFilterSeries.add(i, firFilter[i]);
+        }
+    }
+
+    private void createChart() {
+        this.dataset = new XYSeriesCollection();
+        this.firFilterSeries = new XYSeries(FIR_FILTER);
+        this.dataset.addSeries(this.firFilterSeries);
+        this.lineChart = ChartFactory.createXYLineChart(null, null, null, this.dataset);
     }
 
     private void createPanels() {
@@ -34,6 +65,13 @@ public class BandPassFilterPipeRepr extends AbstractPipeRepr<BandPassFilterPipe>
         constraints.gridx = 0;
         constraints.gridy = 0;
         contentPanel.add(this.pipePropertiesPanel, constraints);
+
+        this.chartPanel = new ChartPanel(this.lineChart);
+        this.chartPanel.setLayout(new BorderLayout());
+        this.chartPanel.setPreferredSize(new Dimension(300, 150));
+        constraints.gridx = 0;
+        constraints.gridy = 1;
+        contentPanel.add(this.chartPanel, constraints);
     }
 
     @SuppressWarnings("rawtypes")
@@ -69,4 +107,16 @@ public class BandPassFilterPipeRepr extends AbstractPipeRepr<BandPassFilterPipe>
         return pipeProperties;
     }
 
+    class FirFilterPropertyChangeListener implements PropertyChangeListener {
+
+        @Override
+        public void propertyChange(PropertyChangeEvent evt) {
+            EventQueue.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    BandPassFilterPipeRepr.this.updateFirFilterChart();
+                }
+            });
+        }
+    }
 }

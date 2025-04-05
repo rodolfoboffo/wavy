@@ -2,16 +2,25 @@ package com.terpomo.wavy.pipes;
 
 import com.terpomo.wavy.Constants;
 import com.terpomo.wavy.flow.AbstractPipe;
+import com.terpomo.wavy.flow.Buffer;
+import com.terpomo.wavy.flow.IPipe;
+import com.terpomo.wavy.flow.OutputPort;
 import com.terpomo.wavy.math.FFT;
 import com.terpomo.wavy.math.Utils;
+import com.terpomo.wavy.util.ListUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class BandPassFilterPipe extends AbstractPipe {
 
+    public static final String PROPERTY_FIR_FILTER = "PROPERTY_FIR_FILTER";
     private static final int MAX_RESOLUTION = 256;
     private int sampleRate;
     private int numOfChannels = 1;
     private float lowFrequency, highFrequency;
     private int resolution;
+    private List<Buffer> buffers;
     private Float[] firFilter;
 
     public BandPassFilterPipe() {
@@ -19,12 +28,14 @@ public class BandPassFilterPipe extends AbstractPipe {
         this.lowFrequency = 0;
         this.highFrequency = this.sampleRate / 2.0f;
         this.resolution = MAX_RESOLUTION;
+        this.buffers = new ArrayList<>();
         this.resetFirFilter();
-        this.buildPorts();
+        this.buildPortsAndBuffers();
     }
 
     private void resetFirFilter() {
         this.firFilter = this.getFir(this.lowFrequency, this.highFrequency, this.sampleRate, this.resolution);
+        this.firePropertyChange(PROPERTY_FIR_FILTER, null, this.firFilter);
     }
 
     private Float[] getFir(float lowFrequency, float highFrequency, int sampleRate, int resolution) {
@@ -32,10 +43,14 @@ public class BandPassFilterPipe extends AbstractPipe {
         float step = 1.0f * sampleRate / resolution;
         float v = 0;
         for (int i = 0; i < resolution/2; i++) {
-            v = (step*i <= highFrequency && step*i >= lowFrequency) ? 1.0f * resolution : 0.0f;
+            v = (step*i <= highFrequency && step*i >= lowFrequency) ? 1.0f : 0.0f;
             freqDomainFir[i] = freqDomainFir[resolution-1-i] = v;
         }
-        Float[] fir = FFT.ifft(freqDomainFir);
+        Float[] shiftedFir = FFT.ifft(freqDomainFir);
+        Float[] fir = new Float[this.resolution];
+        for (int i = 0; i < this.resolution; i++) {
+            fir[i] = (shiftedFir[(i+this.resolution/2)%this.resolution]);
+        }
         return fir;
     }
 
@@ -81,10 +96,15 @@ public class BandPassFilterPipe extends AbstractPipe {
         return numOfChannels;
     }
 
-    synchronized private void buildPorts() {
+    synchronized private void buildPortsAndBuffers() {
         this.dispose();
         this.buildOutputPorts(this.numOfChannels);
         this.buildInputPorts(this.numOfChannels);
+        try {
+            this.buffers = ListUtils.buildNewList(this.numOfChannels, Buffer.class, this.buffers, Buffer.class.getDeclaredConstructor(int.class, boolean.class), new Object[]{MAX_RESOLUTION, true});
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -97,12 +117,20 @@ public class BandPassFilterPipe extends AbstractPipe {
 
         }
         for (int i = 0; i < this.numOfChannels; i++) {
+            Buffer b = this.buffers.get(i);
             float v = this.getInputPorts().get(i).getBuffer().pickOne();
-            for (int j = 0; j < this.resolution; j++) {
-                v += this.firFilter[j];
+            b.put(v);
+            if (b.getSize() >= this.resolution) {
+                v = 0;
+                for (int j = this.resolution-1; j >= 0; j--) {
+                    v += this.firFilter[j]*b.getValue(j);
+                }
+                this.getOutputPorts().get(i).getLinkedPort().getBuffer().put(v);
             }
-            v -= this.resolution;
-            this.getOutputPorts().get(i).getLinkedPort().getBuffer().put(v);
         }
+    }
+
+    public Float[] getFirFilter() {
+        return firFilter.clone();
     }
 }
