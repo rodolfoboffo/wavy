@@ -8,9 +8,9 @@ public class FFT {
 
     // compute the FFT of x[], assuming its length n is a power of 2
     public static Float[] fft(Float[] x) {
-        Complex[] complexArray = Stream.of(x).map(Complex::new).toArray(Complex[]::new);
+        Complex[] complexArray = Utils.toArrayOfComplex(x);
         Complex[] complexResults = fft(complexArray);
-        Float[] result = Stream.of(complexResults).map(Complex::abs).toArray(Float[]::new);
+        Float[] result = Utils.toArrayOfAbsValues(complexResults);
         return result;
     }
 
@@ -53,6 +53,12 @@ public class FFT {
         return y;
     }
 
+    public static Float[] ifft(Float[] x) {
+        Complex[] complexArray = Utils.toArrayOfComplex(x);
+        Complex[] complexResults = ifft(complexArray);
+        Float[] floatResults = Utils.toArrayOfAbsValues(complexResults);
+        return floatResults;
+    }
 
     // compute the inverse FFT of x[], assuming its length n is a power of 2
     public static Complex[] ifft(Complex[] x) {

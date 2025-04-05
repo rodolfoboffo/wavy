@@ -75,14 +75,16 @@ public class OscilloscopePipe extends AbstractPipe {
 	synchronized protected void doWork() {
 		long now = System.currentTimeMillis();
 		long intervalMillis = now - this.timestamp;
-		this.timestamp = now;
 		int samplesToFetch = (int)(1.0f / 1000 * intervalMillis * this.sampleRate);
-		int maxAvailableSamples = samplesToFetch;
-		for (int i = 0; i < this.numberOfChannels; i++) {
-			maxAvailableSamples = Math.min(this.getInputPorts().get(i).getBuffer().getSize(), maxAvailableSamples);
-		}
-		for (int i = 0; i < this.numberOfChannels; i++) {
-			this.buffers.get(i).putAll(this.getInputPorts().get(i).getBuffer().fetch(maxAvailableSamples));
+		if (samplesToFetch > 0) {
+			this.timestamp = now;
+			int maxAvailableSamples = samplesToFetch;
+			for (int i = 0; i < this.numberOfChannels; i++) {
+				maxAvailableSamples = Math.min(this.getInputPorts().get(i).getBuffer().getSize(), maxAvailableSamples);
+			}
+			for (int i = 0; i < this.numberOfChannels; i++) {
+				this.buffers.get(i).putAll(this.getInputPorts().get(i).getBuffer().fetch(maxAvailableSamples));
+			}
 		}
 	}
 

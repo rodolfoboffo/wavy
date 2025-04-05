@@ -8,6 +8,8 @@ import com.terpomo.wavy.util.RepeatableTask;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
@@ -82,6 +84,7 @@ public class OscilloscopePipeRepr extends AbstractPipeRepr<OscilloscopePipe> {
 			this.channelSwapSeries.add(new XYSeries(String.format("Channel %d", i+1)));
 			this.dataset.addSeries(this.channelSeries.get(i));
 		}
+
 	}
 
 	synchronized private void updateGui() {
@@ -101,6 +104,8 @@ public class OscilloscopePipeRepr extends AbstractPipeRepr<OscilloscopePipe> {
 				OscilloscopePipeRepr.this.dataset.removeAllSeries();
 				for (int j = 0; j < OscilloscopePipeRepr.this.getPipe().getNumberOfChannels(); j++) {
 					OscilloscopePipeRepr.this.dataset.addSeries(OscilloscopePipeRepr.this.channelSeries.get(j));
+					((XYPlot)OscilloscopePipeRepr.this.lineChart.getPlot()).getRangeAxis(j).setAutoRange(true);
+					((NumberAxis)((XYPlot)OscilloscopePipeRepr.this.lineChart.getPlot()).getRangeAxis(j)).setAutoRangeIncludesZero(false);
 				}
 			}
 		});

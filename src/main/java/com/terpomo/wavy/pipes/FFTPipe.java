@@ -5,6 +5,7 @@ import com.terpomo.wavy.flow.AbstractPipe;
 import com.terpomo.wavy.flow.Buffer;
 import com.terpomo.wavy.math.FFT;
 import com.terpomo.wavy.math.Point;
+import com.terpomo.wavy.math.Utils;
 import com.terpomo.wavy.util.ListUtils;
 
 import java.util.ArrayList;
@@ -97,14 +98,9 @@ public class FFTPipe extends AbstractPipe {
 		return resolution;
 	}
 
-	private int getNearestPowerOfTwo(int n) {
-		int result = 1;
-		while(result < n) result *= 2;
-		return Math.min(result, this.MAX_RESOLUTION);
-	}
-
 	synchronized public void setResolution(int resolution) {
-		int r = this.getNearestPowerOfTwo(resolution);
+		int r = Utils.getNearestPowerOfTwo(resolution);
+		r = Math.min(r, MAX_RESOLUTION);
 		this.resolution = r;
 	}
 

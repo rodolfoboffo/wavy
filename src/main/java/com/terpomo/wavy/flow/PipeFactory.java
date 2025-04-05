@@ -25,8 +25,11 @@ public class PipeFactory {
 		case FFT_PIPE_ENUM: {
 			return new FFTPipe();
 		}
-			case COMBINATION_PIPE_ENUM: {
+		case COMBINATION_PIPE_ENUM: {
 			return new CombinationPipe();
+		}
+		case BAND_PASS_FILTER_PIPE_ENUM: {
+			return new BandPassFilterPipe();
 		}
 		default:
 			throw new IllegalArgumentException("Unexpected value: " + pipeType);

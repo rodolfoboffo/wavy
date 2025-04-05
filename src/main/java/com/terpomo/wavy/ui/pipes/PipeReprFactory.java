@@ -39,6 +39,10 @@ public class PipeReprFactory {
 			pipeRepr = new CombinationPipeRepr((CombinationPipe) pipe, pipeName);
 			return pipeRepr;
 		}
+		case BAND_PASS_FILTER_PIPE_ENUM: {
+			pipeRepr = new BandPassFilterPipeRepr((BandPassFilterPipe) pipe, pipeName);
+			return pipeRepr;
+		}
 		default:
 			throw new IllegalArgumentException("Unexpected value: " + pipeType);
 		}
