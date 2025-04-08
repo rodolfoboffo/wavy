@@ -54,11 +54,11 @@ public class OscilloscopePipeRepr extends AbstractPipeRepr<OscilloscopePipe> {
 		this.dataset = new XYSeriesCollection();
 		this.channelSeries = new ArrayList<>();
 		this.channelSwapSeries = new ArrayList<>();
-		this.buildChannels();
 		this.lineChart = ChartFactory.createXYLineChart(null, null, null, this.dataset);
 		this.chartPanel = new ChartPanel(this.lineChart);
 		this.chartPanel.setLayout(new BorderLayout());
 		this.chartPanel.setPreferredSize(new Dimension(300, 150));
+		this.buildChannels();
 
 		constraints = new GridBagConstraints();
 		constraints.gridx = 0;
@@ -83,8 +83,6 @@ public class OscilloscopePipeRepr extends AbstractPipeRepr<OscilloscopePipe> {
 			this.channelSeries.add(new XYSeries(String.format("Channel %d", i+1)));
 			this.channelSwapSeries.add(new XYSeries(String.format("Channel %d", i+1)));
 			this.dataset.addSeries(this.channelSeries.get(i));
-			((XYPlot)OscilloscopePipeRepr.this.lineChart.getPlot()).getRangeAxis(i).setAutoRange(true);
-			((NumberAxis)((XYPlot)OscilloscopePipeRepr.this.lineChart.getPlot()).getRangeAxis(i)).setAutoRangeIncludesZero(false);
 		}
 
 	}
