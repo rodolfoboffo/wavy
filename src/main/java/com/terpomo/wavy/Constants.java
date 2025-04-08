@@ -14,6 +14,7 @@ public class Constants {
 	public static final String COMBINATION = "Signal Combination";
 	public static final String FFT = "FFT";
 	public static final String BAND_PASS_FILTER_PIPE_ENUM = "Band Pass Filter";
+	public static final String MIC_PIPE_ENUM = "Microphone";
 	
 	public static final Color LIGHT_CYAN = new Color(230, 230, 255);
 }

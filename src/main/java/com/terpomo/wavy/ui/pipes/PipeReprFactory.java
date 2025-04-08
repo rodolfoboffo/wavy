@@ -1,8 +1,8 @@
 package com.terpomo.wavy.ui.pipes;
 
 import com.terpomo.wavy.flow.AbstractPipe;
-import com.terpomo.wavy.flow.PipeFactory;
-import com.terpomo.wavy.flow.PipeTypeEnum;
+import com.terpomo.wavy.pipes.PipeFactory;
+import com.terpomo.wavy.pipes.PipeTypeEnum;
 import com.terpomo.wavy.pipes.*;
 
 public class PipeReprFactory {
@@ -41,6 +41,10 @@ public class PipeReprFactory {
 		}
 		case BAND_PASS_FILTER_PIPE_ENUM: {
 			pipeRepr = new BandPassFilterPipeRepr((BandPassFilterPipe) pipe, pipeName);
+			return pipeRepr;
+		}
+		case MIC_PIPE_ENUM: {
+			pipeRepr = new MicPipeRepr((MicPipe) pipe, pipeName);
 			return pipeRepr;
 		}
 		default:

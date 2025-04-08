@@ -87,7 +87,8 @@ public abstract class AbstractPipe extends ObservableObject implements IPipe {
 			if (!this.isInitialized()) {
 				this.initialize();
 			}
-			this.doWork();
+			if (this.isInitialized())
+				this.doWork();
 		} catch (Exception e) {
 			LOGGER.log(Level.SEVERE, e.getMessage(), e);
         }

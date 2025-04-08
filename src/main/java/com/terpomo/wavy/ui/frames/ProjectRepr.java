@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.terpomo.wavy.IWavyDisposable;
-import com.terpomo.wavy.flow.PipeTypeEnum;
+import com.terpomo.wavy.pipes.PipeTypeEnum;
 import com.terpomo.wavy.flow.Project;
 import com.terpomo.wavy.ui.UIController;
 import com.terpomo.wavy.ui.components.IWavyRepr;

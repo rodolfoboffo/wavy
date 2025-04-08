@@ -11,7 +11,7 @@ import com.terpomo.wavy.IWavyDisposable;
 import com.terpomo.wavy.core.IWavyModel;
 import com.terpomo.wavy.flow.IPipe;
 import com.terpomo.wavy.flow.PipeController;
-import com.terpomo.wavy.flow.PipeTypeEnum;
+import com.terpomo.wavy.pipes.PipeTypeEnum;
 import com.terpomo.wavy.flow.Project;
 import com.terpomo.wavy.ui.components.IWavyRepr;
 import com.terpomo.wavy.ui.frames.ProjectRepr;

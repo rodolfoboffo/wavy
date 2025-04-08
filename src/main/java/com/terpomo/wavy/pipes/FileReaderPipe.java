@@ -4,7 +4,7 @@ import com.terpomo.wavy.flow.AbstractPipe;
 import com.terpomo.wavy.flow.Buffer;
 import com.terpomo.wavy.flow.IPort;
 import com.terpomo.wavy.flow.OutputPort;
-import com.terpomo.wavy.sound.LPCMCodec;
+import com.terpomo.wavy.sound.LPCMDecoder;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
@@ -20,8 +20,8 @@ public class FileReaderPipe extends AbstractPipe {
     private File inputFile;
     private AudioInputStream audioStream;
     private boolean isFileOpen;
-    private boolean repeat;
-    private LPCMCodec codec;
+    private final boolean repeat;
+    private LPCMDecoder codec;
     private AudioFormat audioFormat;
     private Buffer[] outputBuffers;
 
@@ -140,7 +140,7 @@ public class FileReaderPipe extends AbstractPipe {
                     throw new RuntimeException(String.format("Encoding not expected. %s", encoding.toString()));
                 }
                 this.outputBuffers = this.getOutputBuffers();
-                this.codec = new LPCMCodec(this.getSampleRate(), this.getBitsPerSample(), this.isSigned(), this.isBigEndian(), this.outputBuffers);
+                this.codec = new LPCMDecoder(this.getSampleRate(), this.getBitsPerSample(), this.isSigned(), this.isBigEndian(), this.getNumOfChannels());
                 this.isFileOpen = true;
                 super.initialize();
             } catch (UnsupportedAudioFileException | IOException e) {

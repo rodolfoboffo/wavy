@@ -1,4 +1,4 @@
-package com.terpomo.wavy.flow;
+package com.terpomo.wavy.pipes;
 
 import com.terpomo.wavy.Constants;
 
@@ -11,8 +11,9 @@ public enum PipeTypeEnum {
 	FILE_READER_PIPE_ENUM(Constants.FILE_READER),
 	FFT_PIPE_ENUM(Constants.FFT),
 	COMBINATION_PIPE_ENUM(Constants.COMBINATION),
-	BAND_PASS_FILTER_PIPE_ENUM(Constants.BAND_PASS_FILTER_PIPE_ENUM);
-	
+	BAND_PASS_FILTER_PIPE_ENUM(Constants.BAND_PASS_FILTER_PIPE_ENUM),
+	MIC_PIPE_ENUM(Constants.MIC_PIPE_ENUM);
+
 	private final String friendlyName;
 	
 	private PipeTypeEnum(String friendlyName) {

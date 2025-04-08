@@ -1,6 +1,6 @@
-package com.terpomo.wavy.flow;
+package com.terpomo.wavy.pipes;
 
-import com.terpomo.wavy.pipes.*;
+import com.terpomo.wavy.flow.AbstractPipe;
 import com.terpomo.wavy.signals.ConstantWave;
 
 public class PipeFactory {
@@ -30,6 +30,9 @@ public class PipeFactory {
 		}
 		case BAND_PASS_FILTER_PIPE_ENUM: {
 			return new BandPassFilterPipe();
+		}
+		case MIC_PIPE_ENUM: {
+			return new MicPipe();
 		}
 		default:
 			throw new IllegalArgumentException("Unexpected value: " + pipeType);

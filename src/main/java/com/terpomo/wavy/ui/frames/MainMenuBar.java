@@ -12,7 +12,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
-import com.terpomo.wavy.flow.PipeTypeEnum;
+import com.terpomo.wavy.pipes.PipeTypeEnum;
 import com.terpomo.wavy.ui.UIController;
 
 public class MainMenuBar extends JMenuBar {
