@@ -18,6 +18,7 @@ public class AudioPlayerPipe extends AbstractPipe {
 	protected boolean playing = true;
 	protected Encoder encoder;
 	protected Buffer[] buffers;
+	private Mixer.Info mixer;
 	protected SourceDataLine line;
 	
 	public AudioPlayerPipe() {

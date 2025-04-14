@@ -3,10 +3,10 @@ package com.terpomo.wavy.pipes;
 import com.terpomo.wavy.flow.AbstractPipe;
 import com.terpomo.wavy.flow.Buffer;
 import com.terpomo.wavy.flow.OutputPort;
+import com.terpomo.wavy.sound.AudioUtils;
 import com.terpomo.wavy.sound.LPCMDecoder;
 
 import javax.sound.sampled.*;
-import java.util.Arrays;
 
 
 public class MicPipe extends AbstractPipe {
@@ -23,7 +23,6 @@ public class MicPipe extends AbstractPipe {
     private final LPCMDecoder decoder;
     private Mixer.Info mixer;
     private TargetDataLine line;
-    private boolean playing;
 
     public MicPipe() {
         this.audioFormat = new AudioFormat(SAMPLE_RATE, BITS_PER_SAMPLE, CHANNELS, SIGNED, BIG_ENDIAN);
@@ -31,7 +30,6 @@ public class MicPipe extends AbstractPipe {
         this.outputPort = new OutputPort(this);
         this.getOutputPorts().add(this.outputPort);
         this.localBuffer = new byte[MAX_BUFFER_SIZE];
-        this.playing = true;
     }
 
     @Override
@@ -90,20 +88,14 @@ public class MicPipe extends AbstractPipe {
         this.closeLine();
     }
 
-    private Mixer.Info getMixerInfoByName(String name) {
-        return Arrays.stream(AudioSystem.getMixerInfo()).filter(info -> info.getName().equals(name)).findFirst().orElse(null);
-    }
-
     public void setMixer(String name) {
-        Mixer.Info mixer = this.getMixerInfoByName(name);
+        Mixer.Info mixer = AudioUtils.getMixerInfoByName(name);
         this.mixer = mixer;
         this.dispose();
     }
 
     public String[] getMixerInfos() {
-        return Arrays.stream(AudioSystem.getMixerInfo())
-                .filter(info -> AudioSystem.getMixer(info).isLineSupported(new DataLine.Info(TargetDataLine.class, audioFormat)))
-                .map(Mixer.Info::getName)
-                .toArray(String[]::new);
+        return AudioUtils.getMixerInfos(TargetDataLine.class, this.audioFormat);
     }
+
 }
