@@ -42,7 +42,7 @@ public class AudioPlayerPipe extends AbstractPipe {
 
 	synchronized private void buildEncoder() {
 		this.audioBufferSize = (int)(this.sampleRate*0.01);
-		this.encoder = new LPCMEncoder(this.sampleRate, this.buffers);
+		this.encoder = new LPCMEncoder(this.sampleRate, this.numOfChannels);
 	}
 
 	synchronized public void setNumOfChannels(int numOfChannels) {

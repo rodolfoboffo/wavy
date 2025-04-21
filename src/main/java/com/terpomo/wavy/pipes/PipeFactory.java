@@ -22,6 +22,9 @@ public class PipeFactory {
 		case FILE_READER_PIPE_ENUM: {
 			return new FileReaderPipe();
 		}
+		case FILE_WRITER_PIPE_ENUM: {
+			return new FileWriterPipe();
+		}
 		case FFT_PIPE_ENUM: {
 			return new FFTPipe();
 		}

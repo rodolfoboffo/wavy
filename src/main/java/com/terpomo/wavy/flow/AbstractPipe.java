@@ -28,10 +28,10 @@ public abstract class AbstractPipe extends ObservableObject implements IPipe {
 		this.isInitialized = false;
 	}
 	
-	synchronized public void buildInputPorts(int numOfPipes) {
+	synchronized public void buildInputPorts(int numOfPorts) {
         try {
 			List<InputPort> newInputPorts = null;
-            newInputPorts = ListUtils.buildNewList(numOfPipes, InputPort.class, this.getInputPorts(), InputPort.class.getDeclaredConstructor(IPipe.class), new Object[]{this});
+            newInputPorts = ListUtils.buildNewList(numOfPorts, InputPort.class, this.getInputPorts(), InputPort.class.getDeclaredConstructor(IPipe.class), new Object[]{this});
 			this.setInputPorts(newInputPorts);
 			this.firePropertyChange(PROPERTY_PIPE_INPUT_PORTS, null, this.getInputPorts());
         } catch (NoSuchMethodException e) {
@@ -39,10 +39,10 @@ public abstract class AbstractPipe extends ObservableObject implements IPipe {
         }
 	}
 
-	synchronized public void buildOutputPorts(int numOfPipes) {
+	synchronized public void buildOutputPorts(int numOfPorts) {
         try {
 			List<OutputPort> newOutputPorts = null;
-            newOutputPorts = ListUtils.buildNewList(numOfPipes, OutputPort.class, this.getOutputPorts(), OutputPort.class.getDeclaredConstructor(IPipe.class), new Object[]{this});
+            newOutputPorts = ListUtils.buildNewList(numOfPorts, OutputPort.class, this.getOutputPorts(), OutputPort.class.getDeclaredConstructor(IPipe.class), new Object[]{this});
 			this.setOutputPorts(newOutputPorts);
 			this.firePropertyChange(PROPERTY_PIPE_OUTPUT_PORTS, null, this.getOutputPorts());
         } catch (NoSuchMethodException e) {
