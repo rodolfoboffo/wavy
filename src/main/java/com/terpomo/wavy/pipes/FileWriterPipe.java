@@ -24,7 +24,6 @@ public class FileWriterPipe extends AbstractPipe {
 
     private static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("yyyy-MM-dd hhmmss");
     private static final int WAVE_FORMAT_PCM = 0x1;
-    private static final int MIN_SAMPLES_TO_WRITE = 1;
     private String outputDirectory;
     private RandomAccessFile outputFile;
     private int sampleRate;
@@ -38,6 +37,7 @@ public class FileWriterPipe extends AbstractPipe {
     private boolean headerWritten;
     private int numberOfSamples;
     private int numberOfWrittenSamples;
+    private long timestamp;
 
     public FileWriterPipe() {
         this.outputDirectory = "";
@@ -50,51 +50,54 @@ public class FileWriterPipe extends AbstractPipe {
         this.numberOfSamples = 0;
         this.numberOfWrittenSamples = 0;
         this.headerWritten = false;
+        this.timestamp = System.currentTimeMillis();
         this.buildInputPorts(this.getNumOfChannels());
     }
 
     @Override
     synchronized protected void doWork() {
-        if (this.outputDirectory != null) {
-            int samplesToRead = Integer.MAX_VALUE;
-            for (Buffer b : this.localBuffers) {
-                samplesToRead = Math.min(samplesToRead, b.getRemainingCapacity());
+        long now = System.currentTimeMillis();
+        long intervalMillis = now - this.timestamp;
+        int samplesToRead = (int)(1.0f / 1000 * intervalMillis * this.sampleRate);
+        if (samplesToRead > 0)
+            this.timestamp = now;
+        for (Buffer b : this.localBuffers) {
+            samplesToRead = Math.min(samplesToRead, b.getRemainingCapacity());
+        }
+        for (InputPort p : this.getInputPorts()) {
+            if (p.getLinkedPort() == null)
+                return;
+            samplesToRead = Math.min(samplesToRead, p.getBuffer().getSize());
+        }
+        if (samplesToRead > 0) {
+            for (int i = 0; i < this.numOfChannels; i++) {
+                this.localBuffers.get(i).putAll(this.getInputPorts().get(i).getBuffer().fetch(samplesToRead));
             }
-            for (InputPort p : this.getInputPorts()) {
-                if (p.getLinkedPort() == null)
-                    return;
-                samplesToRead = Math.min(samplesToRead, p.getBuffer().getSize());
-            }
-            if (samplesToRead > 0) {
-                for (int i = 0; i < this.numOfChannels; i++) {
-                    this.localBuffers.get(i).putAll(this.getInputPorts().get(i).getBuffer().fetch(samplesToRead));
-                }
-                this.numberOfSamples += samplesToRead;
-            }
-            if (this.numberOfSamples > 0) {
-                try {
-                    int numOfFrames = this.numberOfSamples - this.numberOfWrittenSamples;
-                    if (numOfFrames >= MIN_SAMPLES_TO_WRITE) {
-                        if (this.outputFile == null)
-                            this.openFile();
-                        if (!this.headerWritten)
-                            this.writeHeader();
-                        boolean oddNumOfSamplesWritten = this.numberOfWrittenSamples % 2 == 1;
+            this.numberOfSamples += samplesToRead;
+        }
+        if (this.numberOfSamples > 0) {
+            try {
+                int numOfFrames = this.numberOfSamples - this.numberOfWrittenSamples;
+                if (numOfFrames >= this.sampleRate * 0.1) {
+                    if (this.outputFile == null)
+                        this.openFile();
+                    if (!this.headerWritten)
+                        this.writeHeader();
+                    boolean oddNumOfSamplesWritten = this.numberOfWrittenSamples % 2 == 1;
 
-                        this.numberOfWrittenSamples += numOfFrames;
-                        byte[] data = this.encoder.encode(numOfFrames, this.localBuffers.stream().toArray(Buffer[]::new));
-                        this.outputFile.seek(4);
-                        RandomAccessFileUtils.writeIntReverse(4 + 24 + 8 + this.numberOfWrittenSamples * this.bitsPerSample / 8 * this.numOfChannels, this.outputFile);
-                        this.outputFile.seek(40);
-                        RandomAccessFileUtils.writeIntReverse(this.numberOfWrittenSamples * this.bitsPerSample / 8 * this.numOfChannels, this.outputFile);
-                        this.outputFile.seek(this.outputFile.length() - (oddNumOfSamplesWritten ? 1 : 0));
-                        this.outputFile.write(data);
-                        if (this.numberOfWrittenSamples % 2 == 1)
-                            this.outputFile.writeByte(0);
-                    }
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
+                    this.numberOfWrittenSamples += numOfFrames;
+                    byte[] data = this.encoder.encode(numOfFrames, this.localBuffers.stream().toArray(Buffer[]::new));
+                    this.outputFile.seek(4);
+                    RandomAccessFileUtils.writeIntReverse(4 + 24 + 8 + this.numberOfWrittenSamples * this.bitsPerSample / 8 * this.numOfChannels, this.outputFile);
+                    this.outputFile.seek(40);
+                    RandomAccessFileUtils.writeIntReverse(this.numberOfWrittenSamples * this.bitsPerSample / 8 * this.numOfChannels, this.outputFile);
+                    this.outputFile.seek(this.outputFile.length() - (oddNumOfSamplesWritten ? 1 : 0));
+                    this.outputFile.write(data);
+                    if (this.numberOfWrittenSamples % 2 == 1)
+                        this.outputFile.writeByte(0);
                 }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
         }
     }
@@ -117,7 +120,7 @@ public class FileWriterPipe extends AbstractPipe {
 
     synchronized private void initializeBuffers() throws NoSuchMethodException {
         this.localBuffers.clear();
-        this.localBuffers = ListUtils.buildNewList(this.numOfChannels, Buffer.class, this.localBuffers, Buffer.class.getDeclaredConstructor(int.class, boolean.class), new Object[]{10240, false});
+        this.localBuffers = ListUtils.buildNewList(this.numOfChannels, Buffer.class, this.localBuffers, Buffer.class.getDeclaredConstructor(int.class, boolean.class), new Object[]{1024000, false});
         for (InputPort p : this.getInputPorts()) {
             p.getBuffer().clear();
         }
