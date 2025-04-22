@@ -4,7 +4,7 @@ import java.awt.Color;
 
 public class Constants {
 
-	public static final int DEFAULT_SAMPLE_RATE = 44100;
+	public static final int DEFAULT_SAMPLE_RATE = 1024000;
 	
 	public static final String CONSTANT_WAVE = "Constant Wave";
 	public static final String AUDIO_PLAYER = "Audio Player";
@@ -14,8 +14,9 @@ public class Constants {
 	public static final String FILE_WRITER = "File Writer";
 	public static final String COMBINATION = "Signal Combination";
 	public static final String FFT = "FFT";
-	public static final String BAND_PASS_FILTER_PIPE_ENUM = "Band Pass Filter";
-	public static final String MIC_PIPE_ENUM = "Microphone";
-	
+	public static final String BAND_PASS_FILTER = "Band Pass Filter";
+	public static final String MICROPHONE = "Microphone";
+	public static final String FM_MODULATION = "FM Modulation";
+
 	public static final Color LIGHT_CYAN = new Color(230, 230, 255);
 }

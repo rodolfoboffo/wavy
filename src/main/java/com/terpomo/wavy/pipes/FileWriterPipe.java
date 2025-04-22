@@ -187,6 +187,13 @@ public class FileWriterPipe extends AbstractPipe {
     }
 
     synchronized private void reset() {
+        if (this.outputFile != null) {
+            try {
+                this.outputFile.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
         this.outputFile = null;
         this.outputFilePath = null;
         try {

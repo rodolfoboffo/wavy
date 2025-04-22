@@ -51,6 +51,10 @@ public class PipeReprFactory {
 			pipeRepr = new MicPipeRepr((MicPipe) pipe, pipeName);
 			return pipeRepr;
 		}
+		case FM_MODULATION_PIPE_ENUM: {
+			pipeRepr = new FMModulationPipeRepr((FMModulationPipe) pipe, pipeName);
+			return pipeRepr;
+		}
 		default:
 			throw new IllegalArgumentException("Unexpected value: " + pipeType);
 		}

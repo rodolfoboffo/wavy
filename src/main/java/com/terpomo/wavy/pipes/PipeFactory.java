@@ -37,6 +37,9 @@ public class PipeFactory {
 		case MIC_PIPE_ENUM: {
 			return new MicPipe();
 		}
+		case FM_MODULATION_PIPE_ENUM: {
+			return new FMModulationPipe();
+		}
 		default:
 			throw new IllegalArgumentException("Unexpected value: " + pipeType);
 		}
