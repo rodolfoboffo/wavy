@@ -33,14 +33,12 @@ public class CombinationPipe extends AbstractPipe {
                 if (input.getLinkedPort() == null || input.getBuffer().isEmpty())
                     return;
             }
-            synchronized (buffer) {
-                if (!buffer.isFull()) {
-                    float value = 0.0f;
-                    for (int i = 0; i < this.getInputPorts().size(); i++) {
-                        value += this.getInputPorts().get(i).getBuffer().pickOne() * this.getScaleFactorForChannel(i);
-                    }
-                    buffer.put(value);
+            if (!buffer.isFull()) {
+                float value = 0.0f;
+                for (int i = 0; i < this.getInputPorts().size(); i++) {
+                    value += this.getInputPorts().get(i).getBuffer().pickOne() * this.getScaleFactorForChannel(i);
                 }
+                this.putThroughPort(this.getOutputPort(), value);
             }
         }
     }

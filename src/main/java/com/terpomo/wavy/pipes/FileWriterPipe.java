@@ -61,14 +61,18 @@ public class FileWriterPipe extends AbstractPipe {
                 samplesToRead = Math.min(samplesToRead, b.getRemainingCapacity());
             }
             for (InputPort p : this.getInputPorts()) {
+                if (p.getLinkedPort() == null)
+                    return;
                 samplesToRead = Math.min(samplesToRead, p.getBuffer().getSize());
             }
             if (samplesToRead > 0) {
+                for (int i = 0; i < this.numOfChannels; i++) {
+                    this.localBuffers.get(i).putAll(this.getInputPorts().get(i).getBuffer().fetch(samplesToRead));
+                }
+                this.numberOfSamples += samplesToRead;
+            }
+            if (this.numberOfSamples > 0) {
                 try {
-                    for (int i = 0; i < this.numOfChannels; i++) {
-                        this.localBuffers.get(i).putAll(this.getInputPorts().get(i).getBuffer().fetch(samplesToRead));
-                    }
-                    this.numberOfSamples += samplesToRead;
                     int numOfFrames = this.numberOfSamples - this.numberOfWrittenSamples;
                     if (numOfFrames >= MIN_SAMPLES_TO_WRITE) {
                         if (this.outputFile == null)
@@ -80,9 +84,9 @@ public class FileWriterPipe extends AbstractPipe {
                         this.numberOfWrittenSamples += numOfFrames;
                         byte[] data = this.encoder.encode(numOfFrames, this.localBuffers.stream().toArray(Buffer[]::new));
                         this.outputFile.seek(4);
-                        RandomAccessFileUtils.writeIntReverse(4+24+8+this.numberOfWrittenSamples*this.bitsPerSample/8*this.numOfChannels, this.outputFile);
+                        RandomAccessFileUtils.writeIntReverse(4 + 24 + 8 + this.numberOfWrittenSamples * this.bitsPerSample / 8 * this.numOfChannels, this.outputFile);
                         this.outputFile.seek(40);
-                        RandomAccessFileUtils.writeIntReverse(this.numberOfWrittenSamples*this.bitsPerSample/8*this.numOfChannels, this.outputFile);
+                        RandomAccessFileUtils.writeIntReverse(this.numberOfWrittenSamples * this.bitsPerSample / 8 * this.numOfChannels, this.outputFile);
                         this.outputFile.seek(this.outputFile.length() - (oddNumOfSamplesWritten ? 1 : 0));
                         this.outputFile.write(data);
                         if (this.numberOfWrittenSamples % 2 == 1)
@@ -118,6 +122,7 @@ public class FileWriterPipe extends AbstractPipe {
             p.getBuffer().clear();
         }
         this.numberOfSamples = 0;
+        this.numberOfWrittenSamples = 0;
     }
 
     public String getOutputDirectory() {

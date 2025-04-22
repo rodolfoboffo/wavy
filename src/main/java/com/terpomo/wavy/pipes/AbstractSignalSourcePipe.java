@@ -26,11 +26,9 @@ public abstract class AbstractSignalSourcePipe<T extends Signal> extends Abstrac
 	protected void doWork() {
 		if (this.outputPort.getLinkedPort() != null) {
 			Buffer buffer = this.outputPort.getLinkedPort().getBuffer();
-			synchronized (buffer) {
-				if (!buffer.isFull()) {
-					float v = this.signal.getNextValue();
-					this.outputPort.getLinkedPort().getBuffer().put(v);
-				}
+			if (!buffer.isFull()) {
+				float v = this.signal.getNextValue();
+				this.putThroughPort(outputPort, v);
 			}
 		}
 	}

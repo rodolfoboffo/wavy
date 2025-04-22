@@ -45,7 +45,7 @@ public class MicPipe extends AbstractPipe {
             if (framesToRead > 0) {
                 this.line.read(this.localBuffer, 0, framesToRead);
                 Float[][] samples = this.decoder.decode(this.localBuffer, framesToRead * CHANNELS);
-                buffer.putAll(samples[0]);
+                this.putAllThroughPort(this.outputPort, samples[0]);
             }
         }
     }

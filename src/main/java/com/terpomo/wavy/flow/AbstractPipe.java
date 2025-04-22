@@ -27,6 +27,18 @@ public abstract class AbstractPipe extends ObservableObject implements IPipe {
 		this.outputPorts = new ArrayList<OutputPort>();
 		this.isInitialized = false;
 	}
+
+	public void putThroughPort(OutputPort p, Float v) {
+		synchronized (p.getLinkedPort().getPipe()) {
+			p.getLinkedPort().getBuffer().put(v);
+		}
+	}
+
+	public void putAllThroughPort(OutputPort p, Float[] v) {
+		synchronized (p.getLinkedPort().getPipe()) {
+			p.getLinkedPort().getBuffer().putAll(v);
+		}
+	}
 	
 	synchronized public void buildInputPorts(int numOfPorts) {
         try {
