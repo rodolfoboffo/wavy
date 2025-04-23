@@ -31,6 +31,10 @@ public class PipeReprFactory {
 			pipeRepr = new FileReaderPipeRepr((FileReaderPipe) pipe, pipeName);
 			return pipeRepr;
 		}
+		case FILE_WRITER_PIPE_ENUM: {
+			pipeRepr = new FileWriterPipeRepr((FileWriterPipe) pipe, pipeName);
+			return pipeRepr;
+		}
 		case FFT_PIPE_ENUM: {
 			pipeRepr = new FFTPipeRepr((FFTPipe) pipe, pipeName);
 			return pipeRepr;
@@ -45,6 +49,14 @@ public class PipeReprFactory {
 		}
 		case MIC_PIPE_ENUM: {
 			pipeRepr = new MicPipeRepr((MicPipe) pipe, pipeName);
+			return pipeRepr;
+		}
+		case FM_MODULATION_PIPE_ENUM: {
+			pipeRepr = new FMModulationPipeRepr((FMModulationPipe) pipe, pipeName);
+			return pipeRepr;
+		}
+		case IQ_MODULATION_PIPE_ENUM: {
+			pipeRepr = new IQModulationPipeRepr((IQModulationPipe) pipe, pipeName);
 			return pipeRepr;
 		}
 		default:

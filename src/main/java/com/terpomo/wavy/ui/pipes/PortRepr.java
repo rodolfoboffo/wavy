@@ -201,21 +201,21 @@ public class PortRepr extends WavyPanel implements IWavyRepr {
 
 		@Override
 		public void mouseClicked(MouseEvent e) {
+
+		}
+
+		@Override
+		public void mousePressed(MouseEvent e) {
+
+		}
+
+		@Override
+		public void mouseReleased(MouseEvent e) {
 			if (e.getButton() == MouseEvent.BUTTON1) {
 				UIController.getInstance().onPortClicked(PortRepr.this);
 			} else if (e.getButton() == MouseEvent.BUTTON2) {
 				PortRepr.this.contextMenu.show(e.getComponent(), e.getX(), e.getY());
 			}
-		}
-
-		@Override
-		public void mousePressed(MouseEvent e) {
-			
-		}
-
-		@Override
-		public void mouseReleased(MouseEvent e) {
-			
 		}
 
 		@Override

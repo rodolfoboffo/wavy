@@ -22,6 +22,9 @@ public class PipeFactory {
 		case FILE_READER_PIPE_ENUM: {
 			return new FileReaderPipe();
 		}
+		case FILE_WRITER_PIPE_ENUM: {
+			return new FileWriterPipe();
+		}
 		case FFT_PIPE_ENUM: {
 			return new FFTPipe();
 		}
@@ -33,6 +36,12 @@ public class PipeFactory {
 		}
 		case MIC_PIPE_ENUM: {
 			return new MicPipe();
+		}
+		case FM_MODULATION_PIPE_ENUM: {
+			return new FMModulationPipe();
+		}
+		case IQ_MODULATION_PIPE_ENUM: {
+			return new IQModulationPipe();
 		}
 		default:
 			throw new IllegalArgumentException("Unexpected value: " + pipeType);

@@ -125,7 +125,7 @@ public class BandPassFilterPipe extends AbstractPipe {
                 for (int j = this.resolution-1; j >= 0; j--) {
                     v += this.firFilter[j]*b.getValue(j);
                 }
-                this.getOutputPorts().get(i).getLinkedPort().getBuffer().put(v);
+                this.putThroughPort(this.getOutputPorts().get(i), v);
             }
         }
     }

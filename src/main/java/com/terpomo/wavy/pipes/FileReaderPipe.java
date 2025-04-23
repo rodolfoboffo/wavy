@@ -55,8 +55,7 @@ public class FileReaderPipe extends AbstractPipe {
             }
             if (values != null) {
                 for (int i = 0; i < values.length; i++) {
-                    IPort linkedPort = this.getOutputPorts().get(i).getLinkedPort();
-                    linkedPort.getBuffer().putAll(values[i]);
+                    this.putAllThroughPort(this.getOutputPorts().get(i), values[i]);
                 }
             }
         } catch (IOException | UnsupportedAudioFileException e) {

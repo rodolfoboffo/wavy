@@ -10,18 +10,16 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SplitterPipeRepr extends AbstractPipeRepr {
+public class SplitterPipeRepr extends AbstractPipeRepr<SplitterPipe> {
 
     private static final String NUMBER_OF_OUTPUTS = "# of Outputs";
     private static final String INPUT_CHANNEL = "Input";
     private static final String CHANNEL_NUMBER = "Channel %d";
     private final GridBagLayout contentLayout;
-    private final SplitterPipe splitter;
 
     @SuppressWarnings({"rawtypes", "unchecked"})
     public SplitterPipeRepr(SplitterPipe pipe, String name) {
         super(pipe, name);
-        this.splitter = pipe;
 
         this.contentLayout = new GridBagLayout();
         this.getContentPanel().setLayout(this.contentLayout);
@@ -38,14 +36,14 @@ public class SplitterPipeRepr extends AbstractPipeRepr {
     @SuppressWarnings("rawtypes")
     private List<PipePropertyRepr> createPipePropertiesForInputs() {
         List<PipePropertyRepr> pipeProperties = new ArrayList<>();
-        PipePropertyRepr inputChannelProperty = new PipePropertyRepr<>(null, this, this.splitter.getInputPort(), INPUT_CHANNEL, null, null, null);
+        PipePropertyRepr inputChannelProperty = new PipePropertyRepr<>(null, this, this.getPipe().getInputPort(), INPUT_CHANNEL, null, null, null);
         pipeProperties.add(inputChannelProperty);
 
-        PipePropertyRepr numOfChannelsProperty = new PipePropertyRepr<Integer>(Integer.class, this, null, NUMBER_OF_OUTPUTS, this.splitter::getNumberOfChannels, null, this.splitter::setNumberOfChannels);
+        PipePropertyRepr numOfChannelsProperty = new PipePropertyRepr<Integer>(Integer.class, this, null, NUMBER_OF_OUTPUTS, this.getPipe()::getNumberOfChannels, null, this.getPipe()::setNumberOfChannels);
         pipeProperties.add(numOfChannelsProperty);
 
-        for (int i = 0; i < this.splitter.getOutputPorts().size(); i++) {
-            OutputPort _pipe = this.splitter.getOutputPorts().get(i);
+        for (int i = 0; i < this.getPipe().getOutputPorts().size(); i++) {
+            OutputPort _pipe = this.getPipe().getOutputPorts().get(i);
             PipePropertyRepr signalOutputProperty = new PipePropertyRepr<>(null, this, null, String.format(CHANNEL_NUMBER, i+1), null, _pipe);
             pipeProperties.add(signalOutputProperty);
         }
