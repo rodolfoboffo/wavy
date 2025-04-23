@@ -40,6 +40,9 @@ public class PipeFactory {
 		case FM_MODULATION_PIPE_ENUM: {
 			return new FMModulationPipe();
 		}
+		case IQ_MODULATION_PIPE_ENUM: {
+			return new IQModulationPipe();
+		}
 		default:
 			throw new IllegalArgumentException("Unexpected value: " + pipeType);
 		}

@@ -21,7 +21,41 @@ public abstract class AbstractPipe extends ObservableObject implements IPipe {
 	public boolean isBusy() {
 		return busy;
 	}
-	
+
+	public int getMinInputBufferSizes() {
+		int r = Integer.MAX_VALUE;
+		for (IPort p : this.getInputPorts()) {
+			r = Math.min(p.getBuffer().getSize(), r);
+		}
+		return r;
+	}
+
+	public int getMinOutputBufferRemainingCapacity() {
+		int r = Integer.MAX_VALUE;
+		for (IPort p : this.getOutputPorts()) {
+			r = Math.min(p.getLinkedPort().getBuffer().getRemainingCapacity(), r);
+		}
+		return r;
+	}
+
+	public boolean allPortsConnected() {
+		return this.allInputPortsConnected() && this.allOutputPortsConnected();
+	}
+
+	public boolean allInputPortsConnected() {
+		for (IPort p : this.getInputPorts()) {
+			if (p.getLinkedPort() == null) return false;
+		}
+		return true;
+	}
+
+	public boolean allOutputPortsConnected() {
+		for (IPort p : this.getOutputPorts()) {
+			if (p.getLinkedPort() == null) return false;
+		}
+		return true;
+	}
+
 	public AbstractPipe() {
 		this.inputPorts = new ArrayList<InputPort>();
 		this.outputPorts = new ArrayList<OutputPort>();

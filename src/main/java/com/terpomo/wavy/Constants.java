@@ -17,6 +17,7 @@ public class Constants {
 	public static final String BAND_PASS_FILTER = "Band Pass Filter";
 	public static final String MICROPHONE = "Microphone";
 	public static final String FM_MODULATION = "FM Modulation";
+	public static final String IQ_MODULATION = "IQ Modulation";
 
 	public static final Color LIGHT_CYAN = new Color(230, 230, 255);
 }

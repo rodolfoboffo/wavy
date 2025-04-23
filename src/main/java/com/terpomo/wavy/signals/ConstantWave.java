@@ -10,22 +10,27 @@ public class ConstantWave extends Signal {
 	protected float frequency;
 	protected float amplitude;
 	protected float phase;
+	protected float initialPhase;
 	protected SineTable sineTable;
 
-	public ConstantWave(int sampleRate, float frequency, float amplitude, SineTable sineTable) {
+	public ConstantWave(int sampleRate, float frequency, float amplitude, float initialPhase, SineTable sineTable) {
 		super(sampleRate);
 		this.frequency = frequency;
 		this.amplitude = amplitude;
 		this.sineTable = sineTable;
-		this.phase = 0.0f;
+		this.phase = this.initialPhase = initialPhase;
 	}
 	
 	public ConstantWave() {
-		this(Constants.DEFAULT_SAMPLE_RATE, DEFAULT_CW_FREQUENCY, 1.0f, SineTable.DEFAULT_SINE_TABLE);
+		this(Constants.DEFAULT_SAMPLE_RATE, DEFAULT_CW_FREQUENCY, 1.0f, 0.0f, SineTable.DEFAULT_SINE_TABLE);
 	}
 	
 	public ConstantWave(int sampleRate, float frequency) {
-		this(sampleRate, frequency, 1.0f, SineTable.DEFAULT_SINE_TABLE);
+		this(sampleRate, frequency, 1.0f, 0.0f, SineTable.DEFAULT_SINE_TABLE);
+	}
+
+	public ConstantWave(int sampleRate, float frequency, float initialPhase) {
+		this(sampleRate, frequency, 1.0f, initialPhase, SineTable.DEFAULT_SINE_TABLE);
 	}
 
 	public final float getFrequency() {
@@ -46,7 +51,7 @@ public class ConstantWave extends Signal {
 
 	@Override
 	synchronized public float getValue(long index) {
-		float frac = (float) index / this.sampleRate * MathConstants.PI2 * this.frequency % MathConstants.PI2;
+		float frac = ((float)index / this.sampleRate * MathConstants.PI2 * this.frequency + this.initialPhase) % MathConstants.PI2;
 		float value = this.amplitude * this.sineTable.getSineValue(frac);
 		return this.clamp(value);
 	}
