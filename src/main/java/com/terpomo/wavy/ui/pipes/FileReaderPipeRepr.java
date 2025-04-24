@@ -3,7 +3,6 @@ package com.terpomo.wavy.ui.pipes;
 import com.terpomo.wavy.flow.AbstractPipe;
 import com.terpomo.wavy.flow.IPort;
 import com.terpomo.wavy.pipes.FileReaderPipe;
-import com.terpomo.wavy.ui.components.WavyPanel;
 
 import javax.swing.*;
 import java.awt.*;

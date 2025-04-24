@@ -7,7 +7,7 @@ import com.terpomo.wavy.core.ObservableObject;
 
 public class Buffer extends ObservableObject implements IWavyModel, IObservableObject, IWavyDisposable {
 
-    public static final int DEFAULT_DATASTREAM_BUFER_SIZE = 10240;
+    public static final int DEFAULT_DATASTREAM_BUFER_SIZE = 1024000;
     private final boolean endless;
     private Float[] buffer;
     private int capacity;

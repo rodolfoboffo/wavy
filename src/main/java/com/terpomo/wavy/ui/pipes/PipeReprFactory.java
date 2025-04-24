@@ -59,6 +59,10 @@ public class PipeReprFactory {
 			pipeRepr = new IQModulationPipeRepr((IQModulationPipe) pipe, pipeName);
 			return pipeRepr;
 		}
+		case RTLSDR_PIPE_ENUM: {
+			pipeRepr = new RTLPipeRepr((RTLPipe) pipe, pipeName);
+			return pipeRepr;
+		}
 		default:
 			throw new IllegalArgumentException("Unexpected value: " + pipeType);
 		}

@@ -43,6 +43,9 @@ public class PipeFactory {
 		case IQ_MODULATION_PIPE_ENUM: {
 			return new IQModulationPipe();
 		}
+		case RTLSDR_PIPE_ENUM: {
+			return new RTLPipe();
+		}
 		default:
 			throw new IllegalArgumentException("Unexpected value: " + pipeType);
 		}

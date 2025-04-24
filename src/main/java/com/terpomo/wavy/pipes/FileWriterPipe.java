@@ -78,7 +78,7 @@ public class FileWriterPipe extends AbstractPipe {
         if (this.numberOfSamples > 0) {
             try {
                 int numOfFrames = this.numberOfSamples - this.numberOfWrittenSamples;
-                if (numOfFrames >= this.sampleRate * 0.1) {
+                if (numOfFrames >= this.sampleRate * 5) {
                     if (this.outputFile == null)
                         this.openFile();
                     if (!this.headerWritten)
@@ -120,7 +120,7 @@ public class FileWriterPipe extends AbstractPipe {
 
     synchronized private void initializeBuffers() throws NoSuchMethodException {
         this.localBuffers.clear();
-        this.localBuffers = ListUtils.buildNewList(this.numOfChannels, Buffer.class, this.localBuffers, Buffer.class.getDeclaredConstructor(int.class, boolean.class), new Object[]{1024000, false});
+        this.localBuffers = ListUtils.buildNewList(this.numOfChannels, Buffer.class, this.localBuffers, Buffer.class.getDeclaredConstructor(int.class, boolean.class), new Object[]{Buffer.DEFAULT_DATASTREAM_BUFER_SIZE*10, false});
         for (InputPort p : this.getInputPorts()) {
             p.getBuffer().clear();
         }

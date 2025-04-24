@@ -4,9 +4,9 @@ import com.sun.jna.Library;
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
 
-public interface RTLAPI extends Library {
+public interface IRTLAPI extends Library {
 
-    RTLAPI INSTANCE = Native.load("librtlsdr", RTLAPI.class);
+    IRTLAPI INSTANCE = Native.load("librtlsdr", IRTLAPI.class);
 
     int rtlsdr_get_device_count();
     String rtlsdr_get_device_name(int index);

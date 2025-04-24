@@ -43,17 +43,25 @@ public abstract class AbstractPipe extends ObservableObject implements IPipe {
 	}
 
 	public boolean allInputPortsConnected() {
-		for (IPort p : this.getInputPorts()) {
-			if (p.getLinkedPort() == null) return false;
+		for (InputPort p : this.getInputPorts()) {
+			if (!this.isInputPortConnected(p)) return false;
 		}
 		return true;
 	}
 
 	public boolean allOutputPortsConnected() {
-		for (IPort p : this.getOutputPorts()) {
-			if (p.getLinkedPort() == null) return false;
+		for (OutputPort p : this.getOutputPorts()) {
+			if (!this.isOutputPortConnected(p)) return false;
 		}
 		return true;
+	}
+
+	public boolean isOutputPortConnected(OutputPort p) {
+		return p.getLinkedPort() != null;
+	}
+
+	public boolean isInputPortConnected(InputPort p) {
+		return p.getLinkedPort() != null;
 	}
 
 	public AbstractPipe() {
