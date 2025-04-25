@@ -1,11 +1,11 @@
 package com.terpomo.wavy.rtl;
 
 import com.sun.jna.Pointer;
-import com.terpomo.wavy.pipes.RTLPipe;
 
 import java.util.Arrays;
 
 public class RTLSDRDevice {
+
 
     private static final int DEFAULT_DIRECT_SAMPLING_FREQ_THRESHOLD = 28000000;
     private static final int DEFAULT_SAMPLE_RATE = 960000;
@@ -17,6 +17,9 @@ public class RTLSDRDevice {
     private int sampleRate;
     private boolean directSampling;
     private int tunerGain;
+    private Thread asyncReadingThread;
+    private boolean asyncReadingOn;
+    private IRTLAPI.IReadAsyncCallback asyncReadingCb;
 
     public RTLSDRDevice(Pointer devicePointer) {
         this.pointer = devicePointer;
@@ -25,6 +28,8 @@ public class RTLSDRDevice {
         this.centerFrequency = 0;
         this.sampleRate = 0;
         this.tunerGain = 0;
+        this.asyncReadingThread = null;
+        this.asyncReadingOn = false;
     }
 
     public void resetBuffer() {
@@ -128,6 +133,41 @@ public class RTLSDRDevice {
         return this.tunerGain;
     }
 
+    synchronized public void startAsyncReading(IRTLAPI.IReadAsyncCallback cb) {
+        if (this.asyncReadingOn) return;
+        this.asyncReadingOn = true;
+        this.asyncReadingCb = cb;
+        this.asyncReadingThread = new AsyncReadingThread();
+        this.asyncReadingThread.start();
+    }
+
+    class AsyncReadingThread extends Thread {
+        @Override
+        public void run() {
+            super.run();
+            IRTLAPI.INSTANCE.rtlsdr_read_async(RTLSDRDevice.this.pointer, RTLSDRDevice.this.asyncReadingCb, null, 0, 0);
+            synchronized (RTLSDRDevice.this) {
+                RTLSDRDevice.this.asyncReadingOn = false;
+                RTLSDRDevice.this.asyncReadingCb = null;
+            }
+        }
+    }
+
+    public void cancelAsyncReading() {
+        if (!this.asyncReadingOn) return;
+        int result = IRTLAPI.INSTANCE.rtlsdr_cancel_async(this.pointer);
+        if (result != 0)
+            throw new RuntimeException("Could not stop async reading.");
+        if (this.asyncReadingThread != null && this.asyncReadingThread.isAlive()) {
+            try {
+                this.asyncReadingThread.join();
+                this.asyncReadingThread = null;
+            } catch (InterruptedException e) {
+                throw new RuntimeException("Could not join RTL device async reading thread.", e);
+            }
+        }
+    }
+
     public void initialize() {
         try {
             this.resetBuffer();
@@ -173,5 +213,9 @@ public class RTLSDRDevice {
     @Override
     public String toString() {
         return String.format("RTLDevice %s", this.name);
+    }
+
+    public boolean isAsyncReadingOn() {
+        return asyncReadingOn;
     }
 }

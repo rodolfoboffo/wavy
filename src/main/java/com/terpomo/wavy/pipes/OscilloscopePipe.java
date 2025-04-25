@@ -2,7 +2,7 @@ package com.terpomo.wavy.pipes;
 
 import com.terpomo.wavy.Constants;
 import com.terpomo.wavy.flow.AbstractPipe;
-import com.terpomo.wavy.flow.Buffer;
+import com.terpomo.wavy.flow.SignalBuffer;
 import com.terpomo.wavy.oscilloscope.TimeValuePair;
 import com.terpomo.wavy.util.ListUtils;
 
@@ -15,7 +15,7 @@ public class OscilloscopePipe extends AbstractPipe {
 	private static final int DEFAULT_NUMBER_OF_CHANNELS = 1;
 	private static final float MAX_SCALE = 3.0f;
 	private static final float DEFAULT_SCALE = 1.0f;
-	private List<Buffer> buffers;
+	private List<SignalBuffer> buffers;
 	private int sampleRate;
 	private int numberOfChannels;
 	private long timestamp;
@@ -42,7 +42,7 @@ public class OscilloscopePipe extends AbstractPipe {
 	synchronized private void buildPortsAndBuffers() {
         try {
 			this.dispose();
-            this.buffers = ListUtils.buildNewList(this.numberOfChannels, Buffer.class, this.buffers, Buffer.class.getDeclaredConstructor(int.class, boolean.class), new Object[]{(int)(this.sampleRate*this.scale), true});
+            this.buffers = ListUtils.buildNewList(this.numberOfChannels, SignalBuffer.class, this.buffers, SignalBuffer.class.getDeclaredConstructor(int.class, boolean.class), new Object[]{(int)(this.sampleRate*this.scale), true});
 			this.buildInputPorts(this.numberOfChannels);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
@@ -56,7 +56,7 @@ public class OscilloscopePipe extends AbstractPipe {
 
 	synchronized public void setSampleRate(int sampleRate) {
 		this.sampleRate = sampleRate;
-		for(Buffer b : this.buffers) {
+		for(SignalBuffer b : this.buffers) {
 			b.resizeBuffer((int) (this.sampleRate * this.scale));
 		}
 	}
@@ -119,7 +119,7 @@ public class OscilloscopePipe extends AbstractPipe {
 		}
 	}
 
-	synchronized private ArrayList<TimeValuePair> generateTimeValuePairs(Buffer buffer) {
+	synchronized private ArrayList<TimeValuePair> generateTimeValuePairs(SignalBuffer buffer) {
 		ArrayList<TimeValuePair> pairs = new ArrayList<>();
 		Float[] clonedBuffer = buffer.getAll();
 		for (int i = 0; i < clonedBuffer.length; i += this.pointSkip+1) {

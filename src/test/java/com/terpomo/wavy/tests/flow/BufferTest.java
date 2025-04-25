@@ -1,6 +1,6 @@
 package com.terpomo.wavy.tests.flow;
 
-import com.terpomo.wavy.flow.Buffer;
+import com.terpomo.wavy.flow.SignalBuffer;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.function.ThrowingRunnable;
@@ -17,7 +17,7 @@ public class BufferTest {
 
     @Test
     public void testBufferGeneral() {
-        Buffer buffer = new Buffer(3);
+        SignalBuffer buffer = new SignalBuffer(3);
         buffer.put(1f);
         buffer.put(2f);
         Float value = buffer.pickOne();
@@ -33,7 +33,7 @@ public class BufferTest {
 
     @Test
     public void testBufferFull() {
-        Buffer buffer = new Buffer(3);
+        SignalBuffer buffer = new SignalBuffer(3);
         buffer.put(1f);
         buffer.put(2f);
         buffer.put(3f);
@@ -51,7 +51,7 @@ public class BufferTest {
 
     @Test
     public void testEndlessBuffer() {
-        Buffer buffer = new Buffer(3, true);
+        SignalBuffer buffer = new SignalBuffer(3, true);
         buffer.put(1f);
         buffer.put(2f);
         buffer.put(3f);

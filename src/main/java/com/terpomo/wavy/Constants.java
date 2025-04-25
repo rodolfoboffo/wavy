@@ -4,7 +4,8 @@ import java.awt.Color;
 
 public class Constants {
 
-	public static final int DEFAULT_SAMPLE_RATE = 1024000;
+	public static final int DEFAULT_SAMPLE_RATE = 256000;
+	public static final int MAX_SAMPLE_RATE = 10000000;
 	
 	public static final String CONSTANT_WAVE = "Constant Wave";
 	public static final String AUDIO_PLAYER = "Audio Player";

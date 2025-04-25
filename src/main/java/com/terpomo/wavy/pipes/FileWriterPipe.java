@@ -2,7 +2,7 @@ package com.terpomo.wavy.pipes;
 
 import com.terpomo.wavy.Constants;
 import com.terpomo.wavy.flow.AbstractPipe;
-import com.terpomo.wavy.flow.Buffer;
+import com.terpomo.wavy.flow.SignalBuffer;
 import com.terpomo.wavy.flow.InputPort;
 import com.terpomo.wavy.sound.LPCMEncoder;
 import com.terpomo.wavy.util.ListUtils;
@@ -23,6 +23,7 @@ import java.util.List;
 public class FileWriterPipe extends AbstractPipe {
 
     private static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("yyyy-MM-dd hhmmss");
+    private static final int DEFAULT_WRITE_MIN_INTERVAL_IN_SEC = 1;
     private static final int WAVE_FORMAT_PCM = 0x1;
     private String outputDirectory;
     private RandomAccessFile outputFile;
@@ -33,10 +34,11 @@ public class FileWriterPipe extends AbstractPipe {
     private boolean signed;
     private LPCMEncoder encoder;
     private String outputFilePath;
-    private List<Buffer> localBuffers;
+    private List<SignalBuffer> localBuffers;
     private boolean headerWritten;
     private int numberOfSamples;
     private int numberOfWrittenSamples;
+    private long lastWriteTimestamp;
     private long timestamp;
 
     public FileWriterPipe() {
@@ -61,7 +63,7 @@ public class FileWriterPipe extends AbstractPipe {
         int samplesToRead = (int)(1.0f / 1000 * intervalMillis * this.sampleRate);
         if (samplesToRead > 0)
             this.timestamp = now;
-        for (Buffer b : this.localBuffers) {
+        for (SignalBuffer b : this.localBuffers) {
             samplesToRead = Math.min(samplesToRead, b.getRemainingCapacity());
         }
         for (InputPort p : this.getInputPorts()) {
@@ -78,7 +80,8 @@ public class FileWriterPipe extends AbstractPipe {
         if (this.numberOfSamples > 0) {
             try {
                 int numOfFrames = this.numberOfSamples - this.numberOfWrittenSamples;
-                if (numOfFrames >= this.sampleRate * 5) {
+                if (numOfFrames > 0 && (now-this.lastWriteTimestamp) > DEFAULT_WRITE_MIN_INTERVAL_IN_SEC*1000) {
+                    this.lastWriteTimestamp = now;
                     if (this.outputFile == null)
                         this.openFile();
                     if (!this.headerWritten)
@@ -86,7 +89,7 @@ public class FileWriterPipe extends AbstractPipe {
                     boolean oddNumOfSamplesWritten = this.numberOfWrittenSamples % 2 == 1;
 
                     this.numberOfWrittenSamples += numOfFrames;
-                    byte[] data = this.encoder.encode(numOfFrames, this.localBuffers.stream().toArray(Buffer[]::new));
+                    byte[] data = this.encoder.encode(numOfFrames, this.localBuffers.stream().toArray(SignalBuffer[]::new));
                     this.outputFile.seek(4);
                     RandomAccessFileUtils.writeIntReverse(4 + 24 + 8 + this.numberOfWrittenSamples * this.bitsPerSample / 8 * this.numOfChannels, this.outputFile);
                     this.outputFile.seek(40);
@@ -120,7 +123,7 @@ public class FileWriterPipe extends AbstractPipe {
 
     synchronized private void initializeBuffers() throws NoSuchMethodException {
         this.localBuffers.clear();
-        this.localBuffers = ListUtils.buildNewList(this.numOfChannels, Buffer.class, this.localBuffers, Buffer.class.getDeclaredConstructor(int.class, boolean.class), new Object[]{Buffer.DEFAULT_DATASTREAM_BUFER_SIZE*10, false});
+        this.localBuffers = ListUtils.buildNewList(this.numOfChannels, SignalBuffer.class, this.localBuffers, SignalBuffer.class.getDeclaredConstructor(int.class, boolean.class), new Object[]{this.sampleRate*DEFAULT_WRITE_MIN_INTERVAL_IN_SEC*3, false});
         for (InputPort p : this.getInputPorts()) {
             p.getBuffer().clear();
         }

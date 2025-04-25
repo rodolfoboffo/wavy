@@ -1,9 +1,5 @@
 package com.terpomo.wavy.sound;
 
-import com.terpomo.wavy.flow.Buffer;
-
-import javax.sound.sampled.AudioFormat;
-
 public abstract class Decoder extends AbstractCodec {
 
 	protected int numOfChannels;

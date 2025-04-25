@@ -2,9 +2,7 @@ package com.terpomo.wavy.pipes;
 
 import com.terpomo.wavy.Constants;
 import com.terpomo.wavy.flow.AbstractPipe;
-import com.terpomo.wavy.flow.Buffer;
-import com.terpomo.wavy.flow.IPipe;
-import com.terpomo.wavy.flow.OutputPort;
+import com.terpomo.wavy.flow.SignalBuffer;
 import com.terpomo.wavy.math.FFT;
 import com.terpomo.wavy.math.Utils;
 import com.terpomo.wavy.util.ListUtils;
@@ -20,7 +18,7 @@ public class BandPassFilterPipe extends AbstractPipe {
     private int numOfChannels = 1;
     private float lowFrequency, highFrequency;
     private int resolution;
-    private List<Buffer> buffers;
+    private List<SignalBuffer> buffers;
     private Float[] firFilter;
 
     public BandPassFilterPipe() {
@@ -101,7 +99,7 @@ public class BandPassFilterPipe extends AbstractPipe {
         this.buildOutputPorts(this.numOfChannels);
         this.buildInputPorts(this.numOfChannels);
         try {
-            this.buffers = ListUtils.buildNewList(this.numOfChannels, Buffer.class, this.buffers, Buffer.class.getDeclaredConstructor(int.class, boolean.class), new Object[]{MAX_RESOLUTION, true});
+            this.buffers = ListUtils.buildNewList(this.numOfChannels, SignalBuffer.class, this.buffers, SignalBuffer.class.getDeclaredConstructor(int.class, boolean.class), new Object[]{MAX_RESOLUTION, true});
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }
@@ -117,7 +115,7 @@ public class BandPassFilterPipe extends AbstractPipe {
 
         }
         for (int i = 0; i < this.numOfChannels; i++) {
-            Buffer b = this.buffers.get(i);
+            SignalBuffer b = this.buffers.get(i);
             float v = this.getInputPorts().get(i).getBuffer().pickOne();
             b.put(v);
             if (b.getSize() >= this.resolution) {
