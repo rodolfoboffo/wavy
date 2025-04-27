@@ -4,7 +4,7 @@ import java.awt.Color;
 
 public class Constants {
 
-	public static final int DEFAULT_SAMPLE_RATE = 512000;
+	public static final int DEFAULT_SAMPLE_RATE = 44100;
 	public static final int MAX_SAMPLE_RATE = 10000000;
 	
 	public static final String CONSTANT_WAVE = "Constant Wave";
