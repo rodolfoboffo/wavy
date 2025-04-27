@@ -2,8 +2,9 @@ package com.terpomo.wavy.pipes;
 
 import com.terpomo.wavy.Constants;
 import com.terpomo.wavy.flow.AbstractPipe;
-import com.terpomo.wavy.flow.SignalBuffer;
 import com.terpomo.wavy.flow.InputPort;
+import com.terpomo.wavy.flow.SignalBuffer;
+import com.terpomo.wavy.sound.AudioUtils;
 import com.terpomo.wavy.sound.Encoder;
 import com.terpomo.wavy.sound.LPCMEncoder;
 
@@ -12,14 +13,15 @@ import javax.sound.sampled.*;
 public class AudioPlayerPipe extends AbstractPipe {
 	
 	public static final int DEFAULT_NUM_CHANNELS = 1;
-	protected int sampleRate;
-	protected int numOfChannels;
-	protected int audioBufferSize;
-	protected boolean playing = true;
-	protected Encoder encoder;
-	protected SignalBuffer[] buffers;
-	protected SourceDataLine line;
-	
+	private int sampleRate;
+	private int numOfChannels;
+	private int audioBufferSize;
+	private String mixerName;
+	private Encoder encoder;
+	private SignalBuffer[] buffers;
+	private SourceDataLine line;
+	private Mixer.Info mixer;
+
 	public AudioPlayerPipe() {
 		this(DEFAULT_NUM_CHANNELS, Constants.DEFAULT_SAMPLE_RATE);
 	}
@@ -27,6 +29,8 @@ public class AudioPlayerPipe extends AbstractPipe {
 	public AudioPlayerPipe(int numOfChannels, int sampleRate) {
 		this.numOfChannels = numOfChannels;
 		this.sampleRate = sampleRate;
+		this.mixerName = null;
+		this.mixer = null;
 		this.buildPipes();
 		this.buildEncoder();
 	}
@@ -47,7 +51,7 @@ public class AudioPlayerPipe extends AbstractPipe {
 
 	synchronized public void setNumOfChannels(int numOfChannels) {
 		this.numOfChannels = numOfChannels;
-		this.dispose();
+		this.closeLine();
 		this.buildPipes();
 		this.buildEncoder();
 	}
@@ -57,39 +61,25 @@ public class AudioPlayerPipe extends AbstractPipe {
 	}
 
 	synchronized public void setSampleRate(int sampleRate) {
-		boolean _isPlaying = this.isPlaying();
-		this.stop();
 		this.closeLine();
 		this.sampleRate = sampleRate;
 		this.buildEncoder();
-		this.initialize();
-		if (_isPlaying)
-			this.play();
 	}
 
 	public int getSampleRate() {
 		return sampleRate;
 	}
 
-	@Override
-	synchronized public void initialize() {
-		this.startLine();
-		super.initialize();
-	}
-
 	synchronized private void startLine() {
-		AudioFormat format = this.encoder.getAudioFormat();
-		DataLine.Info sourceLineInfo = new DataLine.Info(SourceDataLine.class, format);
-		boolean isSupported = AudioSystem.isLineSupported(sourceLineInfo);
-		if (isSupported) {
+		if (this.mixer != null && AudioSystem.getMixer(this.mixer).isLineSupported(new DataLine.Info(SourceDataLine.class, this.encoder.getAudioFormat()))) {
 			try {
-				this.line = (SourceDataLine)AudioSystem.getLine(sourceLineInfo);
+				this.line = AudioSystem.getSourceDataLine(this.encoder.getAudioFormat(), this.mixer);
 				this.line.open();
 				this.line.start();
-			} catch (LineUnavailableException e1) {
-				throw new RuntimeException("Could not open audio line.", e1);
-			}
-		}
+			} catch (LineUnavailableException e) {
+				throw new RuntimeException("Could not open audio line.", e);
+            }
+        }
 		else {
 			throw new RuntimeException("Audio Format not supported.");
 		}
@@ -111,24 +101,7 @@ public class AudioPlayerPipe extends AbstractPipe {
 	@Override
 	synchronized public void dispose() {
 		super.dispose();
-		this.stop();
 		this.closeLine();
-	}
-	
-	public boolean isPlaying() {
-		return this.playing;
-	}
-
-	synchronized public void play() {
-		if (!this.playing) {
-			this.playing = true;
-		}
-	}
-
-	synchronized public void stop() {
-		if (this.playing) {
-			this.playing = false;
-		}
 	}
 
 	synchronized protected int numOfFramesAvailable() {
@@ -142,14 +115,30 @@ public class AudioPlayerPipe extends AbstractPipe {
 	
 	@Override
 	synchronized public void doWork() {
-		if (this.isPlaying()) {
-			if (this.line.available() >= this.audioBufferSize && this.numOfFramesAvailable() >= this.audioBufferSize) {
-				byte[] buffer = this.encoder.encode(this.audioBufferSize, this.buffers);
-				this.line.write(buffer, 0, buffer.length);
-			}
+		if (this.mixer == null)
+			this.resetMixer();
+		if (this.line == null)
+			this.startLine();
+		if (this.line.available() >= this.audioBufferSize && this.numOfFramesAvailable() >= this.audioBufferSize) {
+			byte[] buffer = this.encoder.encode(this.audioBufferSize, this.buffers);
+			this.line.write(buffer, 0, buffer.length);
 		}
-		else {
-			this.dispose();
+	}
+
+	synchronized private void resetMixer() {
+		this.mixer = null;
+		if (this.mixerName != null) {
+			Mixer.Info mixer = AudioUtils.getMixerInfoByName(this.mixerName);
+			this.mixer = mixer;
 		}
+	}
+
+	synchronized public void setMixerName(String name) {
+		this.mixerName = name;
+		this.resetMixer();
+	}
+
+	public String[] getMixerInfos() {
+		return AudioUtils.getMixerInfos(SourceDataLine.class, this.encoder.getAudioFormat());
 	}
 }

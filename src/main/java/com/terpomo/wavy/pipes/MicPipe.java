@@ -88,7 +88,7 @@ public class MicPipe extends AbstractPipe {
         this.closeLine();
     }
 
-    public void setMixer(String name) {
+    synchronized public void setMixer(String name) {
         Mixer.Info mixer = AudioUtils.getMixerInfoByName(name);
         this.mixer = mixer;
         this.dispose();
