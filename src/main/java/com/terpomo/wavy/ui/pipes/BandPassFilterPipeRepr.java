@@ -1,6 +1,5 @@
 package com.terpomo.wavy.ui.pipes;
 
-import com.terpomo.wavy.flow.AbstractPipe;
 import com.terpomo.wavy.flow.IPort;
 import com.terpomo.wavy.pipes.BandPassFilterPipe;
 import org.jfree.chart.ChartFactory;

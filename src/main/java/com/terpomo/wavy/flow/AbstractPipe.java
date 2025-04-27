@@ -21,17 +21,71 @@ public abstract class AbstractPipe extends ObservableObject implements IPipe {
 	public boolean isBusy() {
 		return busy;
 	}
-	
+
+	public int getMinInputBufferSizes() {
+		int r = Integer.MAX_VALUE;
+		for (IPort p : this.getInputPorts()) {
+			r = Math.min(p.getBuffer().getSize(), r);
+		}
+		return r;
+	}
+
+	public int getMinOutputBufferRemainingCapacity() {
+		int r = Integer.MAX_VALUE;
+		for (IPort p : this.getOutputPorts()) {
+			r = Math.min(p.getLinkedPort().getBuffer().getRemainingCapacity(), r);
+		}
+		return r;
+	}
+
+	public boolean allPortsConnected() {
+		return this.allInputPortsConnected() && this.allOutputPortsConnected();
+	}
+
+	public boolean allInputPortsConnected() {
+		for (InputPort p : this.getInputPorts()) {
+			if (!this.isInputPortConnected(p)) return false;
+		}
+		return true;
+	}
+
+	public boolean allOutputPortsConnected() {
+		for (OutputPort p : this.getOutputPorts()) {
+			if (!this.isOutputPortConnected(p)) return false;
+		}
+		return true;
+	}
+
+	public boolean isOutputPortConnected(OutputPort p) {
+		return p.getLinkedPort() != null;
+	}
+
+	public boolean isInputPortConnected(InputPort p) {
+		return p.getLinkedPort() != null;
+	}
+
 	public AbstractPipe() {
 		this.inputPorts = new ArrayList<InputPort>();
 		this.outputPorts = new ArrayList<OutputPort>();
 		this.isInitialized = false;
 	}
+
+	public void putThroughPort(OutputPort p, Float v) {
+		synchronized (p.getLinkedPort().getPipe()) {
+			p.getLinkedPort().getBuffer().put(v);
+		}
+	}
+
+	public void putAllThroughPort(OutputPort p, Float[] v) {
+		synchronized (p.getLinkedPort().getPipe()) {
+			p.getLinkedPort().getBuffer().putAll(v);
+		}
+	}
 	
-	synchronized public void buildInputPorts(int numOfPipes) {
+	synchronized public void buildInputPorts(int numOfPorts) {
         try {
 			List<InputPort> newInputPorts = null;
-            newInputPorts = ListUtils.buildNewList(numOfPipes, InputPort.class, this.getInputPorts(), InputPort.class.getDeclaredConstructor(IPipe.class), new Object[]{this});
+            newInputPorts = ListUtils.buildNewList(numOfPorts, InputPort.class, this.getInputPorts(), InputPort.class.getDeclaredConstructor(IPipe.class), new Object[]{this});
 			this.setInputPorts(newInputPorts);
 			this.firePropertyChange(PROPERTY_PIPE_INPUT_PORTS, null, this.getInputPorts());
         } catch (NoSuchMethodException e) {
@@ -39,10 +93,10 @@ public abstract class AbstractPipe extends ObservableObject implements IPipe {
         }
 	}
 
-	synchronized public void buildOutputPorts(int numOfPipes) {
+	synchronized public void buildOutputPorts(int numOfPorts) {
         try {
 			List<OutputPort> newOutputPorts = null;
-            newOutputPorts = ListUtils.buildNewList(numOfPipes, OutputPort.class, this.getOutputPorts(), OutputPort.class.getDeclaredConstructor(IPipe.class), new Object[]{this});
+            newOutputPorts = ListUtils.buildNewList(numOfPorts, OutputPort.class, this.getOutputPorts(), OutputPort.class.getDeclaredConstructor(IPipe.class), new Object[]{this});
 			this.setOutputPorts(newOutputPorts);
 			this.firePropertyChange(PROPERTY_PIPE_OUTPUT_PORTS, null, this.getOutputPorts());
         } catch (NoSuchMethodException e) {

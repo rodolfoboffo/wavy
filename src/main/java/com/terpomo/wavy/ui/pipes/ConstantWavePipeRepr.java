@@ -10,7 +10,7 @@ import com.terpomo.wavy.signals.ConstantWave;
 public class ConstantWavePipeRepr extends AbstractSignalPipeRepr<ConstantWave, ConstantWavePipe> {
 
 	private static final long serialVersionUID = 8289652143621889982L;
-	public static final String FREQUENCY = "Frequency";
+	public static final String FREQUENCY = "Frequency (Hz)";
 	public static final String AMPLITUDE = "Amplitude";
 	
 	GridBagLayout contentLayout;

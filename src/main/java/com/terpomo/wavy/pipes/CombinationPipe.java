@@ -1,7 +1,7 @@
 package com.terpomo.wavy.pipes;
 
 import com.terpomo.wavy.flow.AbstractPipe;
-import com.terpomo.wavy.flow.Buffer;
+import com.terpomo.wavy.flow.SignalBuffer;
 import com.terpomo.wavy.flow.InputPort;
 import com.terpomo.wavy.flow.OutputPort;
 import com.terpomo.wavy.util.ListUtils;
@@ -14,9 +14,13 @@ public class CombinationPipe extends AbstractPipe {
     private static final int DEFAULT_NUMBER_OF_CHANNELS = 2;
     private int numberOfChannels;
     private List<Float> scaleFactors;
+    private Float dcShift;
+    private Float outputScale;
 
     public CombinationPipe() {
         this.numberOfChannels = DEFAULT_NUMBER_OF_CHANNELS;
+        this.dcShift = 0f;
+        this.outputScale = 1f;
         this.scaleFactors = new ArrayList<>();
         this.buildPortsAndFactors();
     }
@@ -28,19 +32,18 @@ public class CombinationPipe extends AbstractPipe {
     @Override
     synchronized protected void doWork() {
         if (this.getOutputPort().getLinkedPort() != null) {
-            Buffer buffer = this.getOutputPort().getLinkedPort().getBuffer();
+            SignalBuffer buffer = this.getOutputPort().getLinkedPort().getBuffer();
             for (InputPort input : this.getInputPorts()) {
                 if (input.getLinkedPort() == null || input.getBuffer().isEmpty())
                     return;
             }
-            synchronized (buffer) {
-                if (!buffer.isFull()) {
-                    float value = 0.0f;
-                    for (int i = 0; i < this.getInputPorts().size(); i++) {
-                        value += this.getInputPorts().get(i).getBuffer().pickOne() * this.getScaleFactorForChannel(i);
-                    }
-                    buffer.put(value);
+            if (!buffer.isFull()) {
+                float value = 0.0f;
+                for (int i = 0; i < this.getInputPorts().size(); i++) {
+                    value += this.getInputPorts().get(i).getBuffer().pickOne() * this.getScaleFactorForChannel(i);
                 }
+                value = (value * this.outputScale) + this.dcShift;
+                this.putThroughPort(this.getOutputPort(), value);
             }
         }
     }
@@ -80,5 +83,21 @@ public class CombinationPipe extends AbstractPipe {
 
     public void setScaleFactorForChannel(int channelIndex, float factor) {
         this.getScaleFactors().set(channelIndex, factor);
+    }
+
+    public Float getDcShift() {
+        return dcShift;
+    }
+
+    synchronized public void setDcShift(Float dcShift) {
+        this.dcShift = dcShift;
+    }
+
+    public Float getOutputScale() {
+        return outputScale;
+    }
+
+    synchronized public void setOutputScale(Float outputScale) {
+        this.outputScale = outputScale;
     }
 }

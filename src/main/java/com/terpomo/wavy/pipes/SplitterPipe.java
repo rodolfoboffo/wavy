@@ -53,7 +53,7 @@ public class SplitterPipe extends AbstractPipe {
             for (OutputPort port : this.getOutputPorts()) {
                 IPort linkedPort = port.getLinkedPort();
                 if (linkedPort != null)
-                    linkedPort.getBuffer().putAll(values);
+                    this.putAllThroughPort(port, values);
             }
         }
     }

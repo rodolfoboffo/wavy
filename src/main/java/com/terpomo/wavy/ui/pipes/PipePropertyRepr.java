@@ -111,14 +111,14 @@ public class PipePropertyRepr<T> {
 			value = NumberFormat.getInstance().parse(textValue).floatValue();
 		if (this.clazz.equals(Integer.class))
 			value = NumberFormat.getInstance().parse(textValue).intValue();
+		if (this.clazz.equals(Long.class))
+			value = NumberFormat.getInstance().parse(textValue).longValue();
 		return (T)value;
 	}
 
 	public String getTextValue(T value) {
 		String text = "";
-		if (this.clazz.equals(Float.class))
-			text = NumberFormat.getInstance().format(value);
-		if (this.clazz.equals(Integer.class))
+		if (this.clazz.equals(Float.class) || this.clazz.equals(Integer.class) || this.clazz.equals(Long.class))
 			text = NumberFormat.getInstance().format(value);
 		return text;
 	}

@@ -2,7 +2,7 @@ package com.terpomo.wavy.pipes;
 
 import com.terpomo.wavy.Constants;
 import com.terpomo.wavy.flow.AbstractPipe;
-import com.terpomo.wavy.flow.Buffer;
+import com.terpomo.wavy.flow.SignalBuffer;
 import com.terpomo.wavy.math.FFT;
 import com.terpomo.wavy.math.Point;
 import com.terpomo.wavy.math.Utils;
@@ -21,7 +21,7 @@ public class FFTPipe extends AbstractPipe {
 	private int resolution;
 	private int sampleRate;
 	private long timestamp;
-	private List<Buffer> buffers;
+	private List<SignalBuffer> buffers;
 
 	public FFTPipe() {
 		this.numberOfChannels = 1;
@@ -34,7 +34,7 @@ public class FFTPipe extends AbstractPipe {
 	synchronized private void buildPortsAndBuffers() {
 		try {
 			this.dispose();
-			this.buffers = ListUtils.buildNewList(this.numberOfChannels, Buffer.class, this.buffers, Buffer.class.getDeclaredConstructor(int.class, boolean.class), new Object[]{(int)(this.MAX_RESOLUTION), true});
+			this.buffers = ListUtils.buildNewList(this.numberOfChannels, SignalBuffer.class, this.buffers, SignalBuffer.class.getDeclaredConstructor(int.class, boolean.class), new Object[]{(int)(this.MAX_RESOLUTION), true});
 			this.buildInputPorts(this.numberOfChannels);
 		} catch (NoSuchMethodException e) {
 			throw new RuntimeException(e);

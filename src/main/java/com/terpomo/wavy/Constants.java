@@ -4,17 +4,22 @@ import java.awt.Color;
 
 public class Constants {
 
-	public static final int DEFAULT_SAMPLE_RATE = 44100;
+	public static final int DEFAULT_SAMPLE_RATE = 512000;
+	public static final int MAX_SAMPLE_RATE = 10000000;
 	
 	public static final String CONSTANT_WAVE = "Constant Wave";
 	public static final String AUDIO_PLAYER = "Audio Player";
 	public static final String OSCILLOSCOPE = "Oscilloscope";
 	public static final String SPLITTER = "Splitter";
 	public static final String FILE_READER = "File Reader";
+	public static final String FILE_WRITER = "File Writer";
 	public static final String COMBINATION = "Signal Combination";
 	public static final String FFT = "FFT";
-	public static final String BAND_PASS_FILTER_PIPE_ENUM = "Band Pass Filter";
-	public static final String MIC_PIPE_ENUM = "Microphone";
-	
+	public static final String BAND_PASS_FILTER = "Band Pass Filter";
+	public static final String MICROPHONE = "Microphone";
+	public static final String FM_MODULATION = "FM Modulation";
+	public static final String IQ_MODULATION = "IQ Modulation";
+	public static final String RTLSDR = "RTLSDR Device";
+
 	public static final Color LIGHT_CYAN = new Color(230, 230, 255);
 }

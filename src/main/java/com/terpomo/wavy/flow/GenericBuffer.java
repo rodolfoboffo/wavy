@@ -5,18 +5,23 @@ import com.terpomo.wavy.core.IObservableObject;
 import com.terpomo.wavy.core.IWavyModel;
 import com.terpomo.wavy.core.ObservableObject;
 
-public class Buffer extends ObservableObject implements IWavyModel, IObservableObject, IWavyDisposable {
+import java.lang.reflect.Array;
 
-    public static final int DEFAULT_DATASTREAM_BUFER_SIZE = 10240;
+public class GenericBuffer<T> extends ObservableObject implements IWavyModel, IObservableObject, IWavyDisposable {
+
+    public static final int DEFAULT_DATASTREAM_BUFER_SIZE = 102400;
     private final boolean endless;
-    private Float[] buffer;
+    private final Class<T> cls;
+    private T[] buffer;
     private int capacity;
     private int startIndex, finishIndex;
 
-    public Buffer(int capacity, boolean endless) {
+    public GenericBuffer(Class<T> cls, int capacity, boolean endless) {
+        this.cls = cls;
         this.capacity = capacity;
         this.endless = endless;
-        this.buffer = new Float[this.capacity+1];
+        //noinspection unchecked
+        this.buffer = (T[]) Array.newInstance(this.cls, this.capacity+1);
         this.startIndex = this.finishIndex = 0;
     }
 
@@ -24,17 +29,22 @@ public class Buffer extends ObservableObject implements IWavyModel, IObservableO
         return endless;
     }
 
-    public Buffer(int capacity) {
-        this(capacity, false);
+    public GenericBuffer(Class<T> cls, int capacity) {
+        this(cls, capacity, false);
     }
 
-    public Buffer() {
-        this(DEFAULT_DATASTREAM_BUFER_SIZE, false);
+    public GenericBuffer(Class<T> cls, boolean endless) {
+        this(cls, DEFAULT_DATASTREAM_BUFER_SIZE, endless);
+    }
+
+    public GenericBuffer(Class<T> cls) {
+        this(cls, DEFAULT_DATASTREAM_BUFER_SIZE, false);
     }
 
     synchronized public void resizeBuffer(int newCapacity) {
         if (this.capacity != newCapacity) {
-            Float[] newBuffer = new Float[newCapacity + 1];
+            //noinspection unchecked
+            T[] newBuffer = (T[])Array.newInstance(this.cls, newCapacity + 1);
             int currentSize = this.getSize();
             int n = Math.min(currentSize, newCapacity);
             for (int i = 0; i < n; i++) {
@@ -63,40 +73,42 @@ public class Buffer extends ObservableObject implements IWavyModel, IObservableO
         return this.getCapacity() - this.getSize();
     }
 
-    synchronized public Float pickOne() {
-        Float v = this.buffer[this.startIndex];
+    synchronized public T pickOne() {
+        T v = this.buffer[this.startIndex];
         this.startIndex = (this.startIndex + 1 + this.buffer.length) % this.buffer.length;
         return v;
     }
 
-    synchronized public Float[] fetchAll() {
-        Float[] cloneBuffer = this.fetch(this.getSize());
+    synchronized public T[] fetchAll() {
+        T[] cloneBuffer = this.fetch(this.getSize());
         return cloneBuffer;
     }
 
-    synchronized public Float[] getAll() {
-        Float[] cloneBuffer = this.getValues(this.getSize());
+    synchronized public T[] getAll() {
+        T[] cloneBuffer = this.getValues(this.getSize());
         return cloneBuffer;
     }
 
-    synchronized public Float[] getValues(int count) {
+    synchronized public T[] getValues(int count) {
         int minIndex = Math.min(count, this.getSize());
-        Float[] subList = new Float[minIndex];
+        //noinspection unchecked
+        T[] subList = (T[])Array.newInstance(this.cls, minIndex);
         for (int i = 0; i < minIndex; i++) {
             subList[i] = this.buffer[(this.startIndex + i) % this.buffer.length];
         }
         return subList;
     }
 
-    synchronized public Float getValue(int index) {
+    synchronized public T getValue(int index) {
         if (index >= this.getSize())
             throw new RuntimeException("Index out of buffer.");
         return this.buffer[(this.startIndex + index) % this.buffer.length];
     }
 
-    synchronized public Float[] fetch(int count) {
+    synchronized public T[] fetch(int count) {
         int minIndex = Math.min(count, this.getSize());
-        Float[] subList = new Float[minIndex];
+        //noinspection unchecked
+        T[] subList = (T[]) Array.newInstance(this.cls, minIndex);
         for (int i = 0; i < minIndex; i++) {
             subList[i] = this.pickOne();
         }
@@ -112,7 +124,7 @@ public class Buffer extends ObservableObject implements IWavyModel, IObservableO
         return this.finishIndex == (this.startIndex - 1 + this.buffer.length) % this.buffer.length;
     }
 
-    synchronized public void put(Float value) {
+    synchronized public void put(T value) {
         boolean _isFull = this.isFull();
         if (!this.endless) {
             if (_isFull)
@@ -128,11 +140,8 @@ public class Buffer extends ObservableObject implements IWavyModel, IObservableO
         }
     }
 
-    synchronized public void putAll(Float[] values) {
-        int minIndex = values.length;
-        for (int i = 0; i < minIndex; i++) {
-            this.put(values[i]);
-        }
+    synchronized public void putAll(T[] values) {
+        this.put(values, values.length);
     }
 
     synchronized public void clear() {
@@ -142,5 +151,11 @@ public class Buffer extends ObservableObject implements IWavyModel, IObservableO
     @Override
     public void wavyDispose() {
 
+    }
+
+    public void put(T[] values, int length) {
+        for (int i = 0; i < length; i++) {
+            this.put(values[i]);
+        }
     }
 }

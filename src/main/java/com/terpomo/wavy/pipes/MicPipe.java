@@ -1,7 +1,7 @@
 package com.terpomo.wavy.pipes;
 
 import com.terpomo.wavy.flow.AbstractPipe;
-import com.terpomo.wavy.flow.Buffer;
+import com.terpomo.wavy.flow.SignalBuffer;
 import com.terpomo.wavy.flow.OutputPort;
 import com.terpomo.wavy.sound.AudioUtils;
 import com.terpomo.wavy.sound.LPCMDecoder;
@@ -37,13 +37,13 @@ public class MicPipe extends AbstractPipe {
         if (this.line != null && this.line.isOpen() && this.outputPort.getLinkedPort() != null) {
             int bytesAvailable = this.line.available();
             int framesAvailable = bytesAvailable / CHANNELS;
-            Buffer buffer = this.outputPort.getLinkedPort().getBuffer();
+            SignalBuffer buffer = this.outputPort.getLinkedPort().getBuffer();
             int bufferSpace = buffer.getRemainingCapacity();
             int framesToRead = Math.min(bufferSpace, framesAvailable);
             if (framesToRead > 0) {
                 this.line.read(this.localBuffer, 0, framesToRead);
                 Float[][] samples = this.decoder.decode(this.localBuffer, framesToRead * CHANNELS);
-                buffer.putAll(samples[0]);
+                this.putAllThroughPort(this.outputPort, samples[0]);
             }
         }
     }

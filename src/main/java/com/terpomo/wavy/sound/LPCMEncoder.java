@@ -1,8 +1,7 @@
 package com.terpomo.wavy.sound;
 
-import com.terpomo.wavy.flow.Buffer;
+import com.terpomo.wavy.flow.SignalBuffer;
 
-import javax.sound.sampled.AudioFormat;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
@@ -10,18 +9,17 @@ public class LPCMEncoder extends Encoder {
 
 	protected long index = 0;
 	
-	public LPCMEncoder(int sampleRate, Buffer[] buffers) {
-		super(sampleRate, DEFAULT_BITS_PER_SAMPLE, DEFAULT_SIGNED, DEFAULT_BIG_ENDIAN, buffers);
+	public LPCMEncoder(int sampleRate, int numOfChannels) {
+		super(sampleRate, DEFAULT_BITS_PER_SAMPLE, numOfChannels, DEFAULT_SIGNED, DEFAULT_BIG_ENDIAN);
 	}
 
-	@Override
-	public AudioFormat getAudioFormat() {
-		return new AudioFormat(this.getSampleRate(), this.bitsPerSample, this.getBuffers().length, this.signed, this.bigEndian);
+	public LPCMEncoder(int sampleRate, int bitsPerSample, boolean signed, boolean bigEndian, int numOfChannels) {
+		super(sampleRate, bitsPerSample, numOfChannels, signed, bigEndian);
 	}
 	
 	@Override
-	public byte[] encode (int numOfFrames, Buffer[] buffers) {
-		int bitsPerFrame = this.getBuffers().length*this.bitsPerSample;
+	public byte[] encode (int numOfFrames, SignalBuffer[] buffers) {
+		int bitsPerFrame = buffers.length*this.bitsPerSample;
 		if (bitsPerFrame % 8 != 0)
 			throw new RuntimeException("Number of bits per frame should be multiple of 8.");
 		int bytesPerFrame = bitsPerFrame / 8;
@@ -34,7 +32,7 @@ public class LPCMEncoder extends Encoder {
 		for (int iFrame = 0; iFrame < numOfFrames; iFrame++) {
 			frameInt = 0;
 			buffer.clear();
-			for (Buffer b : this.getBuffers()) {
+			for (SignalBuffer b : buffers) {
 				frameInt <<= this.bitsPerSample;
 				float v = b.pickOne();
 				int sampleInt = (int) ((v / 2.0f * SIGNED_MAX) % SIGNED_MAX);

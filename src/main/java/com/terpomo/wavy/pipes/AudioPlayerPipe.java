@@ -2,7 +2,7 @@ package com.terpomo.wavy.pipes;
 
 import com.terpomo.wavy.Constants;
 import com.terpomo.wavy.flow.AbstractPipe;
-import com.terpomo.wavy.flow.Buffer;
+import com.terpomo.wavy.flow.SignalBuffer;
 import com.terpomo.wavy.flow.InputPort;
 import com.terpomo.wavy.sound.Encoder;
 import com.terpomo.wavy.sound.LPCMEncoder;
@@ -17,8 +17,7 @@ public class AudioPlayerPipe extends AbstractPipe {
 	protected int audioBufferSize;
 	protected boolean playing = true;
 	protected Encoder encoder;
-	protected Buffer[] buffers;
-	private Mixer.Info mixer;
+	protected SignalBuffer[] buffers;
 	protected SourceDataLine line;
 	
 	public AudioPlayerPipe() {
@@ -34,7 +33,7 @@ public class AudioPlayerPipe extends AbstractPipe {
 
 	synchronized private void buildPipes() {
 		this.buildInputPorts(this.numOfChannels);
-		this.buffers = new Buffer[this.numOfChannels];
+		this.buffers = new SignalBuffer[this.numOfChannels];
 		for (int i = 0; i < this.numOfChannels; i++) {
 			InputPort p = this.getInputPorts().get(i);
 			this.buffers[i] = p.getBuffer();
@@ -43,7 +42,7 @@ public class AudioPlayerPipe extends AbstractPipe {
 
 	synchronized private void buildEncoder() {
 		this.audioBufferSize = (int)(this.sampleRate*0.01);
-		this.encoder = new LPCMEncoder(this.sampleRate, this.buffers);
+		this.encoder = new LPCMEncoder(this.sampleRate, this.numOfChannels);
 	}
 
 	synchronized public void setNumOfChannels(int numOfChannels) {
@@ -134,7 +133,7 @@ public class AudioPlayerPipe extends AbstractPipe {
 
 	synchronized protected int numOfFramesAvailable() {
 		int frames = Integer.MAX_VALUE;
-		for (Buffer b : this.buffers) {
+		for (SignalBuffer b : this.buffers) {
 			int bufferSize = b.getSize();
 			frames = Math.min(bufferSize, frames);
 		}

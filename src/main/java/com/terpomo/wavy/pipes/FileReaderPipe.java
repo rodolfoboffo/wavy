@@ -1,7 +1,7 @@
 package com.terpomo.wavy.pipes;
 
 import com.terpomo.wavy.flow.AbstractPipe;
-import com.terpomo.wavy.flow.Buffer;
+import com.terpomo.wavy.flow.SignalBuffer;
 import com.terpomo.wavy.flow.IPort;
 import com.terpomo.wavy.flow.OutputPort;
 import com.terpomo.wavy.sound.LPCMDecoder;
@@ -23,7 +23,7 @@ public class FileReaderPipe extends AbstractPipe {
     private final boolean repeat;
     private LPCMDecoder codec;
     private AudioFormat audioFormat;
-    private Buffer[] outputBuffers;
+    private SignalBuffer[] outputBuffers;
 
     public FileReaderPipe() {
         this.inputFilePath = "";
@@ -41,7 +41,7 @@ public class FileReaderPipe extends AbstractPipe {
             for (int i = 0; i < this.getNumOfChannels(); i++) {
                 IPort linkedPort = this.getOutputPorts().get(i).getLinkedPort();
                 if (linkedPort != null) {
-                    Buffer b = linkedPort.getBuffer();
+                    SignalBuffer b = linkedPort.getBuffer();
                     numOfFrames = Math.min(b.getRemainingCapacity(), numOfFrames);
                 } else {
                     numOfFrames = 0;
@@ -55,8 +55,7 @@ public class FileReaderPipe extends AbstractPipe {
             }
             if (values != null) {
                 for (int i = 0; i < values.length; i++) {
-                    IPort linkedPort = this.getOutputPorts().get(i).getLinkedPort();
-                    linkedPort.getBuffer().putAll(values[i]);
+                    this.putAllThroughPort(this.getOutputPorts().get(i), values[i]);
                 }
             }
         } catch (IOException | UnsupportedAudioFileException e) {
@@ -120,9 +119,9 @@ public class FileReaderPipe extends AbstractPipe {
         return this.getEncoding() == AudioFormat.Encoding.PCM_SIGNED;
     }
 
-    private Buffer[] getOutputBuffers() {
+    private SignalBuffer[] getOutputBuffers() {
         List<OutputPort> outputPorts = this.getOutputPorts();
-        Buffer[] buffers = new Buffer[outputPorts.size()];
+        SignalBuffer[] buffers = new SignalBuffer[outputPorts.size()];
         for (int i = 0; i < outputPorts.size(); i++) {
             buffers[i] = outputPorts.get(i).getBuffer();
         }
