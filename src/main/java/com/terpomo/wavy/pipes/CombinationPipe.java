@@ -42,7 +42,7 @@ public class CombinationPipe extends AbstractPipe {
                 for (int i = 0; i < this.getInputPorts().size(); i++) {
                     value += this.getInputPorts().get(i).getBuffer().pickOne() * this.getScaleFactorForChannel(i);
                 }
-                value = (value + this.dcShift) * this.outputScale;
+                value = (value * this.outputScale) + this.dcShift;
                 this.putThroughPort(this.getOutputPort(), value);
             }
         }

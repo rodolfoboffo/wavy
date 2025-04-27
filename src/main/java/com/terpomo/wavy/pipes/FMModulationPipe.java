@@ -37,7 +37,7 @@ public class FMModulationPipe extends AbstractPipe {
         if (this.allPortsConnected()) {
             if (!this.getOutputPort().getLinkedPort().getBuffer().isFull() && !this.getInputPort().getBuffer().isEmpty()) {
                 float signal = this.getInputPort().getBuffer().pickOne();
-                this.phase = (1.0f / this.sampleRate * MathConstants.PI2 * this.modulationIndex * (signal/2.0f+0.5f) + this.phase + MathConstants.PI2) % MathConstants.PI2;
+                this.phase = ((1.0f / this.sampleRate * MathConstants.PI2 * this.modulationIndex * signal + this.phase) + MathConstants.PI2) % MathConstants.PI2;
                 float value = this.amplitude * this.sineTable.getSineValue(this.phase);
                 this.putThroughPort(this.outputPort, value);
             }
