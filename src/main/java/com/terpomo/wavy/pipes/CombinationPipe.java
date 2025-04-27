@@ -14,9 +14,13 @@ public class CombinationPipe extends AbstractPipe {
     private static final int DEFAULT_NUMBER_OF_CHANNELS = 2;
     private int numberOfChannels;
     private List<Float> scaleFactors;
+    private Float dcShift;
+    private Float outputScale;
 
     public CombinationPipe() {
         this.numberOfChannels = DEFAULT_NUMBER_OF_CHANNELS;
+        this.dcShift = 0f;
+        this.outputScale = 1f;
         this.scaleFactors = new ArrayList<>();
         this.buildPortsAndFactors();
     }
@@ -38,6 +42,7 @@ public class CombinationPipe extends AbstractPipe {
                 for (int i = 0; i < this.getInputPorts().size(); i++) {
                     value += this.getInputPorts().get(i).getBuffer().pickOne() * this.getScaleFactorForChannel(i);
                 }
+                value = (value + this.dcShift) * this.outputScale;
                 this.putThroughPort(this.getOutputPort(), value);
             }
         }
@@ -78,5 +83,21 @@ public class CombinationPipe extends AbstractPipe {
 
     public void setScaleFactorForChannel(int channelIndex, float factor) {
         this.getScaleFactors().set(channelIndex, factor);
+    }
+
+    public Float getDcShift() {
+        return dcShift;
+    }
+
+    synchronized public void setDcShift(Float dcShift) {
+        this.dcShift = dcShift;
+    }
+
+    public Float getOutputScale() {
+        return outputScale;
+    }
+
+    synchronized public void setOutputScale(Float outputScale) {
+        this.outputScale = outputScale;
     }
 }

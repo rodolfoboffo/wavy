@@ -15,6 +15,8 @@ import java.util.function.Supplier;
 public class CombinationPipeRepr extends AbstractPipeRepr<CombinationPipe>{
     private static final String CHANNEL_NUMBER_SCALE_FACTOR = "Channel #%d scale factor";
     private static final String OUTPUT_CHANNEL = "Output Channel";
+    private static final String DC_SHIFT = "DC Shift";
+    private static final String OUTPUT_SCALE_FACTOR = "Output Scale Factor";
     private static final String NUMBER_OF_CHANNELS = "Number of Channels";
     private final GridBagLayout contentLayout;
 
@@ -36,8 +38,14 @@ public class CombinationPipeRepr extends AbstractPipeRepr<CombinationPipe>{
     @SuppressWarnings("rawtypes")
     private java.util.List<PipePropertyRepr> createPipePropertiesForInputs() {
         List<PipePropertyRepr> pipeProperties = new ArrayList<>();
-        PipePropertyRepr inputChannelProperty = new PipePropertyRepr<>(null, this, null, OUTPUT_CHANNEL, null, this.getPipe().getOutputPort(), null);
-        pipeProperties.add(inputChannelProperty);
+        PipePropertyRepr outputChannelProperty = new PipePropertyRepr<>(null, this, null, OUTPUT_CHANNEL, null, this.getPipe().getOutputPort(), null);
+        pipeProperties.add(outputChannelProperty);
+
+        PipePropertyRepr<Float> outputScaleFactorProperty = new PipePropertyRepr<Float>(Float.class, this, null, OUTPUT_SCALE_FACTOR, this.getPipe()::getOutputScale, null, this.getPipe()::setOutputScale);
+        pipeProperties.add(outputScaleFactorProperty);
+
+        PipePropertyRepr<Float> dcShiftProperty = new PipePropertyRepr<Float>(Float.class, this, null, DC_SHIFT, this.getPipe()::getDcShift, null, this.getPipe()::setDcShift);
+        pipeProperties.add(dcShiftProperty);
 
         PipePropertyRepr numOfChannelsProperty = new PipePropertyRepr<Integer>(Integer.class, this, null, NUMBER_OF_CHANNELS, this.getPipe()::getNumberOfChannels, null, this.getPipe()::setNumberOfChannels);
         pipeProperties.add(numOfChannelsProperty);
@@ -45,7 +53,7 @@ public class CombinationPipeRepr extends AbstractPipeRepr<CombinationPipe>{
         for (int i = 0; i < this.getPipe().getInputPorts().size(); i++) {
             final int channelIndex = i;
             InputPort _port = this.getPipe().getInputPorts().get(i);
-            PipePropertyRepr<Float> signalOutputProperty = new PipePropertyRepr<Float>(Float.class, this, _port, String.format(CHANNEL_NUMBER_SCALE_FACTOR, channelIndex + 1), new Supplier<Float>() {
+            PipePropertyRepr<Float> inputScalingProperty = new PipePropertyRepr<Float>(Float.class, this, _port, String.format(CHANNEL_NUMBER_SCALE_FACTOR, channelIndex + 1), new Supplier<Float>() {
                 @Override
                 public Float get() {
                     return CombinationPipeRepr.this.getPipe().getScaleFactorForChannel(channelIndex);
@@ -56,7 +64,7 @@ public class CombinationPipeRepr extends AbstractPipeRepr<CombinationPipe>{
                     CombinationPipeRepr.this.getPipe().setScaleFactorForChannel(channelIndex, aFloat);
                 }
             });
-            pipeProperties.add(signalOutputProperty);
+            pipeProperties.add(inputScalingProperty);
         }
         return pipeProperties;
     }
