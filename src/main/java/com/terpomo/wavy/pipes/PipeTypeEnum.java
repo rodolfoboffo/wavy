@@ -16,6 +16,7 @@ public enum PipeTypeEnum {
 	MIC_PIPE_ENUM(Constants.MICROPHONE),
 	FM_MODULATION_PIPE_ENUM(Constants.FM_MODULATION),
 	IQ_MODULATION_PIPE_ENUM(Constants.IQ_MODULATION),
+	IQ_DEMODULATION_PIPE_ENUM(Constants.IQ_DEMODULATION),
 	RTLSDR_PIPE_ENUM(Constants.RTLSDR);
 
 	private final String friendlyName;

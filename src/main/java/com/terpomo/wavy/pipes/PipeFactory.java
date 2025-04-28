@@ -1,6 +1,20 @@
 package com.terpomo.wavy.pipes;
 
 import com.terpomo.wavy.flow.AbstractPipe;
+import com.terpomo.wavy.pipes.filters.BandPassFilterPipe;
+import com.terpomo.wavy.pipes.input.FileReaderPipe;
+import com.terpomo.wavy.pipes.input.MicPipe;
+import com.terpomo.wavy.pipes.input.RTLPipe;
+import com.terpomo.wavy.pipes.misc.CombinationPipe;
+import com.terpomo.wavy.pipes.misc.SplitterPipe;
+import com.terpomo.wavy.pipes.modulation.FMModulationPipe;
+import com.terpomo.wavy.pipes.modulation.IQDemodulationPipe;
+import com.terpomo.wavy.pipes.modulation.IQModulationPipe;
+import com.terpomo.wavy.pipes.monitors.FFTPipe;
+import com.terpomo.wavy.pipes.monitors.OscilloscopePipe;
+import com.terpomo.wavy.pipes.output.AudioPlayerPipe;
+import com.terpomo.wavy.pipes.output.FileWriterPipe;
+import com.terpomo.wavy.pipes.sources.ConstantWavePipe;
 import com.terpomo.wavy.signals.ConstantWave;
 
 public class PipeFactory {
@@ -42,6 +56,9 @@ public class PipeFactory {
 		}
 		case IQ_MODULATION_PIPE_ENUM: {
 			return new IQModulationPipe();
+		}
+		case IQ_DEMODULATION_PIPE_ENUM: {
+			return new IQDemodulationPipe();
 		}
 		case RTLSDR_PIPE_ENUM: {
 			return new RTLPipe();

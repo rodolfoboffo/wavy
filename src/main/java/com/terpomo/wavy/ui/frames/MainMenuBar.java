@@ -1,19 +1,20 @@
 package com.terpomo.wavy.ui.frames;
 
-import java.awt.EventQueue;
+import com.terpomo.wavy.pipes.PipeTypeEnum;
+import com.terpomo.wavy.ui.UIController;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.json.JSONTokener;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-
-import com.terpomo.wavy.pipes.PipeTypeEnum;
-import com.terpomo.wavy.ui.UIController;
 
 public class MainMenuBar extends JMenuBar {
 
@@ -59,16 +60,38 @@ public class MainMenuBar extends JMenuBar {
 		this.onSelectedProjectChange(UIController.getInstance().getSelectedProjectRepr());
 		UIController.getInstance().onSelectedProjectChanged(new SelectedProjectChangedListener());
 	}
-	
-	private void buildPipesMenuItems() {
-		for (PipeTypeEnum pipeType : PipeTypeEnum.values()) {
-			JMenuItem menuItem = new JMenuItem(pipeType.getFriendlyName());
-			NewPipeReprActionListener newPipeActionListener = new NewPipeReprActionListener(pipeType);
-			menuItem.addActionListener(newPipeActionListener);
-			this.newPipeMenuItems.add(menuItem);
-			this.pipesMenu.add(menuItem);
+
+	private void buildMenuItems(JMenu parentMenu, JSONObject jsonRoot) {
+		for (String menuTitle : jsonRoot.keySet().stream().sorted().toArray(String[]::new)) {
+			JMenu subMenu = new JMenu(menuTitle);
+			JSONArray menuItemNames = jsonRoot.optJSONArray(menuTitle);
+			for (int i = 0; i < menuItemNames.length(); i++) {
+				String pipeName = menuItemNames.optString(i);
+				if (pipeName != null) {
+					PipeTypeEnum pipeType = Enum.valueOf(PipeTypeEnum.class, pipeName);
+					JMenuItem menuItem = new JMenuItem(pipeType.getFriendlyName());
+					NewPipeReprActionListener newPipeActionListener = new NewPipeReprActionListener(pipeType);
+					menuItem.addActionListener(newPipeActionListener);
+					this.newPipeMenuItems.add(menuItem);
+					subMenu.add(menuItem);
+				}
+			}
+			parentMenu.add(subMenu);
 		}
 	}
+
+	private void buildPipesMenuItems() {
+		try {
+			InputStream stream = Thread.currentThread().getContextClassLoader().getResourceAsStream("pipe_menu.json");
+			if (stream != null) {
+				JSONTokener tokener = new JSONTokener(stream);
+				JSONObject jsonRoot = new JSONObject(tokener);
+				this.buildMenuItems(this.pipesMenu, jsonRoot);
+			}
+		} catch (Exception e) {
+            throw new RuntimeException("Could not create Pipe menu items", e);
+        }
+    }
 	
 	public void onSelectedProjectChange(ProjectRepr p) {
 		boolean enabled = p != null;

@@ -3,7 +3,34 @@ package com.terpomo.wavy.ui.pipes;
 import com.terpomo.wavy.flow.AbstractPipe;
 import com.terpomo.wavy.pipes.PipeFactory;
 import com.terpomo.wavy.pipes.PipeTypeEnum;
-import com.terpomo.wavy.pipes.*;
+import com.terpomo.wavy.pipes.filters.BandPassFilterPipe;
+import com.terpomo.wavy.pipes.input.FileReaderPipe;
+import com.terpomo.wavy.pipes.input.MicPipe;
+import com.terpomo.wavy.pipes.input.RTLPipe;
+import com.terpomo.wavy.pipes.misc.CombinationPipe;
+import com.terpomo.wavy.pipes.misc.SplitterPipe;
+import com.terpomo.wavy.pipes.modulation.FMModulationPipe;
+import com.terpomo.wavy.pipes.modulation.IQDemodulationPipe;
+import com.terpomo.wavy.pipes.modulation.IQModulationPipe;
+import com.terpomo.wavy.pipes.monitors.FFTPipe;
+import com.terpomo.wavy.pipes.monitors.OscilloscopePipe;
+import com.terpomo.wavy.pipes.output.AudioPlayerPipe;
+import com.terpomo.wavy.pipes.output.FileWriterPipe;
+import com.terpomo.wavy.pipes.sources.ConstantWavePipe;
+import com.terpomo.wavy.ui.pipes.filters.BandPassFilterPipeRepr;
+import com.terpomo.wavy.ui.pipes.input.FileReaderPipeRepr;
+import com.terpomo.wavy.ui.pipes.input.MicPipeRepr;
+import com.terpomo.wavy.ui.pipes.input.RTLPipeRepr;
+import com.terpomo.wavy.ui.pipes.misc.CombinationPipeRepr;
+import com.terpomo.wavy.ui.pipes.misc.SplitterPipeRepr;
+import com.terpomo.wavy.ui.pipes.modulation.AudioPlayerPipeRepr;
+import com.terpomo.wavy.ui.pipes.modulation.FMModulationPipeRepr;
+import com.terpomo.wavy.ui.pipes.modulation.IQDemodulationPipeRepr;
+import com.terpomo.wavy.ui.pipes.modulation.IQModulationPipeRepr;
+import com.terpomo.wavy.ui.pipes.monitors.FFTPipeRepr;
+import com.terpomo.wavy.ui.pipes.monitors.OscilloscopePipeRepr;
+import com.terpomo.wavy.ui.pipes.output.FileWriterPipeRepr;
+import com.terpomo.wavy.ui.pipes.sources.ConstantWavePipeRepr;
 
 public class PipeReprFactory {
 
@@ -57,6 +84,10 @@ public class PipeReprFactory {
 		}
 		case IQ_MODULATION_PIPE_ENUM: {
 			pipeRepr = new IQModulationPipeRepr((IQModulationPipe) pipe, pipeName);
+			return pipeRepr;
+		}
+		case IQ_DEMODULATION_PIPE_ENUM: {
+			pipeRepr = new IQDemodulationPipeRepr((IQDemodulationPipe) pipe, pipeName);
 			return pipeRepr;
 		}
 		case RTLSDR_PIPE_ENUM: {
