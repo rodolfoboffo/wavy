@@ -2,6 +2,7 @@ package com.terpomo.wavy.pipes.monitors;
 
 import com.terpomo.wavy.Constants;
 import com.terpomo.wavy.flow.AbstractPipe;
+import com.terpomo.wavy.flow.InputPort;
 import com.terpomo.wavy.flow.SignalBuffer;
 import com.terpomo.wavy.oscilloscope.TimeValuePair;
 import com.terpomo.wavy.util.ListUtils;
@@ -16,6 +17,7 @@ public class OscilloscopePipe extends AbstractPipe {
 	private static final float MAX_SCALE = 3.0f;
 	private static final float DEFAULT_SCALE = 1.0f;
 	private List<SignalBuffer> buffers;
+	private int bufferSize;
 	private int sampleRate;
 	private int numberOfChannels;
 	private long timestamp;
@@ -26,6 +28,7 @@ public class OscilloscopePipe extends AbstractPipe {
 		this.numberOfChannels = DEFAULT_NUMBER_OF_CHANNELS;
 		this.sampleRate = Constants.DEFAULT_SAMPLE_RATE;
 		this.scale = scale;
+		this.bufferSize = (int)(this.sampleRate*this.scale);
 		this.pointSkip = DEFAULT_POINT_SKIP;
 		this.buffers = new ArrayList<>();
 		this.buildPortsAndBuffers();
@@ -42,8 +45,9 @@ public class OscilloscopePipe extends AbstractPipe {
 	synchronized private void buildPortsAndBuffers() {
         try {
 			this.dispose();
-            this.buffers = ListUtils.buildNewList(this.numberOfChannels, SignalBuffer.class, this.buffers, SignalBuffer.class.getDeclaredConstructor(int.class, boolean.class), new Object[]{(int)(this.sampleRate*this.scale), true});
 			this.buildInputPorts(this.numberOfChannels);
+            this.buffers = ListUtils.buildNewList(this.numberOfChannels, SignalBuffer.class, this.buffers, SignalBuffer.class.getDeclaredConstructor(int.class, boolean.class), new Object[]{this.bufferSize, true});
+			this.resizeAndClearBuffers();
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }
@@ -54,11 +58,21 @@ public class OscilloscopePipe extends AbstractPipe {
 		this.buildPortsAndBuffers();
 	}
 
+	synchronized private void resizeAndClearBuffers() {
+		for(SignalBuffer b : this.buffers) {
+			b.resizeBuffer(this.bufferSize);
+			b.clear();
+		}
+		for (InputPort p : this.getInputPorts()) {
+			p.getBuffer().resizeBuffer(this.bufferSize);
+			p.getBuffer().clear();
+		}
+	}
+
 	synchronized public void setSampleRate(int sampleRate) {
 		this.sampleRate = sampleRate;
-		for(SignalBuffer b : this.buffers) {
-			b.resizeBuffer((int) (this.sampleRate * this.scale));
-		}
+		this.bufferSize = (int)(this.sampleRate*this.scale);
+		this.resizeAndClearBuffers();
 	}
 
 	public OscilloscopePipe() {
@@ -114,9 +128,8 @@ public class OscilloscopePipe extends AbstractPipe {
 	synchronized public void setScale(float scale) {
 		float newScale = Math.min(scale, MAX_SCALE);
 		this.scale = scale;
-		for (int i = 0; i < this.numberOfChannels; i++) {
-			this.buffers.get(i).resizeBuffer((int)(newScale*this.sampleRate));
-		}
+		this.bufferSize = (int)(this.sampleRate*this.scale);
+		this.resizeAndClearBuffers();
 	}
 
 	synchronized private ArrayList<TimeValuePair> generateTimeValuePairs(SignalBuffer buffer) {

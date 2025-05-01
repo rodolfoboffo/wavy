@@ -1,40 +1,16 @@
 package com.terpomo.wavy.math;
 
-public class SineTable {
+import java.util.function.Function;
+
+public class SineTable extends ValuedTable {
 	public static final SineTable DEFAULT_SINE_TABLE = new SineTable(10240000);
-	
-	private final int n;
-	private final float sineValues[];
-	
+
 	public SineTable(int n) {
-		this.n = n;
-		this.sineValues = this.generateSineTable(n);
+		super(n, 0f, MathConstants.PI2, new Function<Float, Float>() {
+			@Override
+			public Float apply(Float aFloat) {
+				return (float)Math.sin(aFloat);
+			}
+		});
 	}
-	
-	private final float[] generateSineTable(int n) {
-		final float values[] = new float[n];
-		for (int i = 0; i < n; i++) {
-			values[i] = (float) Math.sin(MathConstants.PI2 / n * i);
-		}
-		return values;
-	}
-
-	public final int getLength() {
-		return n;
-	}
-
-	public final float[] getValues() {
-		return sineValues;
-	}
-	
-	public final float getSineValue(int index) {
-		int i = index % this.n;
-		return this.sineValues[i];
-	}
-	
-	public final float getSineValue(float rad) {
-		int i = (int) (rad % MathConstants.PI2 / MathConstants.PI2 * this.n);
-		return this.sineValues[i];
-	}
-	
 }

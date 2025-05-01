@@ -23,7 +23,7 @@ import java.util.List;
 public class OscilloscopePipeRepr extends AbstractPipeRepr<OscilloscopePipe> {
 
 	private static final String NUMBER_OF_CHANNELS = "# of Channels";
-	private static final String DEFINITION = "Definition";
+	private static final String DEFINITION = "Definition (%)";
 	private static final String SCALE = "Scale";
 	private static final long serialVersionUID = 7368297233394330359L;
 	private final JFreeChart lineChart;

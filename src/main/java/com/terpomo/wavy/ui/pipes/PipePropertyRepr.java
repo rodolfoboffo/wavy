@@ -136,7 +136,7 @@ public class PipePropertyRepr<T> {
             T newValue = null;
             try {
                 newValue = PipePropertyRepr.this.parseTextValue(valueText);
-				if (newValue != PipePropertyRepr.this.value) {
+				if (!newValue.equals(PipePropertyRepr.this.getter.get())) {
 					PipePropertyRepr.this.setter.accept(newValue);
 					T acceptedValue = PipePropertyRepr.this.getter.get();
 					PipePropertyRepr.this.value = acceptedValue;
