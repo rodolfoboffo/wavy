@@ -4,7 +4,7 @@ import java.awt.Color;
 
 public class Constants {
 
-	public static final int DEFAULT_SAMPLE_RATE = 44100;
+	public static final int DEFAULT_SAMPLE_RATE = 256000;
 	public static final int MAX_SAMPLE_RATE = 10000000;
 	
 	public static final String CONSTANT_WAVE = "Constant Wave";
@@ -18,6 +18,7 @@ public class Constants {
 	public static final String BAND_PASS_FILTER = "Band Pass Filter";
 	public static final String MICROPHONE = "Microphone";
 	public static final String FM_MODULATION = "FM Modulation";
+	public static final String FM_DEMODULATION = "FM Demodulation";
 	public static final String IQ_MODULATION = "IQ Modulation";
 	public static final String RTLSDR = "RTLSDR Device";
 	public static final String IQ_DEMODULATION = "IQ Demodulation";

@@ -7,6 +7,7 @@ import com.terpomo.wavy.pipes.input.MicPipe;
 import com.terpomo.wavy.pipes.input.RTLPipe;
 import com.terpomo.wavy.pipes.misc.CombinationPipe;
 import com.terpomo.wavy.pipes.misc.SplitterPipe;
+import com.terpomo.wavy.pipes.modulation.FMDemodulationPipe;
 import com.terpomo.wavy.pipes.modulation.FMModulationPipe;
 import com.terpomo.wavy.pipes.modulation.IQDemodulationPipe;
 import com.terpomo.wavy.pipes.modulation.IQModulationPipe;
@@ -53,6 +54,9 @@ public class PipeFactory {
 		}
 		case FM_MODULATION_PIPE_ENUM: {
 			return new FMModulationPipe();
+		}
+		case FM_DEMODULATION_PIPE_ENUM: {
+			return new FMDemodulationPipe();
 		}
 		case IQ_MODULATION_PIPE_ENUM: {
 			return new IQModulationPipe();

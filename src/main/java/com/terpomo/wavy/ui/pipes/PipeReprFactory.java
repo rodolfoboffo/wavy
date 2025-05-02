@@ -9,6 +9,7 @@ import com.terpomo.wavy.pipes.input.MicPipe;
 import com.terpomo.wavy.pipes.input.RTLPipe;
 import com.terpomo.wavy.pipes.misc.CombinationPipe;
 import com.terpomo.wavy.pipes.misc.SplitterPipe;
+import com.terpomo.wavy.pipes.modulation.FMDemodulationPipe;
 import com.terpomo.wavy.pipes.modulation.FMModulationPipe;
 import com.terpomo.wavy.pipes.modulation.IQDemodulationPipe;
 import com.terpomo.wavy.pipes.modulation.IQModulationPipe;
@@ -23,10 +24,7 @@ import com.terpomo.wavy.ui.pipes.input.MicPipeRepr;
 import com.terpomo.wavy.ui.pipes.input.RTLPipeRepr;
 import com.terpomo.wavy.ui.pipes.misc.CombinationPipeRepr;
 import com.terpomo.wavy.ui.pipes.misc.SplitterPipeRepr;
-import com.terpomo.wavy.ui.pipes.modulation.AudioPlayerPipeRepr;
-import com.terpomo.wavy.ui.pipes.modulation.FMModulationPipeRepr;
-import com.terpomo.wavy.ui.pipes.modulation.IQDemodulationPipeRepr;
-import com.terpomo.wavy.ui.pipes.modulation.IQModulationPipeRepr;
+import com.terpomo.wavy.ui.pipes.modulation.*;
 import com.terpomo.wavy.ui.pipes.monitors.FFTPipeRepr;
 import com.terpomo.wavy.ui.pipes.monitors.OscilloscopePipeRepr;
 import com.terpomo.wavy.ui.pipes.output.FileWriterPipeRepr;
@@ -80,6 +78,10 @@ public class PipeReprFactory {
 		}
 		case FM_MODULATION_PIPE_ENUM: {
 			pipeRepr = new FMModulationPipeRepr((FMModulationPipe) pipe, pipeName);
+			return pipeRepr;
+		}
+		case FM_DEMODULATION_PIPE_ENUM: {
+			pipeRepr = new FMDemodulationPipeRepr((FMDemodulationPipe) pipe, pipeName);
 			return pipeRepr;
 		}
 		case IQ_MODULATION_PIPE_ENUM: {
