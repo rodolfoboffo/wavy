@@ -29,7 +29,7 @@ public class ValuedTable {
 	private float[] generateTable() {
 		final float values[] = new float[this.n];
 		for (int i = 0; i < this.n; i++) {
-			values[i] = this.function.apply((this.upperBoundary - this.lowerBoundary) / n * i);
+			values[i] = this.function.apply((this.upperBoundary - this.lowerBoundary) / n * i + this.lowerBoundary);
 		}
 		return values;
 	}
