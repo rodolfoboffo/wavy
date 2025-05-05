@@ -29,7 +29,7 @@ public class ValuedTable {
 	private float[] generateTable() {
 		final float values[] = new float[this.n];
 		for (int i = 0; i < this.n; i++) {
-			values[i] = this.function.apply((this.upperBoundary - this.lowerBoundary) / n * i + this.lowerBoundary);
+			values[i] = this.function.apply((this.intervalLength) / n * i + this.lowerBoundary);
 		}
 		return values;
 	}
@@ -52,7 +52,7 @@ public class ValuedTable {
 	public final float getValue(float domainValue) {
 		if (!this.isCyclical && (domainValue < this.lowerBoundary || domainValue > this.upperBoundary))
 			throw new RuntimeException("Valued Table out of boundaries.");
-		float v = domainValue % (this.intervalLength) / (this.intervalLength);
+		float v = (domainValue - this.lowerBoundary) % (this.intervalLength) / (this.intervalLength);
 		v = v >= 0 ? v : 1 + v;
 		int i = (int) (v * this.n);
 		return this.values[i];
