@@ -2,10 +2,10 @@ package com.terpomo.wavy.ui.pipes.monitors;
 
 import com.terpomo.wavy.flow.AbstractPipe;
 import com.terpomo.wavy.flow.IPort;
-import com.terpomo.wavy.math.Point;
 import com.terpomo.wavy.pipes.monitors.FFTPipe;
 import com.terpomo.wavy.ui.pipes.AbstractPipeRepr;
 import com.terpomo.wavy.ui.pipes.PipePropertyRepr;
+import com.terpomo.wavy.util.Point;
 import com.terpomo.wavy.util.RepeatableTask;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;

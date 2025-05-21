@@ -155,7 +155,13 @@ public abstract class AbstractPipeRepr<T extends IPipe> extends WavyPanel implem
 			this.setLocation(destination);
 		}
 	}
-	
+
+	@Override
+	public void setLocation(Point p) {
+		super.setLocation(p);
+		this.getPipe().setLocation(new com.terpomo.wavy.util.Point(p.x, p.y));
+	}
+
 	protected void bringToTop() {
 		this.getParent().setComponentZOrder(this, 0);
 		this.revalidate();

@@ -22,11 +22,15 @@ public class MainMenuBar extends JMenuBar {
 	
 	private static final String FILE = "File";
 	private static final String NEW_PROJECT = "New Project";
+	private static final String OPEN_PROJECT = "Open Project";
+	private static final String SAVE_PROJECT = "Save Project";
 	private static final String EXIT = "Exit";
 	private static final String PIPES = "Pipes";
-	
+
 	private JMenu fileMenu;
 	private JMenuItem newProjectMenuItem;
+	private JMenuItem openProjectMenuItem;
+	private JMenuItem saveProjectMenuItem;
 	private ActionListener newProjectActionListener;
 	private JMenuItem exitMenuItem;
 	private ActionListener exitActionListener;
@@ -45,6 +49,12 @@ public class MainMenuBar extends JMenuBar {
 		this.newProjectActionListener = new NewProjectActionListener();
 		this.newProjectMenuItem.addActionListener(this.newProjectActionListener);
 		this.fileMenu.add(this.newProjectMenuItem);
+
+		this.openProjectMenuItem = new JMenuItem(OPEN_PROJECT);
+		this.fileMenu.add(this.openProjectMenuItem);
+
+		this.saveProjectMenuItem = new JMenuItem(SAVE_PROJECT);
+		this.fileMenu.add(this.saveProjectMenuItem);
 		
 		this.fileMenu.addSeparator();
 		

@@ -4,9 +4,9 @@ import com.terpomo.wavy.Constants;
 import com.terpomo.wavy.flow.AbstractPipe;
 import com.terpomo.wavy.flow.SignalBuffer;
 import com.terpomo.wavy.math.FFT;
-import com.terpomo.wavy.math.Point;
 import com.terpomo.wavy.math.Utils;
 import com.terpomo.wavy.util.ListUtils;
+import com.terpomo.wavy.util.Point;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +16,8 @@ import java.util.logging.Logger;
 public class FFTPipe extends AbstractPipe {
 
 	private static final Logger LOGGER = Logger.getLogger(AbstractPipe.class.getName());
-	private static final int MAX_RESOLUTION = 2048;
+	private static final int MAX_RESOLUTION = 20480;
+	private static final int DEFAULT_RESOLUTION = 2048;
 	private int numberOfChannels;
 	private int resolution;
 	private int sampleRate;
@@ -25,7 +26,7 @@ public class FFTPipe extends AbstractPipe {
 
 	public FFTPipe() {
 		this.numberOfChannels = 1;
-		this.resolution = MAX_RESOLUTION;
+		this.resolution = DEFAULT_RESOLUTION;
 		this.sampleRate = Constants.DEFAULT_SAMPLE_RATE;
 		this.buffers = new ArrayList<>();
 		this.buildPortsAndBuffers();
@@ -65,7 +66,7 @@ public class FFTPipe extends AbstractPipe {
 	private List<Point> getPointsFromFFTResult(Float[] result, int sampleRate) {
 		ArrayList<Point> values = new ArrayList<>();
 		float step = 1.0f * sampleRate / result.length;
-		for (int i = 0; i < result.length/2; i++) {
+		for (int i = 0; i < result.length; i++) {
 			values.add(new Point(step * i, result[i]));
 		}
 		return values;

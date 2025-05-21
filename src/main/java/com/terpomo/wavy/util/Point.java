@@ -1,4 +1,4 @@
-package com.terpomo.wavy.math;
+package com.terpomo.wavy.util;
 
 public class Point {
     private final float x, y;

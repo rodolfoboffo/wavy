@@ -1,7 +1,9 @@
 package com.terpomo.wavy.flow;
 
 import com.terpomo.wavy.core.ObservableObject;
+import com.terpomo.wavy.util.Dimension;
 import com.terpomo.wavy.util.ListUtils;
+import com.terpomo.wavy.util.Point;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +15,8 @@ public abstract class AbstractPipe extends ObservableObject implements IPipe {
 	private static final Logger LOGGER = Logger.getLogger(AbstractPipe.class.getName());
 	public final static String PROPERTY_PIPE_INPUT_PORTS = "PROPERTY_PIPE_INPUT_PORTS";
 	public final static String PROPERTY_PIPE_OUTPUT_PORTS = "PROPERTY_PIPE_OUTPUT_PORTS";
+	private Point location;
+	private Dimension dimension;
 	private final List<InputPort> inputPorts;
 	private final List<OutputPort> outputPorts;
 	private boolean isInitialized;
@@ -20,6 +24,26 @@ public abstract class AbstractPipe extends ObservableObject implements IPipe {
 	
 	public boolean isBusy() {
 		return busy;
+	}
+
+	@Override
+	public Point getLocation() {
+		return location;
+	}
+
+	@Override
+	public void setLocation(Point location) {
+		this.location = location;
+	}
+
+	@Override
+	public Dimension getDimension() {
+		return dimension;
+	}
+
+	@Override
+	public void setDimension(Dimension dimension) {
+		this.dimension = dimension;
 	}
 
 	@Override
