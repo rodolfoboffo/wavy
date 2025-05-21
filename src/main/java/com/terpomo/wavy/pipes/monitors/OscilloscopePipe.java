@@ -7,6 +7,7 @@ import com.terpomo.wavy.flow.SignalBuffer;
 import com.terpomo.wavy.oscilloscope.TimeValuePair;
 import com.terpomo.wavy.util.ListUtils;
 
+import java.nio.Buffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -144,5 +145,13 @@ public class OscilloscopePipe extends AbstractPipe {
 	synchronized public List<TimeValuePair> getValuesForChannel(int channelIndex) {
 		ArrayList<TimeValuePair> values = this.generateTimeValuePairs(this.buffers.get(channelIndex));
 		return values;
+	}
+
+	@Override
+	public synchronized void clearCache() {
+		super.clearCache();
+		for (SignalBuffer b : this.buffers) {
+			b.clear();
+		}
 	}
 }

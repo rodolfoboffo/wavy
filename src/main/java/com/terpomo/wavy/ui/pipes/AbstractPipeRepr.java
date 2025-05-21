@@ -1,75 +1,97 @@
 package com.terpomo.wavy.ui.pipes;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Container;
-import java.awt.Cursor;
-import java.awt.EventQueue;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.LayoutManager;
-import java.awt.Point;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
+import com.terpomo.wavy.flow.IPipe;
+import com.terpomo.wavy.ui.UIController;
+import com.terpomo.wavy.ui.components.IWavyRepr;
+import com.terpomo.wavy.ui.components.WavyPanel;
+import com.terpomo.wavy.ui.util.PointOperation;
+import com.terpomo.wavy.ui.util.WavyImages;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
-
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-
-import com.terpomo.wavy.flow.IPipe;
-import com.terpomo.wavy.ui.UIController;
-import com.terpomo.wavy.ui.components.WavyPanel;
-import com.terpomo.wavy.ui.components.IWavyRepr;
-import com.terpomo.wavy.ui.util.PointOperation;
 
 public abstract class AbstractPipeRepr<T extends IPipe> extends WavyPanel implements IPipeRepr, IWavyRepr {
 
 	private static final long serialVersionUID = -4460157397034830356L;
 	public static final String SAMPLE_RATE = "Sample Rate";
+	public static final String REMOVE_PIPE = "Remove pipe";
+	public static final String CLEAR_CACHE = "Clear cache";
 	private static final int DEFAULT_INSET_SIZE = 8;
 	private static final String IS_BEING_MOVED = "IS_BEING_MOVED";
-	
-	private LayoutManager mainLayout;
-	
-	private final T pipe;
+
+
+    private final T pipe;
 	private String pipeName;
 	private JLabel labelName;
+	private JButton closeButton;
+	private JButton clearButton;
 
 	private final JPanel contentPanel;
-	
+	private final JPanel titlePanel;
+	private final JPanel titleButtonsPanel;
+
 	private boolean isBeingMoved;
 	private Point originMousePosition;
 	private Point originPipePosition;
-	
+
 	public AbstractPipeRepr(T pipe, String name) {
 		super(DEFAULT_INSET_SIZE);
 		this.pipe = pipe;
 		this.pipeName = name;
 		UIController.getInstance().addModelToReprMapEntry(pipe, this);
 		this.contentPanel = new WavyPanel(4);
+		this.titlePanel = new WavyPanel();
+		this.titleButtonsPanel = new WavyPanel();
 		this.buildBasePipeControls();
 		this.addMouseListener(new PipeMouseListener());
 		this.addMouseMotionListener(new PipeMouseMotionListener());
 		this.addPropertyChangeListener(IS_BEING_MOVED, new IsBeingMovedListener());
 	}
-	
+
+	@Override
+	public void clearCache() {}
+
 	public JPanel getContentPanel() {
 		return contentPanel;
 	}
 
 	private void buildBasePipeControls() {
-		this.mainLayout = new BorderLayout();
-		this.setLayout(this.mainLayout);
+        LayoutManager mainLayout = new BorderLayout();
+		this.setLayout(mainLayout);
 
 		this.isBeingMoved = false;
 		this.originMousePosition = null;
 		this.originPipePosition = null;
 
+        LayoutManager titleLayout = new BorderLayout();
+		this.titlePanel.setLayout(titleLayout);
+		this.add(BorderLayout.NORTH, this.titlePanel);
+
+		LayoutManager titleButtonsLayout = new BoxLayout(this.titleButtonsPanel, BoxLayout.X_AXIS);
+		this.titleButtonsPanel.setLayout(titleButtonsLayout);
+		this.titlePanel.add(BorderLayout.EAST, this.titleButtonsPanel);
+
 		this.labelName = new JLabel(this.pipeName);
-		this.add(BorderLayout.NORTH, this.labelName);
+		this.titlePanel.add(BorderLayout.WEST, this.labelName);
+
+		this.clearButton = new JButton();
+		this.clearButton.setToolTipText(CLEAR_CACHE);
+		this.clearButton.setPreferredSize(new Dimension(14, 14));
+		this.clearButton.addActionListener(new ClearCacheButtonActionListener());
+		this.clearButton.setIcon(new ImageIcon(WavyImages.getInstance().SWEEP_IMAGE));
+		this.titleButtonsPanel.add(this.clearButton);
+
+		this.closeButton = new JButton();
+		this.closeButton.setToolTipText(REMOVE_PIPE);
+		this.closeButton.setPreferredSize(new Dimension(14, 14));
+		this.closeButton.addActionListener(new CloseButtonActionListener());
+		this.closeButton.setIcon(new ImageIcon(WavyImages.getInstance().CLOSE_IMAGE));
+		this.titleButtonsPanel.add(this.closeButton);
+
 		this.add(BorderLayout.CENTER, this.contentPanel);
 	}
 
@@ -82,11 +104,11 @@ public abstract class AbstractPipeRepr<T extends IPipe> extends WavyPanel implem
         g2d.dispose();
 	}
 	
-	protected void layoutPipePropertiesOnGrid(List<PipePropertyRepr> pipeProperties) {
+	protected void layoutPipePropertiesOnGrid(List<PipePropertyRepr<?>> pipeProperties) {
 		this.layoutPipePropertiesOnGrid(this.contentPanel, pipeProperties);
 	}
 
-	protected void layoutPipePropertiesOnGrid(Container container, List<PipePropertyRepr> pipeProperties) {
+	protected void layoutPipePropertiesOnGrid(Container container, List<PipePropertyRepr<?>> pipeProperties) {
 		container.removeAll();
 		for (int i = 0; i < pipeProperties.size(); i++) {
 			@SuppressWarnings("rawtypes")
@@ -206,14 +228,10 @@ public abstract class AbstractPipeRepr<T extends IPipe> extends WavyPanel implem
 
 		@Override
 		public void mouseEntered(MouseEvent e) {
-			// TODO Auto-generated method stub
-			
 		}
 
 		@Override
 		public void mouseExited(MouseEvent e) {
-			// TODO Auto-generated method stub
-			
 		}
 		
 	}
@@ -234,6 +252,21 @@ public abstract class AbstractPipeRepr<T extends IPipe> extends WavyPanel implem
 		@Override
 		public void mouseMoved(MouseEvent e) {
 			
+		}
+	}
+
+	class CloseButtonActionListener implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			UIController.getInstance().removePipeRepr(AbstractPipeRepr.this);
+		}
+	}
+
+	class ClearCacheButtonActionListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			UIController.getInstance().clearCache(AbstractPipeRepr.this);
 		}
 	}
 }

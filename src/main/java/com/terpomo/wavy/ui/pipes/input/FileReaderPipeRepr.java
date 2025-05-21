@@ -90,13 +90,13 @@ public class FileReaderPipeRepr extends AbstractPipeRepr<FileReaderPipe> {
 
     @SuppressWarnings("rawtypes")
     private void buildCustomPipeControls() {
-        List<PipePropertyRepr> propertyControls = this.createPipePropertiesForInputs();
+        List<PipePropertyRepr<?>> propertyControls = this.createPipePropertiesForInputs();
         this.layoutPipePropertiesOnGrid(this.pipePropertiesPanel, propertyControls);
     }
 
     @SuppressWarnings("rawtypes")
-    protected List<PipePropertyRepr> createPipePropertiesForInputs() {
-        List<PipePropertyRepr> pipeProperties = new ArrayList<>();
+    protected List<PipePropertyRepr<?>> createPipePropertiesForInputs() {
+        List<PipePropertyRepr<?>> pipeProperties = new ArrayList<>();
 
         if (this.getPipe().isFileOpen()) {
             PipePropertyRepr<Integer> sampleRatePropertyRepr = new PipePropertyRepr<Integer>(Integer.class, this, null, SAMPLE_RATE, this.getPipe()::getSampleRate, null, true);

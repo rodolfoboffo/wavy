@@ -82,6 +82,7 @@ public class AudioPlayerPipe extends AbstractPipe {
 				this.line.start();
 				this.lineBufferSize = this.line.getBufferSize();
 			} catch (LineUnavailableException e) {
+				this.line = null;
 				throw new RuntimeException("Could not open audio line.", e);
             }
         }
@@ -149,7 +150,6 @@ public class AudioPlayerPipe extends AbstractPipe {
 		this.mixerName = name;
 		this.resetMixer();
 		this.closeLine();
-		this.startLine();
 	}
 
 	public String[] getMixerInfos() {

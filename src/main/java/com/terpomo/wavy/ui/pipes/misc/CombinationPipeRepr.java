@@ -33,13 +33,13 @@ public class CombinationPipeRepr extends AbstractPipeRepr<CombinationPipe> {
     }
 
     private void buildCustomPipeControls() {
-        java.util.List<PipePropertyRepr> pipeProperties = this.createPipePropertiesForInputs();
+        java.util.List<PipePropertyRepr<?>> pipeProperties = this.createPipePropertiesForInputs();
         this.layoutPipePropertiesOnGrid(pipeProperties);
     }
 
     @SuppressWarnings("rawtypes")
-    private java.util.List<PipePropertyRepr> createPipePropertiesForInputs() {
-        List<PipePropertyRepr> pipeProperties = new ArrayList<>();
+    private java.util.List<PipePropertyRepr<?>> createPipePropertiesForInputs() {
+        List<PipePropertyRepr<?>> pipeProperties = new ArrayList<>();
         PipePropertyRepr outputChannelProperty = new PipePropertyRepr<>(null, this, null, OUTPUT_CHANNEL, null, this.getPipe().getOutputPort(), null);
         pipeProperties.add(outputChannelProperty);
 

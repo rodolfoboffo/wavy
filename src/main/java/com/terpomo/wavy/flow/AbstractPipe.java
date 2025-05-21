@@ -22,6 +22,13 @@ public abstract class AbstractPipe extends ObservableObject implements IPipe {
 		return busy;
 	}
 
+	@Override
+	synchronized public void clearCache() {
+		for (IPort port : this.getInputPorts()) {
+			port.getBuffer().clear();
+		}
+	}
+
 	public int getMinInputBufferSizes() {
 		int r = Integer.MAX_VALUE;
 		for (IPort p : this.getInputPorts()) {

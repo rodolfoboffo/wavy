@@ -12,5 +12,6 @@ public interface IPipe extends IObservableObject, IWavyModel {
 	public boolean isInitialized();
 	public void process();
 	public void dispose();
+	public void clearCache();
 	public boolean isBusy();
 }

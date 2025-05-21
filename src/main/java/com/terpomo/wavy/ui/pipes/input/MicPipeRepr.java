@@ -79,13 +79,13 @@ public class MicPipeRepr extends AbstractPipeRepr<MicPipe> {
     }
 
     private void buildCustomPipeControls() {
-        java.util.List<PipePropertyRepr> pipeProperties = this.createPipePropertiesForInputs();
+        java.util.List<PipePropertyRepr<?>> pipeProperties = this.createPipePropertiesForInputs();
         this.layoutPipePropertiesOnGrid(this.pipePropertiesPanel, pipeProperties);
     }
 
     @SuppressWarnings("rawtypes")
-    private java.util.List<PipePropertyRepr> createPipePropertiesForInputs() {
-        List<PipePropertyRepr> pipeProperties = new ArrayList<>();
+    private java.util.List<PipePropertyRepr<?>> createPipePropertiesForInputs() {
+        List<PipePropertyRepr<?>> pipeProperties = new ArrayList<>();
 
         for (int i = 0; i < this.getPipe().getOutputPorts().size(); i++) {
             OutputPort _pipe = this.getPipe().getOutputPorts().get(i);

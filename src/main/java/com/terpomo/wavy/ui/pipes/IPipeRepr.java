@@ -4,4 +4,6 @@ import com.terpomo.wavy.IWavyDisposable;
 
 public interface IPipeRepr extends IWavyDisposable {
 
+    public void clearCache();
+
 }

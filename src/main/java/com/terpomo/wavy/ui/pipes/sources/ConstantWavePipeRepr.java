@@ -24,7 +24,7 @@ public class ConstantWavePipeRepr extends AbstractSignalPipeRepr<ConstantWave, C
 		this.getContentPanel().setLayout(this.contentLayout);
 
 		@SuppressWarnings("rawtypes")
-		List<PipePropertyRepr> pipeProperties = new ArrayList<>();
+		List<PipePropertyRepr<?>> pipeProperties = new ArrayList<>();
 		PipePropertyRepr<Integer> sampleRateProperty = new PipePropertyRepr<Integer>(Integer.class, this, null, AbstractPipeRepr.SAMPLE_RATE, pipe.getSignal()::getSampleRate, null, this.getPipe()::setSampleRate);
 		pipeProperties.add(sampleRateProperty);
 

@@ -20,13 +20,13 @@ public class ProjectRepr extends Panel implements IWavyDisposable, IWavyRepr {
 
 	private Project project;
 	private final AbsoluteLayout layout;
-	protected final List<AbstractPipeRepr> pipesRepr;
+	protected final List<AbstractPipeRepr<?>> pipesRepr;
 	private final Map<PipeTypeEnum, Integer> pipeTypeCountMap;
 	
 	public ProjectRepr() {
 		this.layout = new AbsoluteLayout();
 		this.setLayout(this.layout);
-		this.pipesRepr = new ArrayList<AbstractPipeRepr>();
+		this.pipesRepr = new ArrayList<AbstractPipeRepr<?>>();
 		this.pipeTypeCountMap = new HashMap<PipeTypeEnum, Integer>();
 		this.setBackground(Color.WHITE);
 	}
@@ -52,11 +52,11 @@ public class ProjectRepr extends Panel implements IWavyDisposable, IWavyRepr {
 		UIController.getInstance().addModelToReprMapEntry(project, this);
 	}
 	
-	public void setOnTop(AbstractPipeRepr pipeRepr) {
+	public void setOnTop(AbstractPipeRepr<?> pipeRepr) {
 		this.setComponentZOrder(pipeRepr, 0);
 	}
 	
-	public void addPipeRepr(AbstractPipeRepr pipeRepr) {
+	public void addPipeRepr(AbstractPipeRepr<?> pipeRepr) {
 		this.pipesRepr.add(pipeRepr);
 		this.add(pipeRepr);
 		this.setOnTop(pipeRepr);
@@ -64,9 +64,16 @@ public class ProjectRepr extends Panel implements IWavyDisposable, IWavyRepr {
 		this.repaint();
 	}
 
+	public void removePipeRepr(AbstractPipeRepr<?> pipeRepr) {
+		this.pipesRepr.remove(pipeRepr);
+		this.remove(pipeRepr);
+		this.revalidate();
+		this.repaint();
+	}
+
 	@Override
 	public void wavyDispose() {
-		for (AbstractPipeRepr pipe : this.pipesRepr) {
+		for (AbstractPipeRepr<?> pipe : this.pipesRepr) {
 			pipe.wavyDispose();
 		}
 		Container parent = this.getParent();

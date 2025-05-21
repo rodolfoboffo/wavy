@@ -31,13 +31,13 @@ public class SplitterPipeRepr extends AbstractPipeRepr<SplitterPipe> {
     }
 
     private void buildCustomPipeControls() {
-        List<PipePropertyRepr> pipeProperties = this.createPipePropertiesForInputs();
+        List<PipePropertyRepr<?>> pipeProperties = this.createPipePropertiesForInputs();
         this.layoutPipePropertiesOnGrid(pipeProperties);
     }
 
     @SuppressWarnings("rawtypes")
-    private List<PipePropertyRepr> createPipePropertiesForInputs() {
-        List<PipePropertyRepr> pipeProperties = new ArrayList<>();
+    private List<PipePropertyRepr<?>> createPipePropertiesForInputs() {
+        List<PipePropertyRepr<?>> pipeProperties = new ArrayList<>();
         PipePropertyRepr inputChannelProperty = new PipePropertyRepr<>(null, this, this.getPipe().getInputPort(), INPUT_CHANNEL, null, null, null);
         pipeProperties.add(inputChannelProperty);
 

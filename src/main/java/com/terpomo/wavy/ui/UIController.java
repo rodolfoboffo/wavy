@@ -1,23 +1,23 @@
 package com.terpomo.wavy.ui;
 
-import java.awt.Component;
-import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.terpomo.wavy.IWavyDisposable;
 import com.terpomo.wavy.core.IWavyModel;
 import com.terpomo.wavy.flow.IPipe;
 import com.terpomo.wavy.flow.PipeController;
-import com.terpomo.wavy.pipes.PipeTypeEnum;
 import com.terpomo.wavy.flow.Project;
+import com.terpomo.wavy.pipes.PipeTypeEnum;
 import com.terpomo.wavy.ui.components.IWavyRepr;
 import com.terpomo.wavy.ui.frames.ProjectRepr;
 import com.terpomo.wavy.ui.pipes.AbstractPipeRepr;
 import com.terpomo.wavy.ui.pipes.PipeReprFactory;
 import com.terpomo.wavy.ui.pipes.PortRepr;
+
+import java.awt.*;
+import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class UIController extends Component implements IWavyDisposable {
 
@@ -71,28 +71,41 @@ public class UIController extends Component implements IWavyDisposable {
 		this.modelToReprMap.put(modelObj, reprObj);
 	}
 
+	public void removeModelToReprMapEntry(IWavyModel modelObj) {
+		this.modelToReprMap.remove(modelObj);
+	}
+
 	public IWavyRepr getReprFromModelObj(IWavyModel modelObj) {
 		return this.modelToReprMap.get(modelObj);
 	}
 	
-	public ProjectRepr createNewProjectRepr() {
+	public void createNewProjectRepr() {
 		Project p = this.controller.createNewProject();
 		ProjectRepr pRepr = new ProjectRepr();
 		pRepr.setProject(p);
 		this.projectsRepr.add(pRepr);
 		this.setSelectedProjectRepr(pRepr);
-		return pRepr;
 	}
 	
 	public void createPipeRepr(PipeTypeEnum pipeType) {
 		if (this.selectedProjectRepr != null) {
 			Project project = this.selectedProjectRepr.getProject();
 			String pipeName = this.selectedProjectRepr.generatePipeName(pipeType);
-			AbstractPipeRepr pipeRepr = PipeReprFactory.createPipeRepr(pipeType, pipeName);
+			AbstractPipeRepr<?> pipeRepr = PipeReprFactory.createPipeRepr(pipeType, pipeName);
 			IPipe pipe = pipeRepr.getPipe();
 			this.controller.addPipe(project, pipe);
 			this.selectedProjectRepr.addPipeRepr(pipeRepr);
 		}
+	}
+
+	public void removePipeRepr(AbstractPipeRepr<?> pipeRepr) {
+		IPipe pipe = pipeRepr.getPipe();
+		Project project = this.controller.getProjectFromPipe(pipe);
+		ProjectRepr projectRepr = (ProjectRepr) this.getReprFromModelObj(project);
+		projectRepr.removePipeRepr(pipeRepr);
+		pipeRepr.wavyDispose();
+		this.controller.removePipe(project, pipe);
+		pipe.dispose();
 	}
 
 	public void onPortClicked(PortRepr portRepr) {
@@ -153,5 +166,11 @@ public class UIController extends Component implements IWavyDisposable {
 		for (ProjectRepr project : this.projectsRepr) {
 			project.wavyDispose();
 		}
+	}
+
+	public void clearCache(AbstractPipeRepr<?> pipeRepr) {
+		IPipe pipe = pipeRepr.getPipe();
+		this.controller.clearCache(pipe);
+		pipeRepr.clearCache();
 	}
 }

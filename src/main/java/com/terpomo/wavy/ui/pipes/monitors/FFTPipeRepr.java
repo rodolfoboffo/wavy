@@ -69,7 +69,7 @@ public class FFTPipeRepr extends AbstractPipeRepr<FFTPipe> {
 
 	@SuppressWarnings("rawtypes")
     synchronized private void buildCustomPipeControls() {
-		List<PipePropertyRepr> pipeProperties = this.createPipePropertiesForInputs();
+		List<PipePropertyRepr<?>> pipeProperties = this.createPipePropertiesForInputs();
 		this.layoutPipePropertiesOnGrid(this.inputPanel, pipeProperties);
 	}
 
@@ -109,8 +109,8 @@ public class FFTPipeRepr extends AbstractPipeRepr<FFTPipe> {
 	}
 
 	@SuppressWarnings("rawtypes")
-	protected List<PipePropertyRepr> createPipePropertiesForInputs() {
-		List<PipePropertyRepr> pipeProperties = new ArrayList<>();
+	protected List<PipePropertyRepr<?>> createPipePropertiesForInputs() {
+		List<PipePropertyRepr<?>> pipeProperties = new ArrayList<>();
 
 		PipePropertyRepr<Integer> sampleRateProperty = new PipePropertyRepr<Integer>(Integer.class, this, null, SAMPLE_RATE, this.getPipe()::getSampleRate, null, this.getPipe()::setSampleRate);
 		pipeProperties.add(sampleRateProperty);

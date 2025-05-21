@@ -26,13 +26,13 @@ public class FMDemodulationPipeRepr extends AbstractPipeRepr<FMDemodulationPipe>
     }
 
     private void buildCustomPipeControls() {
-        List<PipePropertyRepr> pipeProperties = this.createPipeProperties();
+        List<PipePropertyRepr<?>> pipeProperties = this.createPipeProperties();
         this.layoutPipePropertiesOnGrid(pipeProperties);
     }
 
     @SuppressWarnings("rawtypes")
-    private List<PipePropertyRepr> createPipeProperties() {
-        List<PipePropertyRepr> pipeProperties = new ArrayList<>();
+    private List<PipePropertyRepr<?>> createPipeProperties() {
+        List<PipePropertyRepr<?>> pipeProperties = new ArrayList<>();
 
         PipePropertyRepr sampleRateProperty = new PipePropertyRepr<Integer>(Integer.class, this, null, SAMPLE_RATE, this.getPipe()::getSampleRate, null, this.getPipe()::setSampleRate);
         pipeProperties.add(sampleRateProperty);

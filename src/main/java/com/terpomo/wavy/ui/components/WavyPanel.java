@@ -16,7 +16,6 @@ public class WavyPanel extends JPanel {
 	
 	public WavyPanel() {
 		this(DEFAULT_INSET_SIZE);
-		this.setBackground(Constants.LIGHT_CYAN);
 	}
 	
 	@Override

@@ -34,7 +34,7 @@ public class AudioPlayerPipeRepr extends AbstractPipeRepr<AudioPlayerPipe> {
 
 	@SuppressWarnings("rawtypes")
     private void buildCustomPipeControls() {
-		List<PipePropertyRepr> propertyControls = this.createPipePropertiesForInputs();
+		List<PipePropertyRepr<?>> propertyControls = this.createPipePropertiesForInputs();
 		this.layoutPipePropertiesOnGrid(this.pipePropertiesPanel, propertyControls);
 	}
 
@@ -87,8 +87,8 @@ public class AudioPlayerPipeRepr extends AbstractPipeRepr<AudioPlayerPipe> {
 	}
 
 	@SuppressWarnings("rawtypes")
-	protected List<PipePropertyRepr> createPipePropertiesForInputs() {
-		List<PipePropertyRepr> pipeProperties = new ArrayList<PipePropertyRepr>();
+	protected List<PipePropertyRepr<?>> createPipePropertiesForInputs() {
+		List<PipePropertyRepr<?>> pipeProperties = new ArrayList<PipePropertyRepr<?>>();
 		PipePropertyRepr sampleRateProperty = new PipePropertyRepr<Integer>(Integer.class, this, null, "Sample Rate", this.getPipe()::getSampleRate, null, this.getPipe()::setSampleRate);
 		pipeProperties.add(sampleRateProperty);
 		PipePropertyRepr numChannelsProperty = new PipePropertyRepr<Integer>(Integer.class, this, null, "# of Channels", this.getPipe()::getNumOfChannels, null, this.getPipe()::setNumOfChannels);

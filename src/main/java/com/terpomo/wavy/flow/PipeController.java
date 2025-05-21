@@ -68,6 +68,35 @@ public class PipeController {
 		}
 		this.notifyWorkers();
 	}
+
+	public Project getProjectFromPipe(IPipe pipe) {
+		for (Project project : this.getProjects()) {
+			if (project.getPipes().contains(pipe)) {
+				return project;
+			}
+		}
+		return null;
+	}
+
+	public void removePipe(Project project, IPipe pipe) {
+		synchronized (pipe) {
+			ArrayList<IPipe> newPipes = new ArrayList<IPipe>(project.getPipes());
+			newPipes.remove(pipe);
+			project.setPipes(newPipes);
+			for (IPort port : pipe.getInputPorts()) {
+				this.unlinkPort(port);
+			}
+			for (IPort port : pipe.getOutputPorts()) {
+				this.unlinkPort(port);
+			}
+		}
+		this.notifyWorkers();
+	}
+
+	public void removePipe(IPipe pipe) {
+		Project project = this.getProjectFromPipe(pipe);
+		this.removePipe(project, pipe);
+	}
 	
 	public Project createNewProject() {
 		Project p;
@@ -102,5 +131,9 @@ public class PipeController {
 		if (port.getLinkedPort() != null) {
 			port.setLinkedPort(null);
 		}
+	}
+
+	public void clearCache(IPipe pipe) {
+		pipe.clearCache();
 	}
 }
