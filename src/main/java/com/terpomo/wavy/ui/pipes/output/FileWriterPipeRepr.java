@@ -30,8 +30,8 @@ public class FileWriterPipeRepr extends AbstractPipeRepr<FileWriterPipe> {
     private JButton buttonBrowse;
     private JFileChooser fileChooser;
 
-    public FileWriterPipeRepr(FileWriterPipe pipe, String name) {
-        super(pipe, name);
+    public FileWriterPipeRepr(FileWriterPipe pipe) {
+        super(pipe);
         this.createPanels();
         this.createOutputDirControls();
         this.buildCustomPipeControls();

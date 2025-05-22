@@ -29,8 +29,8 @@ public class FileReaderPipeRepr extends AbstractPipeRepr<FileReaderPipe> {
     private JButton buttonBrowse;
     private JFileChooser fileChooser;
 
-    public FileReaderPipeRepr(FileReaderPipe pipe, String name) {
-        super(pipe, name);
+    public FileReaderPipeRepr(FileReaderPipe pipe) {
+        super(pipe);
         this.createPanels();
         this.createInputFileControls();
         this.buildCustomPipeControls();

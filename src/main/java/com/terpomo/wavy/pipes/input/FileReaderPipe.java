@@ -25,7 +25,8 @@ public class FileReaderPipe extends AbstractPipe {
     private AudioFormat audioFormat;
     private SignalBuffer[] outputBuffers;
 
-    public FileReaderPipe() {
+    public FileReaderPipe(String pipeName) {
+        super(pipeName);
         this.inputFilePath = "";
         this.isFileOpen = false;
         this.repeat = true;

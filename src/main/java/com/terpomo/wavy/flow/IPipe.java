@@ -20,4 +20,6 @@ public interface IPipe extends IObservableObject, IWavyModel {
 	public void setLocation(Point location);
 	public Dimension getDimension();
 	public void setDimension(Dimension dimension);
+	public void setName(String name);
+	public String getName();
 }

@@ -29,8 +29,8 @@ public class BandPassFilterPipeRepr extends AbstractPipeRepr<BandPassFilterPipe>
     private ChartPanel chartPanel;
     private XYSeries firFilterSeries;
 
-    public BandPassFilterPipeRepr(BandPassFilterPipe pipe, String name) {
-        super(pipe, name);
+    public BandPassFilterPipeRepr(BandPassFilterPipe pipe) {
+        super(pipe);
         this.createChart();
         this.createPanels();
         this.updateFirFilterChart();

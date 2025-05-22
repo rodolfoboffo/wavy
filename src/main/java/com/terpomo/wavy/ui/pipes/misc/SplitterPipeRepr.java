@@ -20,8 +20,8 @@ public class SplitterPipeRepr extends AbstractPipeRepr<SplitterPipe> {
     private final GridBagLayout contentLayout;
 
     @SuppressWarnings({"rawtypes", "unchecked"})
-    public SplitterPipeRepr(SplitterPipe pipe, String name) {
-        super(pipe, name);
+    public SplitterPipeRepr(SplitterPipe pipe) {
+        super(pipe);
 
         this.contentLayout = new GridBagLayout();
         this.getContentPanel().setLayout(this.contentLayout);

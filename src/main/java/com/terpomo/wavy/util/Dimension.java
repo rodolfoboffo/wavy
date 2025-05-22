@@ -1,6 +1,8 @@
 package com.terpomo.wavy.util;
 
-public class Dimension {
+import com.terpomo.wavy.marshal.IMarshallable;
+
+public class Dimension  implements IMarshallable {
     private final float width, height;
 
     public Dimension(float width, float height) {

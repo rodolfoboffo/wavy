@@ -16,8 +16,8 @@ public class FMModulationPipeRepr extends AbstractPipeRepr<FMModulationPipe> {
     private static final String AMPLITUDE = "Amplitude";
 
     @SuppressWarnings({"rawtypes", "unchecked"})
-    public FMModulationPipeRepr(FMModulationPipe pipe, String name) {
-        super(pipe, name);
+    public FMModulationPipeRepr(FMModulationPipe pipe) {
+        super(pipe);
 
         GridBagLayout contentLayout = new GridBagLayout();
         this.getContentPanel().setLayout(contentLayout);

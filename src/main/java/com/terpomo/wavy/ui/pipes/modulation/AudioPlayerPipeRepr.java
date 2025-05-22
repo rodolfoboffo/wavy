@@ -24,8 +24,8 @@ public class AudioPlayerPipeRepr extends AbstractPipeRepr<AudioPlayerPipe> {
 	private JLabel labelMixer;
 	private JComboBox<String> comboMixerInfos;
 
-	public AudioPlayerPipeRepr(AudioPlayerPipe pipe, String name) {
-		super(pipe, name);
+	public AudioPlayerPipeRepr(AudioPlayerPipe pipe) {
+		super(pipe);
 		this.createPanels();
 		this.createMixerSelectorControls();
 		this.buildCustomPipeControls();

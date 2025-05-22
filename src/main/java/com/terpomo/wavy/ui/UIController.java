@@ -12,8 +12,10 @@ import com.terpomo.wavy.ui.pipes.AbstractPipeRepr;
 import com.terpomo.wavy.ui.pipes.PipeReprFactory;
 import com.terpomo.wavy.ui.pipes.PortRepr;
 
+import javax.swing.*;
 import java.awt.*;
 import java.beans.PropertyChangeListener;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -85,6 +87,12 @@ public class UIController extends Component implements IWavyDisposable {
 		pRepr.setProject(p);
 		this.projectsRepr.add(pRepr);
 		this.setSelectedProjectRepr(pRepr);
+	}
+
+	public void saveSelectedProjectRepr(File fileToSave) {
+		ProjectRepr projectRepr = this.getSelectedProjectRepr();
+		Project project = projectRepr.getProject();
+		this.controller.saveProject(project, fileToSave);
 	}
 	
 	public void createPipeRepr(PipeTypeEnum pipeType) {

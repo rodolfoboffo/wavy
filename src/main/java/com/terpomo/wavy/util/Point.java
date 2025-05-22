@@ -1,6 +1,8 @@
 package com.terpomo.wavy.util;
 
-public class Point {
+import com.terpomo.wavy.marshal.IMarshallable;
+
+public class Point implements IMarshallable {
     private final float x, y;
 
     public Point(float x, float y) {

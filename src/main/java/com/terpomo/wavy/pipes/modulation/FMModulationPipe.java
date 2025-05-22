@@ -17,7 +17,8 @@ public class FMModulationPipe extends AbstractPipe {
     private float modulationIndex = 75000f;
     private final SineTable sineTable;
 
-    public FMModulationPipe(Float phase) {
+    public FMModulationPipe(String pipeName, Float phase) {
+        super(pipeName);
         this.sineTable = SineTable.DEFAULT_SINE_TABLE;
         this.sampleRate = Constants.DEFAULT_SAMPLE_RATE;
         this.phase = phase;
@@ -28,8 +29,8 @@ public class FMModulationPipe extends AbstractPipe {
         this.outputPort = this.getOutputPorts().get(0);
     }
 
-    public FMModulationPipe() {
-        this(0f);
+    public FMModulationPipe(String pipeName) {
+        this(pipeName, 0f);
     }
 
     @Override

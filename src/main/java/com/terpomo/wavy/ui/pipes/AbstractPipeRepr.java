@@ -25,7 +25,6 @@ public abstract class AbstractPipeRepr<T extends IPipe> extends WavyPanel implem
 
 
     private final T pipe;
-	private String pipeName;
 	private JLabel labelName;
 	private JButton closeButton;
 	private JButton clearButton;
@@ -38,10 +37,9 @@ public abstract class AbstractPipeRepr<T extends IPipe> extends WavyPanel implem
 	private Point originMousePosition;
 	private Point originPipePosition;
 
-	public AbstractPipeRepr(T pipe, String name) {
+	public AbstractPipeRepr(T pipe) {
 		super(DEFAULT_INSET_SIZE);
 		this.pipe = pipe;
-		this.pipeName = name;
 		UIController.getInstance().addModelToReprMapEntry(pipe, this);
 		this.contentPanel = new WavyPanel(4);
 		this.titlePanel = new WavyPanel();
@@ -75,7 +73,7 @@ public abstract class AbstractPipeRepr<T extends IPipe> extends WavyPanel implem
 		this.titleButtonsPanel.setLayout(titleButtonsLayout);
 		this.titlePanel.add(BorderLayout.EAST, this.titleButtonsPanel);
 
-		this.labelName = new JLabel(this.pipeName);
+		this.labelName = new JLabel(this.getPipe().getName());
 		this.titlePanel.add(BorderLayout.WEST, this.labelName);
 
 		this.clearButton = new JButton();
@@ -122,12 +120,12 @@ public abstract class AbstractPipeRepr<T extends IPipe> extends WavyPanel implem
 	}
 	
 	public void setName(String name) {
-		this.pipeName = name;
-		this.labelName.setText(this.pipeName);
+		this.getPipe().setName(name);
+		this.labelName.setText(name);
 	}
 	
 	public String getPipeName() {
-		return pipeName;
+		return this.getPipe().getName();
 	}
 	
 	public synchronized void setIsBeingMoved(boolean newValue) {

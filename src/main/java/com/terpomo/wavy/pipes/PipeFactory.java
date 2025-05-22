@@ -20,52 +20,52 @@ import com.terpomo.wavy.signals.ConstantWave;
 
 public class PipeFactory {
 	
-	public static AbstractPipe createPipe(PipeTypeEnum pipeType) {
+	public static AbstractPipe createPipe(PipeTypeEnum pipeType, String pipeName) {
 		switch (pipeType) {
 		case CONSTANT_WAVE_SIGNAL_PIPE_ENUM: {
-			return new ConstantWavePipe(new ConstantWave());
+			return new ConstantWavePipe(new ConstantWave(), pipeName);
 		}
 		case AUDIO_PLAYER_PIPE_ENUM: {
-			return new AudioPlayerPipe();
+			return new AudioPlayerPipe(pipeName);
 		}
 		case OSCILLOSCOPE_PIPE_ENUM: {
-			return new OscilloscopePipe();
+			return new OscilloscopePipe(pipeName);
 		}
 		case SPLITTER_PIPE_ENUM: {
-			return new SplitterPipe();
+			return new SplitterPipe(pipeName);
 		}
 		case FILE_READER_PIPE_ENUM: {
-			return new FileReaderPipe();
+			return new FileReaderPipe(pipeName);
 		}
 		case FILE_WRITER_PIPE_ENUM: {
-			return new FileWriterPipe();
+			return new FileWriterPipe(pipeName);
 		}
 		case FFT_PIPE_ENUM: {
-			return new FFTPipe();
+			return new FFTPipe(pipeName);
 		}
 		case COMBINATION_PIPE_ENUM: {
-			return new CombinationPipe();
+			return new CombinationPipe(pipeName);
 		}
 		case BAND_PASS_FILTER_PIPE_ENUM: {
-			return new BandPassFilterPipe();
+			return new BandPassFilterPipe(pipeName);
 		}
 		case MIC_PIPE_ENUM: {
-			return new MicPipe();
+			return new MicPipe(pipeName);
 		}
 		case FM_MODULATION_PIPE_ENUM: {
-			return new FMModulationPipe();
+			return new FMModulationPipe(pipeName);
 		}
 		case FM_DEMODULATION_PIPE_ENUM: {
-			return new FMDemodulationPipe();
+			return new FMDemodulationPipe(pipeName);
 		}
 		case IQ_MODULATION_PIPE_ENUM: {
-			return new IQModulationPipe();
+			return new IQModulationPipe(pipeName);
 		}
 		case IQ_DEMODULATION_PIPE_ENUM: {
-			return new IQDemodulationPipe();
+			return new IQDemodulationPipe(pipeName);
 		}
 		case RTLSDR_PIPE_ENUM: {
-			return new RTLPipe();
+			return new RTLPipe(pipeName);
 		}
 		default:
 			throw new IllegalArgumentException("Unexpected value: " + pipeType);

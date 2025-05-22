@@ -1,11 +1,12 @@
 package com.terpomo.wavy.flow;
 
 import com.terpomo.wavy.core.IWavyModel;
+import com.terpomo.wavy.marshal.IMarshallable;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Project implements IWavyModel {
+public class Project implements IWavyModel, IMarshallable {
 
 	protected List<IPipe> pipes;
 	

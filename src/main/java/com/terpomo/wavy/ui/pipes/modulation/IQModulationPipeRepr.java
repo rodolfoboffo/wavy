@@ -16,8 +16,8 @@ public class IQModulationPipeRepr extends AbstractPipeRepr<IQModulationPipe> {
     private static final String QUADRATURE_OUTPUT = "Quadrature Output";
 
     @SuppressWarnings({"rawtypes", "unchecked"})
-    public IQModulationPipeRepr(IQModulationPipe pipe, String name) {
-        super(pipe, name);
+    public IQModulationPipeRepr(IQModulationPipe pipe) {
+        super(pipe);
 
         GridBagLayout contentLayout = new GridBagLayout();
         this.getContentPanel().setLayout(contentLayout);

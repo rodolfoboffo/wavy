@@ -17,7 +17,8 @@ public class IQModulationPipe extends AbstractPipe {
     private final OutputPort iOutputPort;
     private final OutputPort qOutputPort;
 
-    public IQModulationPipe() {
+    public IQModulationPipe(String pipeName) {
+        super(pipeName);
         this.sampleRate = Constants.DEFAULT_SAMPLE_RATE;
         this.carrierFrequency = 100000000f;
         this.buildInputPorts(1);

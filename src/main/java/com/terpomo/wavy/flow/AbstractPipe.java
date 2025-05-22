@@ -17,13 +17,24 @@ public abstract class AbstractPipe extends ObservableObject implements IPipe {
 	public final static String PROPERTY_PIPE_OUTPUT_PORTS = "PROPERTY_PIPE_OUTPUT_PORTS";
 	private Point location;
 	private Dimension dimension;
+	private String pipeName;
 	private final List<InputPort> inputPorts;
 	private final List<OutputPort> outputPorts;
 	private boolean isInitialized;
 	private boolean busy = false;
-	
+
 	public boolean isBusy() {
 		return busy;
+	}
+
+	@Override
+	public String getName() {
+		return this.pipeName;
+	}
+
+	@Override
+	public void setName(String name) {
+		this.pipeName = name;
 	}
 
 	@Override
@@ -95,7 +106,8 @@ public abstract class AbstractPipe extends ObservableObject implements IPipe {
 		return p.getLinkedPort() != null;
 	}
 
-	public AbstractPipe() {
+	public AbstractPipe(String pipeName) {
+		this.pipeName = pipeName;
 		this.inputPorts = new ArrayList<InputPort>();
 		this.outputPorts = new ArrayList<OutputPort>();
 		this.isInitialized = false;

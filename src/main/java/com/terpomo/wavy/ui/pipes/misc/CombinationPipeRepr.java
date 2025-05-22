@@ -22,8 +22,8 @@ public class CombinationPipeRepr extends AbstractPipeRepr<CombinationPipe> {
     private static final String NUMBER_OF_CHANNELS = "Number of Channels";
     private final GridBagLayout contentLayout;
 
-    public CombinationPipeRepr(CombinationPipe pipe, String name) {
-        super(pipe, name);
+    public CombinationPipeRepr(CombinationPipe pipe) {
+        super(pipe);
         
         this.contentLayout = new GridBagLayout();
         this.getContentPanel().setLayout(this.contentLayout);

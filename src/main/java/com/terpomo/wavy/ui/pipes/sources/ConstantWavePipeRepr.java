@@ -18,8 +18,8 @@ public class ConstantWavePipeRepr extends AbstractSignalPipeRepr<ConstantWave, C
 	
 	GridBagLayout contentLayout;
 
-	public ConstantWavePipeRepr(ConstantWavePipe pipe, String name) {
-		super(pipe, name);
+	public ConstantWavePipeRepr(ConstantWavePipe pipe) {
+		super(pipe);
 		this.contentLayout = new GridBagLayout();
 		this.getContentPanel().setLayout(this.contentLayout);
 

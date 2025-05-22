@@ -12,6 +12,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,13 +28,12 @@ public class MainMenuBar extends JMenuBar {
 	private static final String EXIT = "Exit";
 	private static final String PIPES = "Pipes";
 
-	private JMenu fileMenu;
-	private JMenuItem newProjectMenuItem;
-	private JMenuItem openProjectMenuItem;
-	private JMenuItem saveProjectMenuItem;
-	private ActionListener newProjectActionListener;
-	private JMenuItem exitMenuItem;
-	private ActionListener exitActionListener;
+	private final JMenu fileMenu;
+	private final JMenuItem newProjectMenuItem;
+	private final JMenuItem openProjectMenuItem;
+	private final JMenuItem saveProjectMenuItem;
+	private final JMenuItem exitMenuItem;
+	private final JFileChooser projectFileChooser;
 	
 	private List<JMenuItem> newPipeMenuItems;
 	private JMenu pipesMenu;
@@ -41,26 +41,28 @@ public class MainMenuBar extends JMenuBar {
 	public MainMenuBar() {
 		super();
 		this.newPipeMenuItems = new ArrayList<JMenuItem>();
-		
+
+		this.projectFileChooser = new JFileChooser();
+		this.projectFileChooser.setMultiSelectionEnabled(false);
+
 		this.fileMenu = new JMenu(FILE);
 		this.add(fileMenu);
 		
 		this.newProjectMenuItem = new JMenuItem(NEW_PROJECT);
-		this.newProjectActionListener = new NewProjectActionListener();
-		this.newProjectMenuItem.addActionListener(this.newProjectActionListener);
+		this.newProjectMenuItem.addActionListener(new NewProjectActionListener());
 		this.fileMenu.add(this.newProjectMenuItem);
 
 		this.openProjectMenuItem = new JMenuItem(OPEN_PROJECT);
 		this.fileMenu.add(this.openProjectMenuItem);
 
 		this.saveProjectMenuItem = new JMenuItem(SAVE_PROJECT);
+		this.saveProjectMenuItem.addActionListener(new SaveProjectActionListener());
 		this.fileMenu.add(this.saveProjectMenuItem);
 		
 		this.fileMenu.addSeparator();
 		
 		this.exitMenuItem = new JMenuItem(EXIT);
-		this.exitActionListener = new ExitActionListener();
-		this.exitMenuItem.addActionListener(this.exitActionListener);
+		this.exitMenuItem.addActionListener(new ExitActionListener());
 		this.fileMenu.add(exitMenuItem);
 		
 		this.pipesMenu = new JMenu(PIPES);
@@ -108,6 +110,7 @@ public class MainMenuBar extends JMenuBar {
 		for (JMenuItem menuItem : this.newPipeMenuItems) {
 			menuItem.setEnabled(enabled);
 		}
+		this.saveProjectMenuItem.setEnabled(enabled);
 	}
 	
 	class NewProjectActionListener implements ActionListener {
@@ -117,7 +120,19 @@ public class MainMenuBar extends JMenuBar {
 			UIController.getInstance().createNewProjectRepr();
 		}
 	}
-	
+
+	class SaveProjectActionListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			int result = MainMenuBar.this.projectFileChooser.showSaveDialog(MainMenuBar.this);
+			if (result == JFileChooser.APPROVE_OPTION) {
+				File saveFile = MainMenuBar.this.projectFileChooser.getSelectedFile();
+				UIController.getInstance().saveSelectedProjectRepr(saveFile);
+			}
+		}
+	}
+
 	class ExitActionListener implements ActionListener {
 
 		@Override
@@ -125,7 +140,7 @@ public class MainMenuBar extends JMenuBar {
 			UIController.getInstance().exit();
 		}
 	}
-	
+
 	class NewPipeReprActionListener implements ActionListener {
 
 		private PipeTypeEnum pipeType;

@@ -21,7 +21,8 @@ public class FMDemodulationPipe extends AbstractPipe {
     private Float[] diffs;
     private final Float[] means;
 
-    public FMDemodulationPipe() {
+    public FMDemodulationPipe(String pipeName) {
+        super(pipeName);
         this.arcSineTable = ArcSineTable.DEFAULT_ARC_SINE_TABLE;
         this.sampleRate = Constants.DEFAULT_SAMPLE_RATE;
         this.rad = null;

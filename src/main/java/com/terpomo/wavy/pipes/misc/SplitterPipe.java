@@ -11,7 +11,8 @@ public class SplitterPipe extends AbstractPipe {
     private int numberOfChannels;
     private InputPort inputPort;
 
-    public SplitterPipe(int numberOfChannels) {
+    public SplitterPipe(String pipeName, int numberOfChannels) {
+        super(pipeName);
         this.numberOfChannels = numberOfChannels;
         this.inputPort = new InputPort(this);
         this.getInputPorts().add(this.inputPort);
@@ -28,8 +29,8 @@ public class SplitterPipe extends AbstractPipe {
         this.buildPorts();
     }
 
-    public SplitterPipe() {
-        this(DEFAULT_NUMBER_OF_CHANNELS);
+    public SplitterPipe(String pipeName) {
+        this(pipeName, DEFAULT_NUMBER_OF_CHANNELS);
     }
 
     public InputPort getInputPort() {

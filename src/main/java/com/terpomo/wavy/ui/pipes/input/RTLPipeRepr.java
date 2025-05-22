@@ -22,8 +22,8 @@ public class RTLPipeRepr extends AbstractPipeRepr<RTLPipe> {
     private JLabel labelDevice;
     private JComboBox<String> comboDeviceNames;
 
-    public RTLPipeRepr(RTLPipe pipe, String name) {
-        super(pipe, name);
+    public RTLPipeRepr(RTLPipe pipe) {
+        super(pipe);
         this.createPanels();
         this.createDeviceSelectionPanelControls();
         this.buildCustomPipeControls();

@@ -22,8 +22,8 @@ public class MicPipeRepr extends AbstractPipeRepr<MicPipe> {
     private JLabel labelMixer;
     private JComboBox<String> comboMixerInfos;
 
-    public MicPipeRepr(MicPipe pipe, String name) {
-        super(pipe, name);
+    public MicPipeRepr(MicPipe pipe) {
+        super(pipe);
 
         this.createPanels();
         this.createMixerSelectorControls();

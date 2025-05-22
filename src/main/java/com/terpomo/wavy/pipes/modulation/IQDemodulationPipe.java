@@ -17,7 +17,8 @@ public class IQDemodulationPipe extends AbstractPipe {
     private final InputPort iInputPort;
     private final InputPort qInputPort;
 
-    public IQDemodulationPipe() {
+    public IQDemodulationPipe(String pipeName) {
+        super(pipeName);
         this.sampleRate = Constants.DEFAULT_SAMPLE_RATE;
         this.carrierFrequency = 100000000f;
         this.buildInputPorts(2);

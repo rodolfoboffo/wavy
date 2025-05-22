@@ -24,7 +24,8 @@ public class MicPipe extends AbstractPipe {
     private Mixer.Info mixer;
     private TargetDataLine line;
 
-    public MicPipe() {
+    public MicPipe(String pipeName) {
+        super(pipeName);
         this.audioFormat = new AudioFormat(SAMPLE_RATE, BITS_PER_SAMPLE, CHANNELS, SIGNED, BIG_ENDIAN);
         this.decoder = new LPCMDecoder(SAMPLE_RATE, BITS_PER_SAMPLE, SIGNED, BIG_ENDIAN, CHANNELS);
         this.outputPort = new OutputPort(this);

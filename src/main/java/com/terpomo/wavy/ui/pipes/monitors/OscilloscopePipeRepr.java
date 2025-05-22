@@ -36,8 +36,8 @@ public class OscilloscopePipeRepr extends AbstractPipeRepr<OscilloscopePipe> {
 	private final RepeatableTask updaterWorker;
 	private final Runnable swapChannelCacheRunnable;
 
-	public OscilloscopePipeRepr(OscilloscopePipe pipe, String name) {
-		super(pipe, name);
+	public OscilloscopePipeRepr(OscilloscopePipe pipe) {
+		super(pipe);
 		JPanel panel = this.getContentPanel();
 		this.contentLayout = new GridBagLayout();
 		panel.setLayout(this.contentLayout);

@@ -25,7 +25,8 @@ public class OscilloscopePipe extends AbstractPipe {
 	private float scale;
 	private int pointSkip;
 	
-	public OscilloscopePipe(float scale) {
+	public OscilloscopePipe(String pipeName, float scale) {
+		super(pipeName);
 		this.numberOfChannels = DEFAULT_NUMBER_OF_CHANNELS;
 		this.sampleRate = Constants.DEFAULT_SAMPLE_RATE;
 		this.scale = scale;
@@ -76,8 +77,8 @@ public class OscilloscopePipe extends AbstractPipe {
 		this.resizeAndClearBuffers();
 	}
 
-	public OscilloscopePipe() {
-		this(DEFAULT_SCALE);
+	public OscilloscopePipe(String pipeName) {
+		this(pipeName, DEFAULT_SCALE);
 	}
 
 	@Override

@@ -1,5 +1,11 @@
 package com.terpomo.wavy.flow;
 
+import com.terpomo.wavy.marshal.ProjectMarshaller;
+import org.json.JSONObject;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -136,4 +142,16 @@ public class PipeController {
 	public void clearCache(IPipe pipe) {
 		pipe.clearCache();
 	}
+
+	public void saveProject(Project project, File file) {
+		ProjectMarshaller marshaller = new ProjectMarshaller();
+		JSONObject json = marshaller.marshal(project);
+        try {
+            FileWriter writer = new FileWriter(file);
+			json.write(writer);
+			writer.close();
+        } catch (IOException e) {
+            throw new RuntimeException("Could not save project file.", e);
+        }
+    }
 }

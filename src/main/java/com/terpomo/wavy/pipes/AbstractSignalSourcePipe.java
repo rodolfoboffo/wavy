@@ -11,8 +11,8 @@ public abstract class AbstractSignalSourcePipe<T extends Signal> extends Abstrac
 	protected T signal;
 	protected OutputPort outputPort;
 	
-	public AbstractSignalSourcePipe(T signal) {
-		super();
+	public AbstractSignalSourcePipe(T signal, String pipeName) {
+		super(pipeName);
 		this.signal = signal;
 		this.outputPort = new OutputPort(this);
 		this.getOutputPorts().add(this.outputPort);

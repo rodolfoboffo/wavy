@@ -24,7 +24,8 @@ public class FFTPipe extends AbstractPipe {
 	private long timestamp;
 	private List<SignalBuffer> buffers;
 
-	public FFTPipe() {
+	public FFTPipe(String pipeName) {
+		super(pipeName);
 		this.numberOfChannels = 1;
 		this.resolution = DEFAULT_RESOLUTION;
 		this.sampleRate = Constants.DEFAULT_SAMPLE_RATE;

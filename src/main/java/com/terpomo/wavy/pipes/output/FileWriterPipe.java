@@ -41,7 +41,8 @@ public class FileWriterPipe extends AbstractPipe {
     private long lastWriteTimestamp;
     private long timestamp;
 
-    public FileWriterPipe() {
+    public FileWriterPipe(String pipeName) {
+        super(pipeName);
         this.outputDirectory = "";
         this.sampleRate = Constants.DEFAULT_SAMPLE_RATE;
         this.numOfChannels = 1;

@@ -9,8 +9,8 @@ public class AbstractSignalPipeRepr<S extends Signal, T extends AbstractSignalSo
 	public static final String OUTPUT_SIGNAL = "Output Signal";
 	protected PortRepr outputPortRepr;
 
-	public AbstractSignalPipeRepr(T pipe, String name) {
-		super(pipe, name);
+	public AbstractSignalPipeRepr(T pipe) {
+		super(pipe);
 		this.outputPortRepr = new PortRepr(this.getPipe().getOutputPort(), this);
 	}
 

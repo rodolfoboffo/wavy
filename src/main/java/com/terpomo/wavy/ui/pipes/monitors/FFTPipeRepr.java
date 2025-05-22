@@ -33,8 +33,8 @@ public class FFTPipeRepr extends AbstractPipeRepr<FFTPipe> {
 	private List<XYSeries> channelSwapSeries;
 	private final RepeatableTask updaterWorker;
 
-	public FFTPipeRepr(FFTPipe pipe, String name) {
-		super(pipe, name);
+	public FFTPipeRepr(FFTPipe pipe) {
+		super(pipe);
 		JPanel panel = this.getContentPanel();
 		this.contentLayout = new GridBagLayout();
 		panel.setLayout(this.contentLayout);
