@@ -5,6 +5,10 @@ import com.terpomo.wavy.signals.ConstantWave;
 
 public class ConstantWavePipe extends AbstractSignalSourcePipe<ConstantWave> {
 
+	public ConstantWavePipe(String pipeName) {
+		this(new ConstantWave(), pipeName);
+	}
+
 	public ConstantWavePipe(ConstantWave cw, String pipeName) {
 		super(cw, pipeName);
 	}

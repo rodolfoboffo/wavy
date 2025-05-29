@@ -1,14 +1,14 @@
 package com.terpomo.wavy.ui.pipes.sources;
 
-import java.awt.GridBagLayout;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.terpomo.wavy.pipes.sources.ConstantWavePipe;
 import com.terpomo.wavy.signals.ConstantWave;
 import com.terpomo.wavy.ui.pipes.AbstractPipeRepr;
 import com.terpomo.wavy.ui.pipes.AbstractSignalPipeRepr;
 import com.terpomo.wavy.ui.pipes.PipePropertyRepr;
+
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ConstantWavePipeRepr extends AbstractSignalPipeRepr<ConstantWave, ConstantWavePipe> {
 

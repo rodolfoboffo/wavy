@@ -2,17 +2,32 @@ package com.terpomo.wavy.marshal;
 
 import com.terpomo.wavy.flow.IPipe;
 import com.terpomo.wavy.flow.IPort;
+import com.terpomo.wavy.pipes.PipeFactory;
 import com.terpomo.wavy.pipes.PipeTypeEnum;
+import com.terpomo.wavy.util.Dimension;
+import com.terpomo.wavy.util.Point;
 import org.json.JSONObject;
 
-public abstract class AbstractPipeMarshaller<T extends IPipe> implements IMarshaller<T> {
+public abstract class AbstractPipeMarshaller<T extends IPipe> extends AbstractMarshaller<T> implements IPipeMarshaller<T> {
+
+    private static final String KEY_PIPE_NAME = "name";
+    private static final String KEY_LOCATION = "location";
+    private static final String KEY_DIMENSION = "dimension";
+
+    @SuppressWarnings("unchecked")
     @Override
     public T unmarshal(JSONObject json) {
-        return null;
+        String pipeName = json.getString(KEY_PIPE_NAME);
+        T pipe = (T) PipeFactory.createPipe(PipeTypeEnum.valueOf(this.getPipeClass()), pipeName);
+        Point location = (Point) MarshallerUtil.unmarshal(json.optJSONObject(KEY_LOCATION));
+        pipe.setLocation(location);
+        Dimension dimension = (Dimension) MarshallerUtil.unmarshal(json.optJSONObject(KEY_DIMENSION));
+        pipe.setDimension(dimension);
+        return pipe;
     }
 
     private JSONObject marshalPort(IPort port, int i) {
-        JSONObject portJson = MarshallerFactory.marshall(port);
+        JSONObject portJson = MarshallerUtil.marshall(port);
         portJson.put("index", i);
         IPort linkedPort = port.getLinkedPort();
         if (linkedPort != null) {
@@ -28,10 +43,10 @@ public abstract class AbstractPipeMarshaller<T extends IPipe> implements IMarsha
 
     @Override
     public JSONObject marshal(T obj) {
-        JSONObject json = new JSONObject();
-        json.put("name", obj.getName());
-        json.put("location", MarshallerFactory.marshall(obj.getLocation()));
-        json.put("dimension", MarshallerFactory.marshall(obj.getDimension()));
+        JSONObject json = super.marshal(obj);
+        json.put(KEY_PIPE_NAME, obj.getName());
+        json.put(KEY_LOCATION, MarshallerUtil.marshall(obj.getLocation()));
+        json.put(KEY_DIMENSION, MarshallerUtil.marshall(obj.getDimension()));
         for (int i = 0; i < obj.getInputPorts().size(); i++) {
             IPort port = obj.getInputPorts().get(i);
             JSONObject portJson = this.marshalPort(port, i);

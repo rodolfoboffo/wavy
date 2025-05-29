@@ -1,12 +1,7 @@
 package com.terpomo.wavy.ui.components;
 
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Insets;
-
-import javax.swing.JPanel;
-
-import com.terpomo.wavy.Constants;
+import javax.swing.*;
+import java.awt.*;
 
 public class WavyPanel extends JPanel {
 

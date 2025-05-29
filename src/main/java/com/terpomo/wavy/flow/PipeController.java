@@ -1,11 +1,13 @@
 package com.terpomo.wavy.flow;
 
+import com.terpomo.wavy.marshal.MarshallerUtil;
 import com.terpomo.wavy.marshal.ProjectMarshaller;
 import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -98,22 +100,19 @@ public class PipeController {
 		}
 		this.notifyWorkers();
 	}
-
-	public void removePipe(IPipe pipe) {
-		Project project = this.getProjectFromPipe(pipe);
-		this.removePipe(project, pipe);
-	}
 	
-	public Project createNewProject() {
+	public Project createNewProject(String projectName) {
 		Project p;
-		synchronized (this) {
-			p = new Project();
-			List<Project> newProjects = new ArrayList<Project>(this.projects);
-			newProjects.add(p);
-			this.setProjects(newProjects);
-		}
-		this.notifyWorkers();
+		p = new Project(projectName);
+		this.addProject(p);
 		return p;
+	}
+
+	private synchronized void addProject(Project project) {
+		List<Project> newProjects = new ArrayList<Project>(this.projects);
+		newProjects.add(project);
+		this.setProjects(newProjects);
+		this.notifyWorkers();
 	}
 	
 	public void shutdown() throws InterruptedException {
@@ -154,4 +153,17 @@ public class PipeController {
             throw new RuntimeException("Could not save project file.", e);
         }
     }
+
+	public Project openProject(File file) {
+        try {
+            byte[] byteContent = Files.readAllBytes(file.toPath());
+			String content = new String(byteContent);
+            JSONObject json = new JSONObject(content);
+			Project p = (Project) MarshallerUtil.unmarshal(json);
+			this.addProject(p);
+			return p;
+        } catch (IOException e) {
+            throw new RuntimeException("Cannot open file.", e);
+        }
+	}
 }

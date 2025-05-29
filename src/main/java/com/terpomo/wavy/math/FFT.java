@@ -1,8 +1,5 @@
 package com.terpomo.wavy.math;
 
-import java.util.Arrays;
-import java.util.stream.Stream;
-
 // https://introcs.cs.princeton.edu/java/97data/FFT.java.html
 public class FFT {
 

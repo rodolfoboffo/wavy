@@ -1,57 +1,43 @@
 package com.terpomo.wavy.ui.frames;
 
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.terpomo.wavy.IWavyDisposable;
-import com.terpomo.wavy.pipes.PipeTypeEnum;
 import com.terpomo.wavy.flow.Project;
 import com.terpomo.wavy.ui.UIController;
 import com.terpomo.wavy.ui.components.IWavyRepr;
 import com.terpomo.wavy.ui.pipes.AbstractPipeRepr;
 import com.terpomo.wavy.ui.util.AbsoluteLayout;
+import com.terpomo.wavy.util.Point;
+
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ProjectRepr extends Panel implements IWavyDisposable, IWavyRepr {
 
 	private static final long serialVersionUID = -3136424835205807021L;
 
-	private Project project;
+	private final Project project;
 	private final AbsoluteLayout layout;
 	protected final List<AbstractPipeRepr<?>> pipesRepr;
-	private final Map<PipeTypeEnum, Integer> pipeTypeCountMap;
 	
-	public ProjectRepr() {
+	public ProjectRepr(Project project) {
+		this.project = project;
 		this.layout = new AbsoluteLayout();
 		this.setLayout(this.layout);
 		this.pipesRepr = new ArrayList<AbstractPipeRepr<?>>();
-		this.pipeTypeCountMap = new HashMap<PipeTypeEnum, Integer>();
 		this.setBackground(Color.WHITE);
+		UIController.getInstance().addModelToReprMapEntry(project, this);
 	}
-	
-	private Integer getPipeCountAndIncr(PipeTypeEnum pipeType) {
-		int c = this.pipeTypeCountMap.getOrDefault(pipeType, 0);
-		this.pipeTypeCountMap.put(pipeType, c+1);
-		return c;
+
+	@Override
+	public String getName() {
+		return this.project.getName();
 	}
-	
-	public String generatePipeName(PipeTypeEnum pipeType) {
-		Integer c = this.getPipeCountAndIncr(pipeType);
-		String pipeName = String.format("%s %d", pipeType.getFriendlyName(), c);
-		return pipeName;
-	}
-	
+
 	public Project getProject() {
 		return project;
 	}
-	
-	public void setProject(Project project) {
-		this.project = project;
-		UIController.getInstance().addModelToReprMapEntry(project, this);
-	}
-	
+
 	public void setOnTop(AbstractPipeRepr<?> pipeRepr) {
 		this.setComponentZOrder(pipeRepr, 0);
 	}
@@ -59,6 +45,10 @@ public class ProjectRepr extends Panel implements IWavyDisposable, IWavyRepr {
 	public void addPipeRepr(AbstractPipeRepr<?> pipeRepr) {
 		this.pipesRepr.add(pipeRepr);
 		this.add(pipeRepr);
+		Point pipeLocation = pipeRepr.getPipe().getLocation();
+		if (pipeLocation != null) {
+			pipeRepr.setLocation((int)pipeLocation.getX(), (int)pipeLocation.getY());
+		}
 		this.setOnTop(pipeRepr);
 		this.revalidate();
 		this.repaint();

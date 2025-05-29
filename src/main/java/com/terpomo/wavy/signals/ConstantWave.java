@@ -6,7 +6,9 @@ import com.terpomo.wavy.math.SineTable;
 
 public class ConstantWave extends Signal {
 
-	public static final int DEFAULT_CW_FREQUENCY = 400; 
+	public static final int DEFAULT_CW_FREQUENCY = 400;
+	public static final float DEFAULT_CW_AMPLITUDE = 1.0f;
+	public static final int DEFAULT_CW_SAMPLE_RATE = Constants.DEFAULT_SAMPLE_RATE;
 	protected float frequency;
 	protected float amplitude;
 	protected float phase;
@@ -22,15 +24,15 @@ public class ConstantWave extends Signal {
 	}
 	
 	public ConstantWave() {
-		this(Constants.DEFAULT_SAMPLE_RATE, DEFAULT_CW_FREQUENCY, 1.0f, 0.0f, SineTable.DEFAULT_SINE_TABLE);
+		this(DEFAULT_CW_SAMPLE_RATE, DEFAULT_CW_FREQUENCY, DEFAULT_CW_AMPLITUDE, 0.0f, SineTable.DEFAULT_SINE_TABLE);
 	}
 	
 	public ConstantWave(int sampleRate, float frequency) {
-		this(sampleRate, frequency, 1.0f, 0.0f, SineTable.DEFAULT_SINE_TABLE);
+		this(sampleRate, frequency, DEFAULT_CW_AMPLITUDE, 0.0f, SineTable.DEFAULT_SINE_TABLE);
 	}
 
 	public ConstantWave(int sampleRate, float frequency, float initialPhase) {
-		this(sampleRate, frequency, 1.0f, initialPhase, SineTable.DEFAULT_SINE_TABLE);
+		this(sampleRate, frequency, DEFAULT_CW_AMPLITUDE, initialPhase, SineTable.DEFAULT_SINE_TABLE);
 	}
 
 	public final float getFrequency() {

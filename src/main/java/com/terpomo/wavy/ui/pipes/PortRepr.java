@@ -1,19 +1,17 @@
 package com.terpomo.wavy.ui.pipes;
 
+import com.terpomo.wavy.flow.IPort;
+import com.terpomo.wavy.ui.UIController;
+import com.terpomo.wavy.ui.components.IWavyRepr;
+import com.terpomo.wavy.ui.components.WavyPanel;
+import com.terpomo.wavy.util.RepeatableTask;
+
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
-import com.terpomo.wavy.core.IWavyModel;
-import com.terpomo.wavy.flow.IPort;
-import com.terpomo.wavy.ui.UIController;
-import com.terpomo.wavy.ui.components.WavyPanel;
-import com.terpomo.wavy.ui.components.IWavyRepr;
-import com.terpomo.wavy.util.RepeatableTask;
-
-import javax.swing.*;
 
 public class PortRepr extends WavyPanel implements IWavyRepr {
 

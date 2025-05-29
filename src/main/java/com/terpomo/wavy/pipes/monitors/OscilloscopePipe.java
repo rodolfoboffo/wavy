@@ -7,16 +7,17 @@ import com.terpomo.wavy.flow.SignalBuffer;
 import com.terpomo.wavy.oscilloscope.TimeValuePair;
 import com.terpomo.wavy.util.ListUtils;
 
-import java.nio.Buffer;
 import java.util.ArrayList;
 import java.util.List;
 
 public class OscilloscopePipe extends AbstractPipe {
 
-	private static final int DEFAULT_POINT_SKIP = 30;
-	private static final int DEFAULT_NUMBER_OF_CHANNELS = 1;
+	public static final int DEFAULT_POINT_SKIP = 30;
+	public static final float DEFAULT_QUALITY = 100f / (DEFAULT_POINT_SKIP + 1);
+	public static final int DEFAULT_NUMBER_OF_CHANNELS = 1;
+	public static final int DEFAULT_SAMPLE_RATE = Constants.DEFAULT_SAMPLE_RATE;
 	private static final float MAX_SCALE = 3.0f;
-	private static final float DEFAULT_SCALE = 1.0f;
+	public static final float DEFAULT_SCALE = 1.0f;
 	private List<SignalBuffer> buffers;
 	private int bufferSize;
 	private int sampleRate;
@@ -28,7 +29,7 @@ public class OscilloscopePipe extends AbstractPipe {
 	public OscilloscopePipe(String pipeName, float scale) {
 		super(pipeName);
 		this.numberOfChannels = DEFAULT_NUMBER_OF_CHANNELS;
-		this.sampleRate = Constants.DEFAULT_SAMPLE_RATE;
+		this.sampleRate = DEFAULT_SAMPLE_RATE;
 		this.scale = scale;
 		this.bufferSize = (int)(this.sampleRate*this.scale);
 		this.pointSkip = DEFAULT_POINT_SKIP;

@@ -43,7 +43,7 @@ public abstract class AbstractPipe extends ObservableObject implements IPipe {
 	}
 
 	@Override
-	public void setLocation(Point location) {
+	public synchronized void setLocation(Point location) {
 		this.location = location;
 	}
 

@@ -1,8 +1,8 @@
 package com.terpomo.wavy.pipes.input;
 
 import com.terpomo.wavy.flow.AbstractPipe;
-import com.terpomo.wavy.flow.SignalBuffer;
 import com.terpomo.wavy.flow.OutputPort;
+import com.terpomo.wavy.flow.SignalBuffer;
 import com.terpomo.wavy.sound.AudioUtils;
 import com.terpomo.wavy.sound.LPCMDecoder;
 

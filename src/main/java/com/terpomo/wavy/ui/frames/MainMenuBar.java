@@ -53,6 +53,7 @@ public class MainMenuBar extends JMenuBar {
 		this.fileMenu.add(this.newProjectMenuItem);
 
 		this.openProjectMenuItem = new JMenuItem(OPEN_PROJECT);
+		this.openProjectMenuItem.addActionListener(new OpenProjectActionListener());
 		this.fileMenu.add(this.openProjectMenuItem);
 
 		this.saveProjectMenuItem = new JMenuItem(SAVE_PROJECT);
@@ -153,6 +154,18 @@ public class MainMenuBar extends JMenuBar {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			UIController.getInstance().createPipeRepr(pipeType);
+		}
+	}
+
+	class OpenProjectActionListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			int result = MainMenuBar.this.projectFileChooser.showOpenDialog(MainMenuBar.this);
+			if (result == JFileChooser.APPROVE_OPTION) {
+				File openFile = MainMenuBar.this.projectFileChooser.getSelectedFile();
+				UIController.getInstance().openProjectRepr(openFile);
+			}
 		}
 	}
 	

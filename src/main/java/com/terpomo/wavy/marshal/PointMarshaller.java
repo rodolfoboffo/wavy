@@ -1,23 +1,30 @@
 package com.terpomo.wavy.marshal;
 
 import com.terpomo.wavy.util.Point;
-import org.json.JSONArray;
 import org.json.JSONObject;
 
-public class PointMarshaller implements IMarshaller<Point>{
+public class PointMarshaller extends AbstractMarshaller<Point> {
+
+    private static final String KEY_X = "x";
+    private static final String KEY_Y = "y";
 
     @Override
     public Point unmarshal(JSONObject json) {
-        return null;
+        if (json == null)
+            return null;
+        float x = json.getFloat(KEY_X);
+        float y = json.getFloat(KEY_Y);
+        Point p = new Point(x, y);
+        return p;
     }
 
     @Override
     public JSONObject marshal(Point obj) {
         if (obj == null)
             return null;
-        JSONObject json = new JSONObject();
-        json.put("x", obj.getX());
-        json.put("y", obj.getY());
+        JSONObject json = super.marshal(obj);
+        json.put(KEY_X, obj.getX());
+        json.put(KEY_Y, obj.getY());
         return json;
     }
 }

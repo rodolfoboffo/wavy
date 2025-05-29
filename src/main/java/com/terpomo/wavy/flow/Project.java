@@ -8,12 +8,22 @@ import java.util.List;
 
 public class Project implements IWavyModel, IMarshallable {
 
-	protected List<IPipe> pipes;
+	private String name;
+	private List<IPipe> pipes;
 	
-	public Project() {
+	public Project(String name) {
+		this.name = name;
 		this.pipes = new ArrayList<IPipe>();
 	}
-	
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
 	public List<IPipe> getPipes() {
 		return pipes;
 	}
