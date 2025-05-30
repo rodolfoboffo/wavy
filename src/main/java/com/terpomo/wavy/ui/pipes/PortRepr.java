@@ -248,7 +248,7 @@ public class PortRepr extends WavyPanel implements IWavyRepr {
 			super.keyTyped(e);
 			char keyChar = e.getKeyChar();
 			if (keyChar == KeyEvent.VK_SPACE || keyChar == KeyEvent.VK_ENTER)
-				PortRepr.this.setBeingHovered(!PortRepr.this.isBeingHovered());
+				UIController.getInstance().onPortClicked(PortRepr.this);
 		}
 	}
 	

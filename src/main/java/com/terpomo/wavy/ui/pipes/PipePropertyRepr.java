@@ -45,7 +45,6 @@ public class PipePropertyRepr<T> {
 		if (value != null) {
 			String textValue = this.getTextValue(value);
 			this.valueField = new JTextField(textValue);
-			this.valueField.addKeyListener();
 			this.valueField.addFocusListener(new ValueFieldFocusListener());
 			this.valueField.setEnabled(!readOnly);
 		}
