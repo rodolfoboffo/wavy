@@ -8,8 +8,7 @@ import com.terpomo.wavy.util.RepeatableTask;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.event.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
@@ -38,6 +37,7 @@ public class PortRepr extends WavyPanel implements IWavyRepr {
 	public PortRepr(IPort port, AbstractPipeRepr<?> parentPipeRepr) {
 		super();
 		this.port = port;
+		this.setFocusable(true);
 		UIController.getInstance().addModelToReprMapEntry(this.port, this);
 		this.isBufferFull = this.port.getBuffer().isFull();
 		this.contextMenu = new PortContextMenu();
@@ -45,6 +45,8 @@ public class PortRepr extends WavyPanel implements IWavyRepr {
 		this.isBeingHovered = false;
 		this.isSelected = false;
 		this.addMouseListener(new PortMouseListener());
+		this.addFocusListener(new PortFocusListener());
+		this.addKeyListener(new PortKeyAdapter());
 		this.addPropertyChangeListener(IS_BEING_HOVERED_PROPERTY, new RepaintOnPropertyChangedListener());
 		this.addPropertyChangeListener(IS_SELECTED_PROPERTY, new RepaintOnPropertyChangedListener());
 		this.addPropertyChangeListener(LINKED_PORT_REPR_PROPERTY, new LinkedPortReprPropertyChangedListener());
@@ -226,6 +228,28 @@ public class PortRepr extends WavyPanel implements IWavyRepr {
 			PortRepr.this.setBeingHovered(false);
 		}
 		
+	}
+
+	class PortFocusListener implements FocusListener {
+		@Override
+		public void focusGained(FocusEvent e) {
+			PortRepr.this.setBeingHovered(true);
+		}
+
+		@Override
+		public void focusLost(FocusEvent e) {
+			PortRepr.this.setBeingHovered(false);
+		}
+	}
+
+	class PortKeyAdapter extends KeyAdapter {
+		@Override
+		public void keyTyped(KeyEvent e) {
+			super.keyTyped(e);
+			char keyChar = e.getKeyChar();
+			if (keyChar == KeyEvent.VK_SPACE || keyChar == KeyEvent.VK_ENTER)
+				PortRepr.this.setBeingHovered(!PortRepr.this.isBeingHovered());
+		}
 	}
 	
 }
