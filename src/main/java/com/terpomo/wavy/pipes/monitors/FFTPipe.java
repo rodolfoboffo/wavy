@@ -3,6 +3,9 @@ package com.terpomo.wavy.pipes.monitors;
 import com.terpomo.wavy.Constants;
 import com.terpomo.wavy.flow.AbstractPipe;
 import com.terpomo.wavy.flow.SignalBuffer;
+import com.terpomo.wavy.marshal.MarshalAttr;
+import com.terpomo.wavy.marshal.MarshallingKeys;
+import com.terpomo.wavy.marshal.PipeMarshaller;
 import com.terpomo.wavy.math.FFT;
 import com.terpomo.wavy.math.Utils;
 import com.terpomo.wavy.util.ListUtils;
@@ -17,18 +20,20 @@ public class FFTPipe extends AbstractPipe {
 
 	private static final Logger LOGGER = Logger.getLogger(AbstractPipe.class.getName());
 	private static final int MAX_RESOLUTION = 20480;
-	private static final int DEFAULT_RESOLUTION = 2048;
+	public static final int DEFAULT_NUMBER_OF_CHANNELS = 1;
+	public static final int DEFAULT_RESOLUTION = 2048;
+	public static final int DEFAULT_SAMPLE_RATE = Constants.DEFAULT_SAMPLE_RATE;
 	private int numberOfChannels;
 	private int resolution;
 	private int sampleRate;
 	private long timestamp;
 	private List<SignalBuffer> buffers;
 
-	public FFTPipe(String pipeName) {
-		super(pipeName);
+	public FFTPipe() {
+		super();
 		this.numberOfChannels = 1;
 		this.resolution = DEFAULT_RESOLUTION;
-		this.sampleRate = Constants.DEFAULT_SAMPLE_RATE;
+		this.sampleRate = DEFAULT_SAMPLE_RATE;
 		this.buffers = new ArrayList<>();
 		this.buildPortsAndBuffers();
 	}
@@ -75,11 +80,13 @@ public class FFTPipe extends AbstractPipe {
 
 	synchronized public List<Point> getValuesForChannel(int channelIndex) {
 		try {
-			Float[] samples = this.buffers.get(channelIndex).fetch(this.resolution);
-			if (samples.length > 0) {
-				Float[] result = FFT.fft(samples);
-				List<Point> points = this.getPointsFromFFTResult(result, this.sampleRate);
-				return points;
+			if (this.buffers.get(channelIndex).getSize() >= this.resolution) {
+				Float[] samples = this.buffers.get(channelIndex).fetch(this.resolution);
+				if (samples.length > 0) {
+					Float[] result = FFT.fft(samples);
+					List<Point> points = this.getPointsFromFFTResult(result, this.sampleRate);
+					return points;
+				}
 			}
 		} catch (IllegalArgumentException e) {
 			LOGGER.log(Level.WARNING, String.format("Could not calculate fft for channel %d.", channelIndex+1), e);
@@ -87,29 +94,35 @@ public class FFTPipe extends AbstractPipe {
 		return null;
 	}
 
+	@MarshalAttr(attrName= MarshallingKeys.KEY_NUM_CHANNELS)
 	public int getNumberOfChannels() {
 		return numberOfChannels;
 	}
 
+	@MarshalAttr(attrName= MarshallingKeys.KEY_NUM_CHANNELS)
 	synchronized public void setNumberOfChannels(int numberOfChannels) {
 		this.numberOfChannels = numberOfChannels;
 		this.buildPortsAndBuffers();
 	}
 
+	@MarshalAttr(attrName= MarshallingKeys.KEY_RESOLUTION)
 	public int getResolution() {
 		return resolution;
 	}
 
+	@MarshalAttr(attrName= MarshallingKeys.KEY_RESOLUTION)
 	synchronized public void setResolution(int resolution) {
 		int r = Utils.getNearestPowerOfTwo(resolution);
 		r = Math.min(r, MAX_RESOLUTION);
 		this.resolution = r;
 	}
 
+	@MarshalAttr(attrName= MarshallingKeys.KEY_SAMPLE_RATE)
 	public int getSampleRate() {
 		return sampleRate;
 	}
 
+	@MarshalAttr(attrName= MarshallingKeys.KEY_SAMPLE_RATE)
 	synchronized public void setSampleRate(int sampleRate) {
 		this.sampleRate = sampleRate;
 	}

@@ -21,8 +21,8 @@ public class BandPassFilterPipe extends AbstractPipe {
     private List<SignalBuffer> buffers;
     private Float[] firFilter;
 
-    public BandPassFilterPipe(String pipeName) {
-        super(pipeName);
+    public BandPassFilterPipe() {
+        super();
         this.sampleRate = Constants.DEFAULT_SAMPLE_RATE;
         this.lowFrequency = 0;
         this.highFrequency = this.sampleRate / 2.0f;

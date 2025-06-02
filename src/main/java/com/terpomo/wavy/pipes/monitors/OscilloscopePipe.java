@@ -4,6 +4,8 @@ import com.terpomo.wavy.Constants;
 import com.terpomo.wavy.flow.AbstractPipe;
 import com.terpomo.wavy.flow.InputPort;
 import com.terpomo.wavy.flow.SignalBuffer;
+import com.terpomo.wavy.marshal.MarshalAttr;
+import com.terpomo.wavy.marshal.MarshallingKeys;
 import com.terpomo.wavy.oscilloscope.TimeValuePair;
 import com.terpomo.wavy.util.ListUtils;
 
@@ -16,7 +18,6 @@ public class OscilloscopePipe extends AbstractPipe {
 	public static final float DEFAULT_QUALITY = 100f / (DEFAULT_POINT_SKIP + 1);
 	public static final int DEFAULT_NUMBER_OF_CHANNELS = 1;
 	public static final int DEFAULT_SAMPLE_RATE = Constants.DEFAULT_SAMPLE_RATE;
-	private static final float MAX_SCALE = 3.0f;
 	public static final float DEFAULT_SCALE = 1.0f;
 	private List<SignalBuffer> buffers;
 	private int bufferSize;
@@ -26,8 +27,8 @@ public class OscilloscopePipe extends AbstractPipe {
 	private float scale;
 	private int pointSkip;
 	
-	public OscilloscopePipe(String pipeName, float scale) {
-		super(pipeName);
+	public OscilloscopePipe(float scale) {
+		super();
 		this.numberOfChannels = DEFAULT_NUMBER_OF_CHANNELS;
 		this.sampleRate = DEFAULT_SAMPLE_RATE;
 		this.scale = scale;
@@ -37,10 +38,12 @@ public class OscilloscopePipe extends AbstractPipe {
 		this.buildPortsAndBuffers();
 	}
 
+	@MarshalAttr(attrName= MarshallingKeys.KEY_NUM_CHANNELS)
 	public int getNumberOfChannels() {
 		return numberOfChannels;
 	}
 
+	@MarshalAttr(attrName= MarshallingKeys.KEY_SAMPLE_RATE)
 	public int getSampleRate() {
 		return sampleRate;
 	}
@@ -56,6 +59,7 @@ public class OscilloscopePipe extends AbstractPipe {
         }
     }
 
+	@MarshalAttr(attrName= MarshallingKeys.KEY_NUM_CHANNELS)
 	synchronized public void setNumberOfChannels(int numberOfChannels) {
 		this.numberOfChannels = numberOfChannels;
 		this.buildPortsAndBuffers();
@@ -72,14 +76,15 @@ public class OscilloscopePipe extends AbstractPipe {
 		}
 	}
 
+	@MarshalAttr(attrName= MarshallingKeys.KEY_SAMPLE_RATE)
 	synchronized public void setSampleRate(int sampleRate) {
 		this.sampleRate = sampleRate;
 		this.bufferSize = (int)(this.sampleRate*this.scale);
 		this.resizeAndClearBuffers();
 	}
 
-	public OscilloscopePipe(String pipeName) {
-		this(pipeName, DEFAULT_SCALE);
+	public OscilloscopePipe() {
+		this(DEFAULT_SCALE);
 	}
 
 	@Override
@@ -105,31 +110,30 @@ public class OscilloscopePipe extends AbstractPipe {
 		}
 	}
 
-	public int getPointSkip() {
-		return pointSkip;
-	}
-
 	synchronized public void setPointSkip(int pointSkip) {
 		int newPointSkip = Math.max(pointSkip, 0);
 		this.pointSkip = newPointSkip;
 	}
 
+	@MarshalAttr(attrName= MarshallingKeys.KEY_QUALITY)
 	synchronized public void setQuality(float quality) {
         float newQuality = Math.max(Math.min(quality, 100f), 0.05f);
         int newPointSkip = Math.max((int) (100f / newQuality - 1), 0);
         this.setPointSkip(newPointSkip);
     }
 
+	@MarshalAttr(attrName= MarshallingKeys.KEY_QUALITY)
 	synchronized public float getQuality() {
 		return 100f / (this.pointSkip + 1);
 	}
 
+	@MarshalAttr(attrName= MarshallingKeys.KEY_SCALE)
 	public float getScale() {
 		return scale;
 	}
 
+	@MarshalAttr(attrName= MarshallingKeys.KEY_SCALE)
 	synchronized public void setScale(float scale) {
-		float newScale = Math.min(scale, MAX_SCALE);
 		this.scale = scale;
 		this.bufferSize = (int)(this.sampleRate*this.scale);
 		this.resizeAndClearBuffers();

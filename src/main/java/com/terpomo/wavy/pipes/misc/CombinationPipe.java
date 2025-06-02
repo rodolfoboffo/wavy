@@ -17,8 +17,8 @@ public class CombinationPipe extends AbstractPipe {
     private Float dcShift;
     private Float outputScale;
 
-    public CombinationPipe(String pipeName) {
-        super(pipeName);
+    public CombinationPipe() {
+        super();
         this.numberOfChannels = DEFAULT_NUMBER_OF_CHANNELS;
         this.dcShift = 0f;
         this.outputScale = 1f;

@@ -67,13 +67,7 @@ public class PipeController {
 	}
 	
 	public void addPipe(Project project, IPipe p) {
-		synchronized (project.getPipes()) {
-			if (!project.getPipes().contains(p)) {
-				ArrayList<IPipe> newPipes = new ArrayList<IPipe>(project.getPipes());
-				newPipes.add(p);
-				project.setPipes(newPipes);
-			}
-		}
+		project.addPipe(p);
 		this.notifyWorkers();
 	}
 
@@ -88,9 +82,7 @@ public class PipeController {
 
 	public void removePipe(Project project, IPipe pipe) {
 		synchronized (pipe) {
-			ArrayList<IPipe> newPipes = new ArrayList<IPipe>(project.getPipes());
-			newPipes.remove(pipe);
-			project.setPipes(newPipes);
+			project.removePipe(pipe);
 			for (IPort port : pipe.getInputPorts()) {
 				this.unlinkPort(port);
 			}

@@ -10,6 +10,7 @@ import java.util.List;
 public interface IPipe extends IObservableObject, IWavyModel {
 	public List<InputPort> getInputPorts();
 	public List<OutputPort> getOutputPorts();
+	public List<IPort> getPorts();
 	public void initialize();
 	public boolean isInitialized();
 	public void process();
@@ -20,6 +21,6 @@ public interface IPipe extends IObservableObject, IWavyModel {
 	public void setLocation(Point location);
 	public Dimension getDimension();
 	public void setDimension(Dimension dimension);
-	public void setName(String name);
 	public String getName();
+	public void setName(String name);
 }

@@ -19,7 +19,6 @@ public class SplitterPipeRepr extends AbstractPipeRepr<SplitterPipe> {
     private static final String CHANNEL_NUMBER = "Channel %d";
     private final GridBagLayout contentLayout;
 
-    @SuppressWarnings({"rawtypes", "unchecked"})
     public SplitterPipeRepr(SplitterPipe pipe) {
         super(pipe);
 

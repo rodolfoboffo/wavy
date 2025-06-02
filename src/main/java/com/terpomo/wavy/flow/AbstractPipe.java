@@ -1,6 +1,8 @@
 package com.terpomo.wavy.flow;
 
 import com.terpomo.wavy.core.ObservableObject;
+import com.terpomo.wavy.marshal.MarshalAttr;
+import com.terpomo.wavy.marshal.MarshallingKeys;
 import com.terpomo.wavy.util.Dimension;
 import com.terpomo.wavy.util.ListUtils;
 import com.terpomo.wavy.util.Point;
@@ -27,31 +29,37 @@ public abstract class AbstractPipe extends ObservableObject implements IPipe {
 		return busy;
 	}
 
+	@MarshalAttr(attrName= MarshallingKeys.KEY_NAME)
 	@Override
 	public String getName() {
 		return this.pipeName;
 	}
 
+	@MarshalAttr(attrName=MarshallingKeys.KEY_NAME)
 	@Override
 	public void setName(String name) {
 		this.pipeName = name;
 	}
 
+	@MarshalAttr(attrName= MarshallingKeys.KEY_LOCATION)
 	@Override
 	public Point getLocation() {
 		return location;
 	}
 
+	@MarshalAttr(attrName= MarshallingKeys.KEY_LOCATION)
 	@Override
 	public synchronized void setLocation(Point location) {
 		this.location = location;
 	}
 
+	@MarshalAttr(attrName= MarshallingKeys.KEY_DIMENSION)
 	@Override
 	public Dimension getDimension() {
 		return dimension;
 	}
 
+	@MarshalAttr(attrName= MarshallingKeys.KEY_DIMENSION)
 	@Override
 	public void setDimension(Dimension dimension) {
 		this.dimension = dimension;
@@ -106,8 +114,8 @@ public abstract class AbstractPipe extends ObservableObject implements IPipe {
 		return p.getLinkedPort() != null;
 	}
 
-	public AbstractPipe(String pipeName) {
-		this.pipeName = pipeName;
+	public AbstractPipe() {
+		this.pipeName = "";
 		this.inputPorts = new ArrayList<InputPort>();
 		this.outputPorts = new ArrayList<OutputPort>();
 		this.isInitialized = false;
@@ -170,6 +178,14 @@ public abstract class AbstractPipe extends ObservableObject implements IPipe {
 	synchronized public void setInputPorts(List<InputPort> inputPorts) {
 		this.inputPorts.clear();
 		this.inputPorts.addAll(inputPorts);
+	}
+
+	@Override
+	public List<IPort> getPorts() {
+		ArrayList<IPort> ports = new ArrayList<>();
+		ports.addAll(this.getInputPorts());
+		ports.addAll(this.getOutputPorts());
+		return ports;
 	}
 
 	@Override

@@ -21,8 +21,8 @@ public class RTLPipe extends AbstractPipe {
     private RTLSDRDevice device;
     private final IRTLAPI.IReadAsyncCallback callback;
 
-    public RTLPipe(String pipeName) {
-        super(pipeName);
+    public RTLPipe() {
+        super();
         this.device = null;
         this.auxBuffer = new byte[2 * BUFFER_SIZE];
         this.localBufffer = new GenericBuffer<Byte>(Byte.class, Constants.MAX_SAMPLE_RATE, true);

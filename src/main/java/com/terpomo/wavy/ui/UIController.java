@@ -3,6 +3,7 @@ package com.terpomo.wavy.ui;
 import com.terpomo.wavy.IWavyDisposable;
 import com.terpomo.wavy.core.IWavyModel;
 import com.terpomo.wavy.flow.IPipe;
+import com.terpomo.wavy.flow.IPort;
 import com.terpomo.wavy.flow.PipeController;
 import com.terpomo.wavy.flow.Project;
 import com.terpomo.wavy.pipes.PipeTypeEnum;
@@ -101,6 +102,15 @@ public class UIController extends Component implements IWavyDisposable {
 		for (IPipe pipe : project.getPipes()) {
 			AbstractPipeRepr<?> pipeRepr = PipeReprFactory.createPipeRepr(PipeTypeEnum.valueOf(pipe.getClass()), pipe);
 			projectRepr.addPipeRepr(pipeRepr);
+		}
+		for (IPipe pipe : project.getPipes()) {
+			for (IPort port : pipe.getPorts()) {
+				if (port.getLinkedPort() != null) {
+					PortRepr portRepr = (PortRepr) this.getReprFromModelObj(port);
+					PortRepr linkedPortRepr = (PortRepr) this.getReprFromModelObj(port.getLinkedPort());
+					portRepr.setLinkedPortRepr(linkedPortRepr);
+				}
+			}
 		}
 		this.firePropertyChange(PROPERTY_ADDED_PROJECT, null, projectRepr);
 		this.firePropertyChange(PROPERTY_PROJECTS, oldProjectsList, this.projectsRepr);

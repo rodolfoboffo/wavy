@@ -1,5 +1,5 @@
 package com.terpomo.wavy.marshal;
 
-public interface IPipeMarshaller<T extends IMarshallable> extends IMarshaller<T> {
-    Class<T> getPipeClass();
-}
+import com.terpomo.wavy.flow.IPipe;
+
+public interface IPipeMarshaller<T extends IPipe> extends IMarshaller<T> {}

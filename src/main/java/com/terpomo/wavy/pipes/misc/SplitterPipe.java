@@ -4,15 +4,18 @@ import com.terpomo.wavy.flow.AbstractPipe;
 import com.terpomo.wavy.flow.IPort;
 import com.terpomo.wavy.flow.InputPort;
 import com.terpomo.wavy.flow.OutputPort;
+import com.terpomo.wavy.marshal.MarshalAttr;
+import com.terpomo.wavy.marshal.MarshallingKeys;
+import com.terpomo.wavy.marshal.PipeMarshaller;
 
 public class SplitterPipe extends AbstractPipe {
 
-    private static final int DEFAULT_NUMBER_OF_CHANNELS = 2;
+    public static final int DEFAULT_NUMBER_OF_CHANNELS = 2;
     private int numberOfChannels;
-    private InputPort inputPort;
+    private final InputPort inputPort;
 
-    public SplitterPipe(String pipeName, int numberOfChannels) {
-        super(pipeName);
+    public SplitterPipe(int numberOfChannels) {
+        super();
         this.numberOfChannels = numberOfChannels;
         this.inputPort = new InputPort(this);
         this.getInputPorts().add(this.inputPort);
@@ -24,19 +27,21 @@ public class SplitterPipe extends AbstractPipe {
         this.firePropertyChange(PROPERTY_PIPE_OUTPUT_PORTS, null, this.getOutputPorts());
     }
 
+    @MarshalAttr(attrName = MarshallingKeys.KEY_NUM_CHANNELS)
     public void setNumberOfChannels(int numberOfChannels) {
         this.numberOfChannels = numberOfChannels;
         this.buildPorts();
     }
 
-    public SplitterPipe(String pipeName) {
-        this(pipeName, DEFAULT_NUMBER_OF_CHANNELS);
+    public SplitterPipe() {
+        this(DEFAULT_NUMBER_OF_CHANNELS);
     }
 
     public InputPort getInputPort() {
         return inputPort;
     }
 
+    @MarshalAttr(attrName = MarshallingKeys.KEY_NUM_CHANNELS)
     public int getNumberOfChannels() {
         return numberOfChannels;
     }

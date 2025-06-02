@@ -61,6 +61,10 @@ public class ProjectRepr extends Panel implements IWavyDisposable, IWavyRepr {
 		this.repaint();
 	}
 
+	public List<AbstractPipeRepr<?>> getPipesRepr() {
+		return pipesRepr;
+	}
+
 	@Override
 	public void wavyDispose() {
 		for (AbstractPipeRepr<?> pipe : this.pipesRepr) {

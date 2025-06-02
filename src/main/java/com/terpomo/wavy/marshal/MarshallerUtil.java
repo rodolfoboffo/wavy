@@ -2,17 +2,15 @@ package com.terpomo.wavy.marshal;
 
 import org.json.JSONObject;
 
-import static com.terpomo.wavy.marshal.AbstractMarshaller.KEY_CLASS;
-
 public class MarshallerUtil {
 
     public static IMarshallable unmarshal(JSONObject json) {
         if (json == null)
             return null;
-        String clssString = json.optString(KEY_CLASS);
+        String clssString = json.optString(MarshallingKeys.KEY_CLASS);
         try {
             Class<?> modelClass = Class.forName(clssString);
-            IMarshaller<IMarshallable> unsmarshaler = MarshallerFactory.getInstance().createMarshallerFor(modelClass);
+            @SuppressWarnings("unchecked") IMarshaller<IMarshallable> unsmarshaler = (IMarshaller<IMarshallable>) MarshallerFactory.createMarshallerFor(modelClass);
             IMarshallable obj = unsmarshaler.unmarshal(json);
             return obj;
         } catch (ClassNotFoundException e) {
@@ -25,7 +23,7 @@ public class MarshallerUtil {
         if (obj == null)
             return null;
         Class<T> clazz = (Class<T>) obj.getClass();
-        IMarshaller<T> marshaller = MarshallerFactory.getInstance().createMarshallerFor(clazz);
+        IMarshaller<T> marshaller = (IMarshaller<T>) MarshallerFactory.createMarshallerFor(clazz);
         return marshaller.marshal(obj);
     }
 

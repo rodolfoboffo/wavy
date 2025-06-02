@@ -16,56 +16,61 @@ import com.terpomo.wavy.pipes.monitors.OscilloscopePipe;
 import com.terpomo.wavy.pipes.output.AudioPlayerPipe;
 import com.terpomo.wavy.pipes.output.FileWriterPipe;
 import com.terpomo.wavy.pipes.sources.ConstantWavePipe;
-import com.terpomo.wavy.signals.ConstantWave;
 
 public class PipeFactory {
-	
+
 	public static AbstractPipe createPipe(PipeTypeEnum pipeType, String pipeName) {
+		AbstractPipe pipe = PipeFactory.createPipe(pipeType);
+		pipe.setName(pipeName);
+		return pipe;
+	}
+
+	public static AbstractPipe createPipe(PipeTypeEnum pipeType) {
 		switch (pipeType) {
 		case CONSTANT_WAVE_SIGNAL_PIPE_ENUM: {
-			return new ConstantWavePipe(new ConstantWave(), pipeName);
+			return new ConstantWavePipe();
 		}
 		case AUDIO_PLAYER_PIPE_ENUM: {
-			return new AudioPlayerPipe(pipeName);
+			return new AudioPlayerPipe();
 		}
 		case OSCILLOSCOPE_PIPE_ENUM: {
-			return new OscilloscopePipe(pipeName);
+			return new OscilloscopePipe();
 		}
 		case SPLITTER_PIPE_ENUM: {
-			return new SplitterPipe(pipeName);
+			return new SplitterPipe();
 		}
 		case FILE_READER_PIPE_ENUM: {
-			return new FileReaderPipe(pipeName);
+			return new FileReaderPipe();
 		}
 		case FILE_WRITER_PIPE_ENUM: {
-			return new FileWriterPipe(pipeName);
+			return new FileWriterPipe();
 		}
 		case FFT_PIPE_ENUM: {
-			return new FFTPipe(pipeName);
+			return new FFTPipe();
 		}
 		case COMBINATION_PIPE_ENUM: {
-			return new CombinationPipe(pipeName);
+			return new CombinationPipe();
 		}
 		case BAND_PASS_FILTER_PIPE_ENUM: {
-			return new BandPassFilterPipe(pipeName);
+			return new BandPassFilterPipe();
 		}
 		case MIC_PIPE_ENUM: {
-			return new MicPipe(pipeName);
+			return new MicPipe();
 		}
 		case FM_MODULATION_PIPE_ENUM: {
-			return new FMModulationPipe(pipeName);
+			return new FMModulationPipe();
 		}
 		case FM_DEMODULATION_PIPE_ENUM: {
-			return new FMDemodulationPipe(pipeName);
+			return new FMDemodulationPipe();
 		}
 		case IQ_MODULATION_PIPE_ENUM: {
-			return new IQModulationPipe(pipeName);
+			return new IQModulationPipe();
 		}
 		case IQ_DEMODULATION_PIPE_ENUM: {
-			return new IQDemodulationPipe(pipeName);
+			return new IQDemodulationPipe();
 		}
 		case RTLSDR_PIPE_ENUM: {
-			return new RTLPipe(pipeName);
+			return new RTLPipe();
 		}
 		default:
 			throw new IllegalArgumentException("Unexpected value: " + pipeType);

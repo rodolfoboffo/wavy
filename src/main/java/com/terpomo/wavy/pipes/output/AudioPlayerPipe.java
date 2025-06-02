@@ -22,12 +22,12 @@ public class AudioPlayerPipe extends AbstractPipe {
 	private Mixer.Info mixer;
 	private int lineBufferSize;
 
-	public AudioPlayerPipe(String pipeName) {
-		this(pipeName, DEFAULT_NUM_CHANNELS, Constants.DEFAULT_SAMPLE_RATE);
+	public AudioPlayerPipe() {
+		this(DEFAULT_NUM_CHANNELS, Constants.DEFAULT_SAMPLE_RATE);
 	}
 	
-	public AudioPlayerPipe(String pipeName, int numOfChannels, int sampleRate) {
-		super(pipeName);
+	public AudioPlayerPipe(int numOfChannels, int sampleRate) {
+		super();
 		this.numOfChannels = numOfChannels;
 		this.sampleRate = sampleRate;
 		this.mixerName = null;
