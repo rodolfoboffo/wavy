@@ -4,6 +4,8 @@ import com.terpomo.wavy.flow.AbstractPipe;
 import com.terpomo.wavy.flow.IPort;
 import com.terpomo.wavy.flow.OutputPort;
 import com.terpomo.wavy.flow.SignalBuffer;
+import com.terpomo.wavy.marshal.MarshalAttr;
+import com.terpomo.wavy.marshal.MarshallingKeys;
 import com.terpomo.wavy.sound.LPCMDecoder;
 
 import javax.sound.sampled.AudioFormat;
@@ -68,6 +70,7 @@ public class FileReaderPipe extends AbstractPipe {
         return isFileOpen;
     }
 
+    @MarshalAttr(attrName= MarshallingKeys.KEY_FILE_PATH)
     public String getInputFilePath() {
         return inputFilePath;
     }
@@ -76,11 +79,12 @@ public class FileReaderPipe extends AbstractPipe {
         this.setInputFilePath(inputFile.getAbsolutePath());
     }
 
+    @MarshalAttr(attrName= MarshallingKeys.KEY_FILE_PATH)
     synchronized public void setInputFilePath(String inputFilePath) {
         this.inputFilePath = inputFilePath;
         this.initialize();
     }
-
+    
     public int getNumOfChannels() {
         if (this.audioFormat != null) {
             return this.audioFormat.getChannels();

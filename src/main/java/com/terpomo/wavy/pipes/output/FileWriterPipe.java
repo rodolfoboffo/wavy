@@ -4,6 +4,8 @@ import com.terpomo.wavy.Constants;
 import com.terpomo.wavy.flow.AbstractPipe;
 import com.terpomo.wavy.flow.InputPort;
 import com.terpomo.wavy.flow.SignalBuffer;
+import com.terpomo.wavy.marshal.MarshalAttr;
+import com.terpomo.wavy.marshal.MarshallingKeys;
 import com.terpomo.wavy.sound.LPCMEncoder;
 import com.terpomo.wavy.util.ListUtils;
 import com.terpomo.wavy.util.RandomAccessFileUtils;
@@ -132,6 +134,7 @@ public class FileWriterPipe extends AbstractPipe {
         this.numberOfWrittenSamples = 0;
     }
 
+    @MarshalAttr(attrName= MarshallingKeys.KEY_OUTPUT_DIRECTORY)
     public String getOutputDirectory() {
         return outputDirectory;
     }
@@ -148,6 +151,7 @@ public class FileWriterPipe extends AbstractPipe {
         this.setOutputDirectory(outputDir.getAbsolutePath());
     }
 
+    @MarshalAttr(attrName= MarshallingKeys.KEY_OUTPUT_DIRECTORY)
     synchronized public void setOutputDirectory(String outputDirectory) {
         this.outputDirectory = outputDirectory;
         this.reset();
@@ -159,10 +163,12 @@ public class FileWriterPipe extends AbstractPipe {
         super.initialize();
     }
 
+    @MarshalAttr(attrName= MarshallingKeys.KEY_NUM_CHANNELS)
     public int getNumOfChannels() {
         return this.numOfChannels;
     }
 
+    @MarshalAttr(attrName= MarshallingKeys.KEY_NUM_CHANNELS)
     synchronized public void setNumOfChannels(int numOfChannels) {
         this.numOfChannels = numOfChannels;
         this.buildInputPorts(this.numOfChannels);
@@ -173,10 +179,12 @@ public class FileWriterPipe extends AbstractPipe {
         return this.bitsPerSample;
     }
 
+    @MarshalAttr(attrName= MarshallingKeys.KEY_SAMPLE_RATE)
     public int getSampleRate() {
         return this.sampleRate;
     }
 
+    @MarshalAttr(attrName= MarshallingKeys.KEY_SAMPLE_RATE)
     synchronized public void setSampleRate(int sampleRate) {
         this.sampleRate = sampleRate;
         this.reset();

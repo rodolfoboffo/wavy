@@ -3,6 +3,8 @@ package com.terpomo.wavy.pipes.filters;
 import com.terpomo.wavy.Constants;
 import com.terpomo.wavy.flow.AbstractPipe;
 import com.terpomo.wavy.flow.SignalBuffer;
+import com.terpomo.wavy.marshal.MarshalAttr;
+import com.terpomo.wavy.marshal.MarshallingKeys;
 import com.terpomo.wavy.math.FFT;
 import com.terpomo.wavy.math.Utils;
 import com.terpomo.wavy.util.ListUtils;
@@ -53,10 +55,12 @@ public class BandPassFilterPipe extends AbstractPipe {
         return fir;
     }
 
+    @MarshalAttr(attrName= MarshallingKeys.KEY_RESOLUTION)
     public int getResolution() {
         return resolution;
     }
 
+    @MarshalAttr(attrName= MarshallingKeys.KEY_RESOLUTION)
     synchronized public void setResolution(int resolution) {
         int r = Utils.getNearestPowerOfTwo(resolution);
         r = Math.min(r, MAX_RESOLUTION);
@@ -64,33 +68,40 @@ public class BandPassFilterPipe extends AbstractPipe {
         this.resetFirFilter();
     }
 
+    @MarshalAttr(attrName= MarshallingKeys.KEY_LOW_FREQUENCY)
     public float getLowFrequency() {
         return lowFrequency;
     }
 
+    @MarshalAttr(attrName= MarshallingKeys.KEY_LOW_FREQUENCY)
     synchronized public void setLowFrequency(float lowFrequency) {
         this.lowFrequency = lowFrequency;
         this.resetFirFilter();
     }
 
+    @MarshalAttr(attrName= MarshallingKeys.KEY_HIGH_FREQUENCY)
     public float getHighFrequency() {
         return highFrequency;
     }
 
+    @MarshalAttr(attrName= MarshallingKeys.KEY_HIGH_FREQUENCY)
     synchronized public void setHighFrequency(float highFrequency) {
         this.highFrequency = highFrequency;
         this.resetFirFilter();
     }
 
+    @MarshalAttr(attrName= MarshallingKeys.KEY_SAMPLE_RATE)
     public int getSampleRate() {
         return sampleRate;
     }
 
+    @MarshalAttr(attrName= MarshallingKeys.KEY_SAMPLE_RATE)
     synchronized public void setSampleRate(int sampleRate) {
         this.sampleRate = sampleRate;
         this.resetFirFilter();
     }
 
+    @MarshalAttr(attrName= MarshallingKeys.KEY_NUM_CHANNELS)
     public int getNumOfChannels() {
         return numOfChannels;
     }

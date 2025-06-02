@@ -28,6 +28,7 @@ import com.terpomo.wavy.ui.pipes.misc.SplitterPipeRepr;
 import com.terpomo.wavy.ui.pipes.modulation.*;
 import com.terpomo.wavy.ui.pipes.monitors.FFTPipeRepr;
 import com.terpomo.wavy.ui.pipes.monitors.OscilloscopePipeRepr;
+import com.terpomo.wavy.ui.pipes.output.AudioPlayerPipeRepr;
 import com.terpomo.wavy.ui.pipes.output.FileWriterPipeRepr;
 import com.terpomo.wavy.ui.pipes.sources.ConstantWavePipeRepr;
 

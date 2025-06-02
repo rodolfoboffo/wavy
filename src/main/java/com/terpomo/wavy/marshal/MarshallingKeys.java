@@ -24,4 +24,12 @@ public class MarshallingKeys {
     public static final String KEY_PIPE_NAME = "pipe_name";
     public static final String KEY_PORT_INDEX = "port_index";
     public static final String KEY_PIPES = "pipes";
+    public static final String KEY_OUTPUT_DIRECTORY = "output_directory";
+    public static final String KEY_MIXER_NAME = "mixer_name";
+    public static final String KEY_HIGH_FREQUENCY = "high_frequency";
+    public static final String KEY_LOW_FREQUENCY = "low+frequency";
+    public static final String KEY_FILE_PATH = "file_path";
+    public static final String KEY_CENTER_FREQUENCY = "center_frequency";
+    public static final String KEY_DC_SHIFT = "dc_shift";
+    public static final String KEY_OUTPUT_SCALE = "output_scale";
 }

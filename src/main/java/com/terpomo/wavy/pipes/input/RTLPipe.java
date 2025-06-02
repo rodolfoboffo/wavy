@@ -5,6 +5,8 @@ import com.terpomo.wavy.Constants;
 import com.terpomo.wavy.flow.AbstractPipe;
 import com.terpomo.wavy.flow.GenericBuffer;
 import com.terpomo.wavy.flow.OutputPort;
+import com.terpomo.wavy.marshal.MarshalAttr;
+import com.terpomo.wavy.marshal.MarshallingKeys;
 import com.terpomo.wavy.rtl.IRTLAPI;
 import com.terpomo.wavy.rtl.RTLSDR;
 import com.terpomo.wavy.rtl.RTLSDRDevice;
@@ -61,12 +63,14 @@ public class RTLPipe extends AbstractPipe {
         }
     }
 
+    @MarshalAttr(attrName= MarshallingKeys.KEY_SAMPLE_RATE)
     public int getSampleRate() {
         if (this.device != null)
             return this.device.getSampleRate();
         return 0;
     }
 
+    @MarshalAttr(attrName= MarshallingKeys.KEY_SAMPLE_RATE)
     synchronized public void setSampleRate(int sampleRate) {
         if (this.device != null) {
             this.device.cancelAsyncReading();
@@ -74,12 +78,14 @@ public class RTLPipe extends AbstractPipe {
         }
     }
 
+    @MarshalAttr(attrName= MarshallingKeys.KEY_CENTER_FREQUENCY)
     public long getCenterFrequency() {
         if (this.device != null)
             return this.device.getCenterFrequency();
         return 0;
     }
 
+    @MarshalAttr(attrName= MarshallingKeys.KEY_CENTER_FREQUENCY)
     synchronized public void setCenterFrequency(long centerFrequency) {
         if (this.device != null) {
             this.device.cancelAsyncReading();

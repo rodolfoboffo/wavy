@@ -3,6 +3,8 @@ package com.terpomo.wavy.pipes.input;
 import com.terpomo.wavy.flow.AbstractPipe;
 import com.terpomo.wavy.flow.OutputPort;
 import com.terpomo.wavy.flow.SignalBuffer;
+import com.terpomo.wavy.marshal.MarshalAttr;
+import com.terpomo.wavy.marshal.MarshallingKeys;
 import com.terpomo.wavy.sound.AudioUtils;
 import com.terpomo.wavy.sound.LPCMDecoder;
 
@@ -89,7 +91,15 @@ public class MicPipe extends AbstractPipe {
         this.closeLine();
     }
 
-    synchronized public void setMixer(String name) {
+    @MarshalAttr(attrName= MarshallingKeys.KEY_MIXER_NAME)
+    public String getMixerName() {
+        if (this.mixer != null)
+            return this.mixer.getName();
+        return null;
+    }
+
+    @MarshalAttr(attrName= MarshallingKeys.KEY_MIXER_NAME)
+    synchronized public void setMixerName(String name) {
         Mixer.Info mixer = AudioUtils.getMixerInfoByName(name);
         this.mixer = mixer;
         this.dispose();

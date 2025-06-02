@@ -1,4 +1,4 @@
-package com.terpomo.wavy.ui.pipes.modulation;
+package com.terpomo.wavy.ui.pipes.output;
 
 import com.terpomo.wavy.flow.AbstractPipe;
 import com.terpomo.wavy.flow.IPort;
@@ -56,7 +56,9 @@ public class AudioPlayerPipeRepr extends AbstractPipeRepr<AudioPlayerPipe> {
 				AudioPlayerPipeRepr.this.getPipe().setMixerName(combo.getSelectedItem().toString());
 			}
 		});
-		if (this.comboMixerInfos.getItemCount() > 0)
+		if (this.getPipe().getMixerName() != null)
+			this.comboMixerInfos.setSelectedItem(this.getPipe().getMixerName());
+		else if (this.comboMixerInfos.getItemCount() > 0)
 			this.comboMixerInfos.setSelectedIndex(0);
 		constraints = new GridBagConstraints();
 		constraints.gridx = 1;

@@ -4,6 +4,8 @@ import com.terpomo.wavy.flow.AbstractPipe;
 import com.terpomo.wavy.flow.InputPort;
 import com.terpomo.wavy.flow.OutputPort;
 import com.terpomo.wavy.flow.SignalBuffer;
+import com.terpomo.wavy.marshal.MarshalAttr;
+import com.terpomo.wavy.marshal.MarshallingKeys;
 import com.terpomo.wavy.util.ListUtils;
 
 import java.util.ArrayList;
@@ -61,11 +63,13 @@ public class CombinationPipe extends AbstractPipe {
         }
     }
 
+    @MarshalAttr(attrName= MarshallingKeys.KEY_NUM_CHANNELS)
     synchronized public void setNumberOfChannels(int numberOfChannels) {
         this.numberOfChannels = numberOfChannels;
         this.buildPortsAndFactors();
     }
 
+    @MarshalAttr(attrName= MarshallingKeys.KEY_NUM_CHANNELS)
     public int getNumberOfChannels() {
         return numberOfChannels;
     }
@@ -86,18 +90,22 @@ public class CombinationPipe extends AbstractPipe {
         this.getScaleFactors().set(channelIndex, factor);
     }
 
+    @MarshalAttr(attrName= MarshallingKeys.KEY_DC_SHIFT)
     public Float getDcShift() {
         return dcShift;
     }
 
+    @MarshalAttr(attrName= MarshallingKeys.KEY_DC_SHIFT)
     synchronized public void setDcShift(Float dcShift) {
         this.dcShift = dcShift;
     }
 
+    @MarshalAttr(attrName= MarshallingKeys.KEY_OUTPUT_SCALE)
     public Float getOutputScale() {
         return outputScale;
     }
 
+    @MarshalAttr(attrName= MarshallingKeys.KEY_OUTPUT_SCALE)
     synchronized public void setOutputScale(Float outputScale) {
         this.outputScale = outputScale;
     }

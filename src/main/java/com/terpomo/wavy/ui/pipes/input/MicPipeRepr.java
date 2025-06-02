@@ -66,7 +66,7 @@ public class MicPipeRepr extends AbstractPipeRepr<MicPipe> {
             @Override
             public void actionPerformed(ActionEvent e) {
                 JComboBox<String> combo = (JComboBox<String>) e.getSource();
-                MicPipeRepr.this.getPipe().setMixer(combo.getSelectedItem().toString());
+                MicPipeRepr.this.getPipe().setMixerName(combo.getSelectedItem().toString());
             }
         });
         if (this.comboMixerInfos.getItemCount() > 0)

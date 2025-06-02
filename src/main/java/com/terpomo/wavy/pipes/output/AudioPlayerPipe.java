@@ -4,6 +4,8 @@ import com.terpomo.wavy.Constants;
 import com.terpomo.wavy.flow.AbstractPipe;
 import com.terpomo.wavy.flow.InputPort;
 import com.terpomo.wavy.flow.SignalBuffer;
+import com.terpomo.wavy.marshal.MarshalAttr;
+import com.terpomo.wavy.marshal.MarshallingKeys;
 import com.terpomo.wavy.sound.AudioUtils;
 import com.terpomo.wavy.sound.Encoder;
 import com.terpomo.wavy.sound.LPCMEncoder;
@@ -50,27 +52,29 @@ public class AudioPlayerPipe extends AbstractPipe {
 		this.encoder = new LPCMEncoder(this.sampleRate, this.numOfChannels);
 	}
 
+	@MarshalAttr(attrName= MarshallingKeys.KEY_NUM_CHANNELS)
 	synchronized public void setNumOfChannels(int numOfChannels) {
 		this.numOfChannels = numOfChannels;
 		this.closeLine();
 		this.buildPipes();
 		this.buildEncoder();
 		this.resetMixer();
-		this.startLine();
 	}
 
+	@MarshalAttr(attrName= MarshallingKeys.KEY_NUM_CHANNELS)
 	public int getNumOfChannels() {
 		return numOfChannels;
 	}
 
+	@MarshalAttr(attrName= MarshallingKeys.KEY_SAMPLE_RATE)
 	synchronized public void setSampleRate(int sampleRate) {
 		this.sampleRate = sampleRate;
 		this.closeLine();
 		this.buildEncoder();
 		this.resetMixer();
-		this.startLine();
 	}
 
+	@MarshalAttr(attrName= MarshallingKeys.KEY_SAMPLE_RATE)
 	public int getSampleRate() {
 		return sampleRate;
 	}
@@ -147,10 +151,16 @@ public class AudioPlayerPipe extends AbstractPipe {
 		}
 	}
 
+	@MarshalAttr(attrName= MarshallingKeys.KEY_MIXER_NAME)
 	synchronized public void setMixerName(String name) {
 		this.mixerName = name;
 		this.resetMixer();
 		this.closeLine();
+	}
+
+	@MarshalAttr(attrName= MarshallingKeys.KEY_MIXER_NAME)
+	public String getMixerName() {
+		return mixerName;
 	}
 
 	public String[] getMixerInfos() {

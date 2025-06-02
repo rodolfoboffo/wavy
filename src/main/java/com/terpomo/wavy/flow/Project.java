@@ -18,8 +18,8 @@ public class Project implements IWavyModel, IMarshallable {
 	private List<IPipe> pipes;
 	private Map<String, IPipe> nameToPipeMap;
 	
-	public Project(String name) {
-		this.name = name;
+	public Project() {
+		this.name = "";
 		this.pipes = new ArrayList<IPipe>();
 		this.nameToPipeMap = new HashMap<>();
 	}

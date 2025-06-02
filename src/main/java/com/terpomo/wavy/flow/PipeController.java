@@ -95,7 +95,8 @@ public class PipeController {
 	
 	public Project createNewProject(String projectName) {
 		Project p;
-		p = new Project(projectName);
+		p = new Project();
+		p.setName(projectName);
 		this.addProject(p);
 		return p;
 	}
