@@ -16,8 +16,12 @@ public class Utils {
     }
 
     public static Float[] toArrayOfAbsValues(Complex[] x) {
-        Float[] floatARray = Stream.of(x).map(Complex::abs).toArray(Float[]::new);
-        return floatARray;
+        Float[] floatArray = Stream.of(x).map(Complex::abs).toArray(Float[]::new);
+        return floatArray;
     }
 
+    public static Float[] toArrayOfRealValues(Complex[] x) {
+        Float[] floatArray = Stream.of(x).map(Complex::re).toArray(Float[]::new);
+        return floatArray;
+    }
 }

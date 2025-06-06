@@ -15,7 +15,7 @@ import java.util.List;
 public class BandPassFilterPipe extends AbstractPipe {
 
     public static final String PROPERTY_FIR_FILTER = "PROPERTY_FIR_FILTER";
-    private static final int MAX_RESOLUTION = 256;
+    private static final int MAX_RESOLUTION = 2048;
     private int sampleRate;
     private int numOfChannels = 1;
     private float lowFrequency, highFrequency;

@@ -53,7 +53,7 @@ public class FFT {
     public static Float[] ifft(Float[] x) {
         Complex[] complexArray = Utils.toArrayOfComplex(x);
         Complex[] complexResults = ifft(complexArray);
-        Float[] floatResults = Utils.toArrayOfAbsValues(complexResults);
+        Float[] floatResults = Utils.toArrayOfRealValues(complexResults);
         return floatResults;
     }
 
