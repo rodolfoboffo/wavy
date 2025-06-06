@@ -70,7 +70,7 @@ public class PortRepr extends WavyPanel implements IWavyRepr {
 
 	private void setTooltipForLinkedPort(PortRepr linkedPortRepr) {
 		if (linkedPortRepr != null) {
-			this.setToolTipText(linkedPortRepr.getParentPipeRepr().getPipeName());
+			this.setToolTipText(linkedPortRepr.getParentPipeRepr().getName());
 		}
 		else {
 			this.setToolTipText(null);

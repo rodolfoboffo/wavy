@@ -34,14 +34,12 @@ public class UIController extends Component implements IWavyDisposable {
 	private PortRepr selectedPort;
 	private final PipeController controller;
 	private final Map<IWavyModel, IWavyRepr> modelToReprMap;
-	private final Map<PipeTypeEnum, Integer> pipeTypeCountMap;
 	private int projectCount;
 	
 	private UIController() {
 		this.controller = new PipeController();
 		this.projectsRepr = new ArrayList<ProjectRepr>();
 		this.modelToReprMap = new HashMap<>();
-		this.pipeTypeCountMap = new HashMap<PipeTypeEnum, Integer>();
 		this.projectCount = 0;
 	}
 	
@@ -133,27 +131,25 @@ public class UIController extends Component implements IWavyDisposable {
 		this.addProject(p);
 	}
 
-	private Integer getPipeCountAndIncr(PipeTypeEnum pipeType) {
-		int c = this.pipeTypeCountMap.getOrDefault(pipeType, 0);
-		this.pipeTypeCountMap.put(pipeType, c+1);
-		return c;
-	}
-
-	public String generatePipeName(PipeTypeEnum pipeType) {
-		Integer c = this.getPipeCountAndIncr(pipeType);
-		String pipeName = String.format("%s %d", pipeType.getFriendlyName(), c);
+	public String generatePipeName(PipeTypeEnum pipeType, Project project) {
+		int counter = 0;
+		String pipeName = null;
+		do {
+			pipeName = String.format("%s %d", pipeType.getFriendlyName(), counter++);
+		}
+		while (project.getPipeByName(pipeName) != null);
 		return pipeName;
 	}
 
 	public String generateProjectName() {
-		String projectName = String.format("Project %d", ++this.projectCount);
+		String projectName = String.format("Project %d", this.projectCount);
 		return projectName;
 	}
 
 	public void createPipeRepr(PipeTypeEnum pipeType) {
 		if (this.selectedProjectRepr != null) {
 			Project project = this.selectedProjectRepr.getProject();
-			String pipeName = this.generatePipeName(pipeType);
+			String pipeName = this.generatePipeName(pipeType, project);
 			AbstractPipeRepr<?> pipeRepr = PipeReprFactory.createPipeRepr(pipeType, pipeName);
 			IPipe pipe = pipeRepr.getPipe();
 			this.controller.addPipe(project, pipe);
@@ -235,5 +231,11 @@ public class UIController extends Component implements IWavyDisposable {
 		IPipe pipe = pipeRepr.getPipe();
 		this.controller.clearCache(pipe);
 		pipeRepr.clearCache();
+	}
+
+	public void setPipeName(AbstractPipeRepr<?> pipeRepr, String newName) {
+		if (newName.trim().isEmpty())
+			throw new RuntimeException("Empty string is not a valid pipe name.");
+		this.controller.setPipeName(pipeRepr.getPipe(), newName);
 	}
 }

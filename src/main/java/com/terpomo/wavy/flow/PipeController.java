@@ -159,4 +159,12 @@ public class PipeController {
             throw new RuntimeException("Cannot open file.", e);
         }
 	}
+
+	public void setPipeName(IPipe pipe, String newName) {
+		Project project = this.getProjectFromPipe(pipe);
+		IPipe existingPipe = project.getPipeByName(newName);
+		if (existingPipe != null && existingPipe != pipe)
+			throw new RuntimeException("There is already an existing pipe using this name.");
+		pipe.setName(newName);
+	}
 }
