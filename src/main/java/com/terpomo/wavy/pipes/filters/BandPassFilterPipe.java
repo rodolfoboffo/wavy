@@ -106,6 +106,12 @@ public class BandPassFilterPipe extends AbstractPipe {
         return numOfChannels;
     }
 
+    @MarshalAttr(attrName= MarshallingKeys.KEY_NUM_CHANNELS)
+    public synchronized void setNumOfChannels(int numOfChannels) {
+        this.numOfChannels = numOfChannels;
+        this.buildPortsAndBuffers();
+    }
+
     synchronized private void buildPortsAndBuffers() {
         this.dispose();
         this.buildOutputPorts(this.numOfChannels);

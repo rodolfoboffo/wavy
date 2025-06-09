@@ -4,6 +4,8 @@ import com.terpomo.wavy.Constants;
 import com.terpomo.wavy.flow.AbstractPipe;
 import com.terpomo.wavy.flow.InputPort;
 import com.terpomo.wavy.flow.OutputPort;
+import com.terpomo.wavy.marshal.MarshalAttr;
+import com.terpomo.wavy.marshal.MarshallingKeys;
 import com.terpomo.wavy.math.MathConstants;
 import com.terpomo.wavy.signals.ConstantWave;
 
@@ -48,10 +50,12 @@ public class IQDemodulationPipe extends AbstractPipe {
         }
     }
 
+    @MarshalAttr(attrName = MarshallingKeys.KEY_CARRIER_FREQUENCY)
     public float getCarrierFrequency() {
         return carrierFrequency;
     }
 
+    @MarshalAttr(attrName = MarshallingKeys.KEY_CARRIER_FREQUENCY)
     synchronized public void setCarrierFrequency(float carrierFrequency) {
         this.carrierFrequency = carrierFrequency;
         this.resetCarriersWaves();
@@ -62,10 +66,12 @@ public class IQDemodulationPipe extends AbstractPipe {
         this.quadratureCarrier = new ConstantWave(this.sampleRate, this.carrierFrequency, MathConstants.HALF_PI);
     }
 
+    @MarshalAttr(attrName = MarshallingKeys.KEY_SAMPLE_RATE)
     public int getSampleRate() {
         return sampleRate;
     }
 
+    @MarshalAttr(attrName = MarshallingKeys.KEY_SAMPLE_RATE)
     synchronized public void setSampleRate(int sampleRate) {
         this.sampleRate = sampleRate;
         this.resetCarriersWaves();

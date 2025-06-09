@@ -21,6 +21,7 @@ import com.terpomo.wavy.pipes.sources.ConstantValuePipe;
 import com.terpomo.wavy.pipes.sources.ConstantWavePipe;
 import com.terpomo.wavy.ui.pipes.AbstractPipeRepr;
 import com.terpomo.wavy.ui.pipes.filters.BandPassFilterPipeRepr;
+import com.terpomo.wavy.ui.pipes.input.FileReaderPipeRepr;
 import com.terpomo.wavy.ui.pipes.input.MicPipeRepr;
 import com.terpomo.wavy.ui.pipes.input.RTLPipeRepr;
 import com.terpomo.wavy.ui.pipes.misc.SplitterPipeRepr;
@@ -44,7 +45,7 @@ public enum PipeTypeEnum {
 	AUDIO_PLAYER_PIPE_ENUM(Constants.AUDIO_PLAYER, AudioPlayerPipe.class, AudioPlayerPipeRepr.class),
 	OSCILLOSCOPE_PIPE_ENUM(Constants.OSCILLOSCOPE, OscilloscopePipe.class, OscilloscopePipeRepr.class),
 	SPLITTER_PIPE_ENUM(Constants.SPLITTER, SplitterPipe.class, SplitterPipeRepr.class),
-	FILE_READER_PIPE_ENUM(Constants.FILE_READER, FileReaderPipe.class, FileWriterPipeRepr.class),
+	FILE_READER_PIPE_ENUM(Constants.FILE_READER, FileReaderPipe.class, FileReaderPipeRepr.class),
 	FILE_WRITER_PIPE_ENUM(Constants.FILE_WRITER, FileWriterPipe.class, FileWriterPipeRepr.class),
 	FFT_PIPE_ENUM(Constants.FFT, FFTPipe.class, FFTPipeRepr.class),
 	COMBINATION_PIPE_ENUM(Constants.COMBINATION, CombinationPipe.class, CombinationPipeRepr.class),

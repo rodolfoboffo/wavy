@@ -4,6 +4,8 @@ import com.terpomo.wavy.Constants;
 import com.terpomo.wavy.flow.AbstractPipe;
 import com.terpomo.wavy.flow.InputPort;
 import com.terpomo.wavy.flow.OutputPort;
+import com.terpomo.wavy.marshal.MarshalAttr;
+import com.terpomo.wavy.marshal.MarshallingKeys;
 import com.terpomo.wavy.math.ArcSineTable;
 import com.terpomo.wavy.math.MathConstants;
 
@@ -98,26 +100,32 @@ public class FMDemodulationPipe extends AbstractPipe {
         return outputPort;
     }
 
+    @MarshalAttr(attrName = MarshallingKeys.KEY_SAMPLE_RATE)
     public int getSampleRate() {
         return sampleRate;
     }
 
+    @MarshalAttr(attrName = MarshallingKeys.KEY_SAMPLE_RATE)
     synchronized public void setSampleRate(int sampleRate) {
         this.sampleRate = sampleRate;
     }
 
+    @MarshalAttr(attrName = MarshallingKeys.KEY_MODULATION_INDEX)
     public Float getModulationIndex() {
         return modulationIndex;
     }
 
+    @MarshalAttr(attrName = MarshallingKeys.KEY_MODULATION_INDEX)
     synchronized public void setModulationIndex(Float modulationIndex) {
         this.modulationIndex = modulationIndex;
     }
 
+    @MarshalAttr(attrName = MarshallingKeys.KEY_AMPLITUDE)
     public float getAmplitude() {
         return amplitude;
     }
 
+    @MarshalAttr(attrName = MarshallingKeys.KEY_AMPLITUDE)
     synchronized public void setAmplitude(float amplitude) {
         this.amplitude = amplitude;
     }

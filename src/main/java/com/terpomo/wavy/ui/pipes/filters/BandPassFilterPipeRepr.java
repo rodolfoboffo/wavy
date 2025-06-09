@@ -1,5 +1,6 @@
 package com.terpomo.wavy.ui.pipes.filters;
 
+import com.terpomo.wavy.flow.AbstractPipe;
 import com.terpomo.wavy.flow.IPort;
 import com.terpomo.wavy.pipes.filters.BandPassFilterPipe;
 import com.terpomo.wavy.ui.pipes.AbstractPipeRepr;
@@ -23,6 +24,7 @@ public class BandPassFilterPipeRepr extends AbstractPipeRepr<BandPassFilterPipe>
     private static final String HIGH_FREQUENCY = "High Frequency";
     private static final String RESOLUTION = "Resolution";
     private static final String FIR_FILTER = "FIR Filter";
+    private static final String NUMBER_OF_CHANNELS = "Number of Channels";
     private JPanel pipePropertiesPanel;
     private XYSeriesCollection dataset;
     private JFreeChart lineChart;
@@ -36,6 +38,7 @@ public class BandPassFilterPipeRepr extends AbstractPipeRepr<BandPassFilterPipe>
         this.updateFirFilterChart();
         this.buildCustomPipeControls();
         this.getPipe().addPropertyChangeListener(BandPassFilterPipe.PROPERTY_FIR_FILTER, new BandPassFilterPipeRepr.FirFilterPropertyChangeListener());
+        this.getPipe().addPropertyChangeListener(AbstractPipe.PROPERTY_PIPE_INPUT_PORTS, new BandPassFilterPipeRepr.InputPortsPropertyChangeListener());
     }
 
     private void updateFirFilterChart() {
@@ -75,7 +78,6 @@ public class BandPassFilterPipeRepr extends AbstractPipeRepr<BandPassFilterPipe>
         contentPanel.add(this.chartPanel, constraints);
     }
 
-    @SuppressWarnings("rawtypes")
     private void buildCustomPipeControls() {
         List<PipePropertyRepr<?>> propertyControls = this.createPipePropertiesForInputs();
         this.layoutPipePropertiesOnGrid(this.pipePropertiesPanel, propertyControls);
@@ -88,14 +90,6 @@ public class BandPassFilterPipeRepr extends AbstractPipeRepr<BandPassFilterPipe>
         PipePropertyRepr sampleRateProp = new PipePropertyRepr<Integer>(Integer.class, this, null, SAMPLE_RATE, this.getPipe()::getSampleRate, null, this.getPipe()::setSampleRate);
         pipeProperties.add(sampleRateProp);
 
-        for (int i = 0; i < this.getPipe().getNumOfChannels(); i++) {
-            IPort outputPort = this.getPipe().getOutputPorts().get(i);
-            IPort inputPort = this.getPipe().getInputPorts().get(i);
-            String propertyName = String.format("Channel %d", i+1);
-            PipePropertyRepr<?> pipeProperty = new PipePropertyRepr<>(null, this, inputPort, propertyName, null, outputPort);
-            pipeProperties.add(pipeProperty);
-        }
-
         PipePropertyRepr resolutionProp = new PipePropertyRepr<Integer>(Integer.class, this, null, RESOLUTION, this.getPipe()::getResolution, null, this.getPipe()::setResolution);
         pipeProperties.add(resolutionProp);
 
@@ -104,6 +98,18 @@ public class BandPassFilterPipeRepr extends AbstractPipeRepr<BandPassFilterPipe>
 
         PipePropertyRepr highFrequencyProp = new PipePropertyRepr<Float>(Float.class, this, null, HIGH_FREQUENCY, this.getPipe()::getHighFrequency, null, this.getPipe()::setHighFrequency);
         pipeProperties.add(highFrequencyProp);
+
+        PipePropertyRepr numChannelsProp = new PipePropertyRepr<Integer>(Integer.class, this, null, NUMBER_OF_CHANNELS, this.getPipe()::getNumOfChannels, null, this.getPipe()::setNumOfChannels);
+        pipeProperties.add(numChannelsProp);
+
+        for (int i = 0; i < this.getPipe().getNumOfChannels(); i++) {
+            IPort outputPort = this.getPipe().getOutputPorts().get(i);
+            IPort inputPort = this.getPipe().getInputPorts().get(i);
+            String propertyName = String.format("Channel %d", i+1);
+            PipePropertyRepr<?> pipeProperty = new PipePropertyRepr<>(null, this, inputPort, propertyName, null, outputPort);
+            pipeProperties.add(pipeProperty);
+        }
+
 
         return pipeProperties;
     }
@@ -116,6 +122,21 @@ public class BandPassFilterPipeRepr extends AbstractPipeRepr<BandPassFilterPipe>
                 @Override
                 public void run() {
                     BandPassFilterPipeRepr.this.updateFirFilterChart();
+                }
+            });
+        }
+    }
+
+    class InputPortsPropertyChangeListener implements PropertyChangeListener {
+
+        @Override
+        public void propertyChange(PropertyChangeEvent evt) {
+            EventQueue.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    BandPassFilterPipeRepr.this.buildCustomPipeControls();
+                    BandPassFilterPipeRepr.this.revalidate();
+                    BandPassFilterPipeRepr.this.repaint();
                 }
             });
         }

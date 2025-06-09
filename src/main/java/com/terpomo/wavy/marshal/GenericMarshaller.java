@@ -4,6 +4,7 @@ import org.json.JSONObject;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.math.BigDecimal;
 
 public class GenericMarshaller<T extends IMarshallable> implements IMarshaller<T>{
@@ -25,9 +26,11 @@ public class GenericMarshaller<T extends IMarshallable> implements IMarshaller<T
                                 value = ((BigDecimal) value).floatValue();
                             if (JSONObject.class.equals(value.getClass()))
                                 value = MarshallerUtil.unmarshal((JSONObject) value);
-//                            Parameter param = method.getParameters()[0];
+                            Parameter param = method.getParameters()[0];
 //                            if (!value.getClass().equals(param.getType()))
 //                                value = param.getType().cast(value);
+                            if (value.getClass().equals(Integer.class) && param.getType().equals(Float.class))
+                                value = new Float((Integer)value);
                             method.invoke(obj, value);
                         }
                     } catch (IllegalAccessException | InvocationTargetException | IllegalArgumentException | ClassCastException e) {
