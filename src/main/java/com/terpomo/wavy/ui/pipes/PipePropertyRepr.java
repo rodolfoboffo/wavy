@@ -112,6 +112,8 @@ public class PipePropertyRepr<T> {
 			value = NumberFormat.getInstance().parse(textValue).intValue();
 		if (this.clazz.equals(Long.class))
 			value = NumberFormat.getInstance().parse(textValue).longValue();
+		if (this.clazz.equals(String.class))
+			value = textValue;
 		return (T)value;
 	}
 
@@ -119,6 +121,8 @@ public class PipePropertyRepr<T> {
 		String text = "";
 		if (this.clazz.equals(Float.class) || this.clazz.equals(Integer.class) || this.clazz.equals(Long.class))
 			text = NumberFormat.getInstance().format(value);
+		if (this.clazz.equals(String.class))
+			text = (String) value;
 		return text;
 	}
 	

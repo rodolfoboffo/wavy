@@ -32,4 +32,6 @@ public class MarshallingKeys {
     public static final String KEY_CENTER_FREQUENCY = "center_frequency";
     public static final String KEY_DC_SHIFT = "dc_shift";
     public static final String KEY_OUTPUT_SCALE = "output_scale";
+    public static final String KEY_PHASE = "phase";
+    public static final String KEY_VALUE = "value";
 }

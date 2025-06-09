@@ -47,6 +47,14 @@ public class ConstantWave extends Signal {
 		this.amplitude = amplitude;
 	}
 
+	public synchronized void setInitialPhase(float initialPhase) {
+		this.initialPhase = this.phase = initialPhase;
+	}
+
+	public float getInitialPhase() {
+		return initialPhase;
+	}
+
 	synchronized public void setFrequency(float frequency) {
 		this.frequency = frequency;
 	}

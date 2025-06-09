@@ -1,13 +1,20 @@
 package com.terpomo.wavy.signals;
 
+import com.terpomo.wavy.Constants;
+
 public abstract class Signal {
-	
+
+	public static final int DEFAULT_SAMPLE_RATE = Constants.DEFAULT_SAMPLE_RATE;
 	protected int sampleRate;
 	protected float limit = 1.0f;
 
 	public Signal(int sampleRate) {
 		super();
 		this.sampleRate = sampleRate;
+	}
+
+	public Signal() {
+		this(DEFAULT_SAMPLE_RATE);
 	}
 
 	public final int getSampleRate() {

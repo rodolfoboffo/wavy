@@ -8,12 +8,14 @@ public class Constants {
 	public static final int MAX_SAMPLE_RATE = 10000000;
 	
 	public static final String CONSTANT_WAVE = "Constant Wave";
+	public static final String CONSTANT_VALUE = "Constant Value";
 	public static final String AUDIO_PLAYER = "Audio Player";
 	public static final String OSCILLOSCOPE = "Oscilloscope";
 	public static final String SPLITTER = "Splitter";
 	public static final String FILE_READER = "File Reader";
 	public static final String FILE_WRITER = "File Writer";
-	public static final String COMBINATION = "Signal Combination";
+	public static final String COMBINATION = "Combination";
+	public static final String MULTIPLICATION = "Multiplication";
 	public static final String FFT = "FFT";
 	public static final String BAND_PASS_FILTER = "Band Pass Filter";
 	public static final String MICROPHONE = "Microphone";

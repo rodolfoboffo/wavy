@@ -1,4 +1,4 @@
-package com.terpomo.wavy.pipes.misc;
+package com.terpomo.wavy.pipes.operators;
 
 import com.terpomo.wavy.flow.AbstractPipe;
 import com.terpomo.wavy.flow.InputPort;
@@ -37,13 +37,14 @@ public class CombinationPipe extends AbstractPipe {
         if (this.getOutputPort().getLinkedPort() != null) {
             SignalBuffer buffer = this.getOutputPort().getLinkedPort().getBuffer();
             for (InputPort input : this.getInputPorts()) {
-                if (input.getLinkedPort() == null || input.getBuffer().isEmpty())
+                if (input.getLinkedPort() != null && input.getBuffer().isEmpty())
                     return;
             }
             if (!buffer.isFull()) {
                 float value = 0.0f;
                 for (int i = 0; i < this.getInputPorts().size(); i++) {
-                    value += this.getInputPorts().get(i).getBuffer().pickOne() * this.getScaleFactorForChannel(i);
+                    if (this.getInputPorts().get(i).getLinkedPort() != null)
+                        value += this.getInputPorts().get(i).getBuffer().pickOne() * this.getScaleFactorForChannel(i);
                 }
                 value = (value * this.outputScale) + this.dcShift;
                 this.putThroughPort(this.getOutputPort(), value);

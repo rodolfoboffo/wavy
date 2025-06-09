@@ -25,9 +25,12 @@ public class GenericMarshaller<T extends IMarshallable> implements IMarshaller<T
                                 value = ((BigDecimal) value).floatValue();
                             if (JSONObject.class.equals(value.getClass()))
                                 value = MarshallerUtil.unmarshal((JSONObject) value);
+//                            Parameter param = method.getParameters()[0];
+//                            if (!value.getClass().equals(param.getType()))
+//                                value = param.getType().cast(value);
                             method.invoke(obj, value);
                         }
-                    } catch (IllegalAccessException | InvocationTargetException | IllegalArgumentException e) {
+                    } catch (IllegalAccessException | InvocationTargetException | IllegalArgumentException | ClassCastException e) {
                         throw new RuntimeException(String.format("Could not unmarshall attribute %s for class %s", jsonAttrName, className), e);
                     }
                 }

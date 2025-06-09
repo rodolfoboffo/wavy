@@ -15,6 +15,7 @@ public class ConstantWavePipeRepr extends AbstractSignalPipeRepr<ConstantWave, C
 	private static final long serialVersionUID = 8289652143621889982L;
 	public static final String FREQUENCY = "Frequency (Hz)";
 	public static final String AMPLITUDE = "Amplitude";
+	public static final String PHASE = "Phase (rad)";
 	
 	GridBagLayout contentLayout;
 
@@ -23,16 +24,18 @@ public class ConstantWavePipeRepr extends AbstractSignalPipeRepr<ConstantWave, C
 		this.contentLayout = new GridBagLayout();
 		this.getContentPanel().setLayout(this.contentLayout);
 
-		@SuppressWarnings("rawtypes")
 		List<PipePropertyRepr<?>> pipeProperties = new ArrayList<>();
-		PipePropertyRepr<Integer> sampleRateProperty = new PipePropertyRepr<Integer>(Integer.class, this, null, AbstractPipeRepr.SAMPLE_RATE, pipe.getSignal()::getSampleRate, null, this.getPipe()::setSampleRate);
+		PipePropertyRepr<Integer> sampleRateProperty = new PipePropertyRepr<Integer>(Integer.class, this, null, AbstractPipeRepr.SAMPLE_RATE, this.getPipe()::getSampleRate, null, this.getPipe()::setSampleRate);
 		pipeProperties.add(sampleRateProperty);
 
-		PipePropertyRepr<Float> frequencyProperty = new PipePropertyRepr<Float>(Float.class, this, null, FREQUENCY, pipe.getSignal()::getFrequency, null, this.getPipe()::setFrequency);
+		PipePropertyRepr<Float> frequencyProperty = new PipePropertyRepr<Float>(Float.class, this, null, FREQUENCY, this.getPipe()::getFrequency, null, this.getPipe()::setFrequency);
 		pipeProperties.add(frequencyProperty);
 
-		PipePropertyRepr<Float> amplitudeProperty = new PipePropertyRepr<Float>(Float.class, this, null, AMPLITUDE, pipe.getSignal()::getAmplitude, null, this.getPipe()::setAmplitude);
+		PipePropertyRepr<Float> amplitudeProperty = new PipePropertyRepr<Float>(Float.class, this, null, AMPLITUDE, this.getPipe()::getAmplitude, null, this.getPipe()::setAmplitude);
 		pipeProperties.add(amplitudeProperty);
+
+		PipePropertyRepr<String> phaseProperty = new PipePropertyRepr<String>(String.class, this, null, PHASE, this.getPipe()::getPhase, null, this.getPipe()::setPhase);
+		pipeProperties.add(phaseProperty);
 		
 		@SuppressWarnings({ "rawtypes", "unchecked" })
 		PipePropertyRepr signalOutputProperty = new PipePropertyRepr(null, this, null, OUTPUT_SIGNAL, null, pipe.getOutputPort());
