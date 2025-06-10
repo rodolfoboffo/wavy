@@ -31,6 +31,10 @@ public class GenericMarshaller<T extends IMarshallable> implements IMarshaller<T
 //                                value = param.getType().cast(value);
                             if (value.getClass().equals(Integer.class) && param.getType().equals(Float.class))
                                 value = new Float((Integer)value);
+                            if (param.getType().isEnum()) {
+                                Class<Enum> clssEnum = (Class<Enum>) param.getType();
+                                value = Enum.valueOf(clssEnum, (String) value);
+                            }
                             method.invoke(obj, value);
                         }
                     } catch (IllegalAccessException | InvocationTargetException | IllegalArgumentException | ClassCastException e) {

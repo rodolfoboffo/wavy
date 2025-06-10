@@ -6,6 +6,7 @@ import com.terpomo.wavy.pipes.filters.BandPassFilterPipe;
 import com.terpomo.wavy.pipes.input.FileReaderPipe;
 import com.terpomo.wavy.pipes.input.MicPipe;
 import com.terpomo.wavy.pipes.input.RTLPipe;
+import com.terpomo.wavy.pipes.misc.ResamplingPipe;
 import com.terpomo.wavy.pipes.misc.SplitterPipe;
 import com.terpomo.wavy.pipes.modulation.FMDemodulationPipe;
 import com.terpomo.wavy.pipes.modulation.FMModulationPipe;
@@ -24,6 +25,7 @@ import com.terpomo.wavy.ui.pipes.filters.BandPassFilterPipeRepr;
 import com.terpomo.wavy.ui.pipes.input.FileReaderPipeRepr;
 import com.terpomo.wavy.ui.pipes.input.MicPipeRepr;
 import com.terpomo.wavy.ui.pipes.input.RTLPipeRepr;
+import com.terpomo.wavy.ui.pipes.misc.ResamplingPipeRepr;
 import com.terpomo.wavy.ui.pipes.misc.SplitterPipeRepr;
 import com.terpomo.wavy.ui.pipes.modulation.FMDemodulationPipeRepr;
 import com.terpomo.wavy.ui.pipes.modulation.FMModulationPipeRepr;
@@ -42,6 +44,7 @@ public enum PipeTypeEnum {
 	
 	CONSTANT_WAVE_SIGNAL_PIPE_ENUM(Constants.CONSTANT_WAVE, ConstantWavePipe.class, ConstantWavePipeRepr.class),
 	CONSTANT_VALUE_SIGNAL_PIPE_ENUM(Constants.CONSTANT_VALUE, ConstantValuePipe.class, ConstantValuePipeRepr.class),
+	RESAMPLING_PIPE_ENUM(Constants.RESAMPLING, ResamplingPipe.class, ResamplingPipeRepr.class),
 	AUDIO_PLAYER_PIPE_ENUM(Constants.AUDIO_PLAYER, AudioPlayerPipe.class, AudioPlayerPipeRepr.class),
 	OSCILLOSCOPE_PIPE_ENUM(Constants.OSCILLOSCOPE, OscilloscopePipe.class, OscilloscopePipeRepr.class),
 	SPLITTER_PIPE_ENUM(Constants.SPLITTER, SplitterPipe.class, SplitterPipeRepr.class),

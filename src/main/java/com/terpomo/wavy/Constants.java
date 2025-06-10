@@ -24,6 +24,7 @@ public class Constants {
 	public static final String IQ_MODULATION = "IQ Modulation";
 	public static final String RTLSDR = "RTLSDR Device";
 	public static final String IQ_DEMODULATION = "IQ Demodulation";
+	public static final String RESAMPLING = "Resampling";
 
 	public static final Color LIGHT_CYAN = new Color(230, 230, 255);
 }

@@ -36,4 +36,7 @@ public class MarshallingKeys {
     public static final String KEY_VALUE = "value";
     public static final String KEY_CARRIER_FREQUENCY = "carrier_frequency";
     public static final String KEY_MODULATION_INDEX = "modulation_index";
+    public static final String KEY_INPUT_SAMPLE_RATE = "input_sample_rate";
+    public static final String KEY_OUTPUT_SAMPLE_RATE = "output_sample_rate";
+    public static final String KEY_INTERPOLATION = "interpolation";
 }
