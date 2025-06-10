@@ -1,25 +1,158 @@
 package com.terpomo.wavy.flow;
 
 import com.terpomo.wavy.core.ObservableObject;
+import com.terpomo.wavy.marshal.MarshalAttr;
+import com.terpomo.wavy.marshal.MarshallingKeys;
+import com.terpomo.wavy.util.Dimension;
+import com.terpomo.wavy.util.ListUtils;
+import com.terpomo.wavy.util.Point;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public abstract class AbstractPipe extends ObservableObject implements IPipe {
 
+	private static final Logger LOGGER = Logger.getLogger(AbstractPipe.class.getName());
+	public final static String PROPERTY_PIPE_INPUT_PORTS = "PROPERTY_PIPE_INPUT_PORTS";
+	public final static String PROPERTY_PIPE_OUTPUT_PORTS = "PROPERTY_PIPE_OUTPUT_PORTS";
+	private Point location;
+	private Dimension dimension;
+	private String pipeName;
 	private final List<InputPort> inputPorts;
 	private final List<OutputPort> outputPorts;
 	private boolean isInitialized;
 	private boolean busy = false;
-	
+
 	public boolean isBusy() {
 		return busy;
 	}
-	
+
+	@MarshalAttr(attrName= MarshallingKeys.KEY_NAME)
+	@Override
+	public String getName() {
+		return this.pipeName;
+	}
+
+	@MarshalAttr(attrName=MarshallingKeys.KEY_NAME)
+	@Override
+	public void setName(String name) {
+		this.pipeName = name;
+	}
+
+	@MarshalAttr(attrName= MarshallingKeys.KEY_LOCATION)
+	@Override
+	public Point getLocation() {
+		return location;
+	}
+
+	@MarshalAttr(attrName= MarshallingKeys.KEY_LOCATION)
+	@Override
+	public synchronized void setLocation(Point location) {
+		this.location = location;
+	}
+
+	@MarshalAttr(attrName= MarshallingKeys.KEY_DIMENSION)
+	@Override
+	public Dimension getDimension() {
+		return dimension;
+	}
+
+	@MarshalAttr(attrName= MarshallingKeys.KEY_DIMENSION)
+	@Override
+	public void setDimension(Dimension dimension) {
+		this.dimension = dimension;
+	}
+
+	@Override
+	synchronized public void clearCache() {
+		for (IPort port : this.getInputPorts()) {
+			port.getBuffer().clear();
+		}
+	}
+
+	public int getMinInputBufferSizes() {
+		int r = Integer.MAX_VALUE;
+		for (IPort p : this.getInputPorts()) {
+			r = Math.min(p.getBuffer().getSize(), r);
+		}
+		return r;
+	}
+
+	public int getMinOutputBufferRemainingCapacity() {
+		int r = Integer.MAX_VALUE;
+		for (IPort p : this.getOutputPorts()) {
+			r = Math.min(p.getLinkedPort().getBuffer().getRemainingCapacity(), r);
+		}
+		return r;
+	}
+
+	public boolean allPortsConnected() {
+		return this.allInputPortsConnected() && this.allOutputPortsConnected();
+	}
+
+	public boolean allInputPortsConnected() {
+		for (InputPort p : this.getInputPorts()) {
+			if (!this.isInputPortConnected(p)) return false;
+		}
+		return true;
+	}
+
+	public boolean allOutputPortsConnected() {
+		for (OutputPort p : this.getOutputPorts()) {
+			if (!this.isOutputPortConnected(p)) return false;
+		}
+		return true;
+	}
+
+	public boolean isOutputPortConnected(OutputPort p) {
+		return p.getLinkedPort() != null;
+	}
+
+	public boolean isInputPortConnected(InputPort p) {
+		return p.getLinkedPort() != null;
+	}
+
 	public AbstractPipe() {
+		this.pipeName = "";
 		this.inputPorts = new ArrayList<InputPort>();
 		this.outputPorts = new ArrayList<OutputPort>();
 		this.isInitialized = false;
+	}
+
+	public void putThroughPort(OutputPort p, Float v) {
+		synchronized (p.getLinkedPort().getPipe()) {
+			p.getLinkedPort().getBuffer().put(v);
+		}
+	}
+
+	public void putAllThroughPort(OutputPort p, Float[] v) {
+		synchronized (p.getLinkedPort().getPipe()) {
+			p.getLinkedPort().getBuffer().putAll(v);
+		}
+	}
+	
+	synchronized public void buildInputPorts(int numOfPorts) {
+        try {
+			List<InputPort> newInputPorts = null;
+            newInputPorts = ListUtils.buildNewList(numOfPorts, InputPort.class, this.getInputPorts(), InputPort.class.getDeclaredConstructor(IPipe.class), new Object[]{this});
+			this.setInputPorts(newInputPorts);
+			this.firePropertyChange(PROPERTY_PIPE_INPUT_PORTS, null, this.getInputPorts());
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
+	}
+
+	synchronized public void buildOutputPorts(int numOfPorts) {
+        try {
+			List<OutputPort> newOutputPorts = null;
+            newOutputPorts = ListUtils.buildNewList(numOfPorts, OutputPort.class, this.getOutputPorts(), OutputPort.class.getDeclaredConstructor(IPipe.class), new Object[]{this});
+			this.setOutputPorts(newOutputPorts);
+			this.firePropertyChange(PROPERTY_PIPE_OUTPUT_PORTS, null, this.getOutputPorts());
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
 	}
 
 	@Override
@@ -32,7 +165,7 @@ public abstract class AbstractPipe extends ObservableObject implements IPipe {
 		return this.outputPorts;
 	}
 
-	public void setOutputPorts(List<OutputPort> outputPorts) {
+	synchronized public void setOutputPorts(List<OutputPort> outputPorts) {
 		this.outputPorts.clear();
 		this.outputPorts.addAll(outputPorts);
 	}
@@ -42,28 +175,43 @@ public abstract class AbstractPipe extends ObservableObject implements IPipe {
 		return this.inputPorts;
 	}
 
-	public void setInputPorts(List<InputPort> inputPorts) {
+	synchronized public void setInputPorts(List<InputPort> inputPorts) {
 		this.inputPorts.clear();
 		this.inputPorts.addAll(inputPorts);
 	}
 
 	@Override
-	public void initialize() {
+	public List<IPort> getPorts() {
+		ArrayList<IPort> ports = new ArrayList<>();
+		ports.addAll(this.getInputPorts());
+		ports.addAll(this.getOutputPorts());
+		return ports;
+	}
+
+	@Override
+	synchronized public void initialize() {
 		this.isInitialized = true;
 	}
 	
 	@Override
-	public synchronized final void process() {
+	synchronized public final void process() {
 		this.busy = true;
-		if (!this.isInitialized()) {
-			this.initialize();
-		}
-		this.doWork();
-		this.busy = false;
+		try {
+			if (!this.isInitialized()) {
+				this.initialize();
+			}
+			if (this.isInitialized())
+				this.doWork();
+		} catch (Exception e) {
+			LOGGER.log(Level.SEVERE, e.getMessage(), e);
+        }
+        this.busy = false;
 	};
 	
 	protected abstract void doWork();
 
 	@Override
-	public void dispose() {}
+	synchronized public void dispose() {
+		this.isInitialized = false;
+	}
 }

@@ -1,11 +1,19 @@
 package com.terpomo.wavy.flow;
 
+import com.terpomo.wavy.marshal.MarshallerUtil;
+import com.terpomo.wavy.marshal.ProjectMarshaller;
+import org.json.JSONObject;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
 public class PipeController {
-	public static int DEFAULT_NUM_OF_WORKERS = 4;
-	private List<Worker> workers;
+	public static int DEFAULT_NUM_OF_WORKERS = 2;
+	private final List<Worker> workers;
 	private List<Project> projects;
 	private boolean isActive = true;
 	private boolean isPaused = true;
@@ -59,26 +67,45 @@ public class PipeController {
 	}
 	
 	public void addPipe(Project project, IPipe p) {
-		synchronized (project.getPipes()) {
-			if (!project.getPipes().contains(p)) {
-				ArrayList<IPipe> newPipes = new ArrayList<IPipe>(project.getPipes());
-				newPipes.add(p);
-				project.setPipes(newPipes);
+		project.addPipe(p);
+		this.notifyWorkers();
+	}
+
+	public Project getProjectFromPipe(IPipe pipe) {
+		for (Project project : this.getProjects()) {
+			if (project.getPipes().contains(pipe)) {
+				return project;
+			}
+		}
+		return null;
+	}
+
+	public void removePipe(Project project, IPipe pipe) {
+		synchronized (pipe) {
+			project.removePipe(pipe);
+			for (IPort port : pipe.getInputPorts()) {
+				this.unlinkPort(port);
+			}
+			for (IPort port : pipe.getOutputPorts()) {
+				this.unlinkPort(port);
 			}
 		}
 		this.notifyWorkers();
 	}
 	
-	public Project createNewProject() {
+	public Project createNewProject(String projectName) {
 		Project p;
-		synchronized (this) {
-			p = new Project();
-			List<Project> newProjects = new ArrayList<Project>(this.projects);
-			newProjects.add(p);
-			this.setProjects(newProjects);
-		}
-		this.notifyWorkers();
+		p = new Project();
+		p.setName(projectName);
+		this.addProject(p);
 		return p;
+	}
+
+	private synchronized void addProject(Project project) {
+		List<Project> newProjects = new ArrayList<Project>(this.projects);
+		newProjects.add(project);
+		this.setProjects(newProjects);
+		this.notifyWorkers();
 	}
 	
 	public void shutdown() throws InterruptedException {
@@ -102,5 +129,42 @@ public class PipeController {
 		if (port.getLinkedPort() != null) {
 			port.setLinkedPort(null);
 		}
+	}
+
+	public void clearCache(IPipe pipe) {
+		pipe.clearCache();
+	}
+
+	public void saveProject(Project project, File file) {
+		ProjectMarshaller marshaller = new ProjectMarshaller();
+		JSONObject json = marshaller.marshal(project);
+        try {
+            FileWriter writer = new FileWriter(file);
+			json.write(writer);
+			writer.close();
+        } catch (IOException e) {
+            throw new RuntimeException("Could not save project file.", e);
+        }
+    }
+
+	public Project openProject(File file) {
+        try {
+            byte[] byteContent = Files.readAllBytes(file.toPath());
+			String content = new String(byteContent);
+            JSONObject json = new JSONObject(content);
+			Project p = (Project) MarshallerUtil.unmarshal(json);
+			this.addProject(p);
+			return p;
+        } catch (IOException e) {
+            throw new RuntimeException("Cannot open file.", e);
+        }
+	}
+
+	public void setPipeName(IPipe pipe, String newName) {
+		Project project = this.getProjectFromPipe(pipe);
+		IPipe existingPipe = project.getPipeByName(newName);
+		if (existingPipe != null && existingPipe != pipe)
+			throw new RuntimeException("There is already an existing pipe using this name.");
+		pipe.setName(newName);
 	}
 }

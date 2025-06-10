@@ -1,32 +1,26 @@
 package com.terpomo.wavy.sound;
 
-import com.terpomo.wavy.flow.Buffer;
-
-import java.util.Queue;
+import com.terpomo.wavy.flow.SignalBuffer;
 
 import javax.sound.sampled.AudioFormat;
 
-public abstract class Encoder {
+public abstract class Encoder extends AbstractCodec {
 
-	public static final int DEFAULT_BITS_PER_SAMPLE = 8;
-	public static final boolean DEFAULT_SIGNED = false;
-	private final int sampleRate;
-	private Buffer[] buffers;
+	private AudioFormat audioFormat;
 	
-	public Encoder(int sampleRate, Buffer[] buffers) {
-		this.sampleRate = sampleRate;
-		this.buffers = buffers;
+	public Encoder(int sampleRate, int bitsPerSample, int numOfChannels, boolean signed, boolean bigEndian) {
+		super(sampleRate, bitsPerSample, signed, bigEndian);
+		this.audioFormat = new AudioFormat(sampleRate, bitsPerSample, numOfChannels, signed, bigEndian);
 	}
 	
-	public abstract AudioFormat getAudioFormat();
-	
-	public final int getSampleRate() {
-		return sampleRate;
+	public AudioFormat getAudioFormat() {
+		return this.audioFormat;
 	}
 
-	public Buffer[] getBuffers() {
-		return buffers;
+	public abstract byte[] encode(int n, SignalBuffer[] buffers);
+
+	public int getBytesPerFrame() {
+		return this.audioFormat.getSampleSizeInBits() * this.audioFormat.getChannels() / 8;
 	}
 
-	public abstract byte[] getNumOfFrames(int n);
 }

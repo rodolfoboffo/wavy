@@ -1,19 +1,16 @@
 package com.terpomo.wavy.ui.pipes;
 
-import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-
-import com.terpomo.wavy.core.IWavyModel;
 import com.terpomo.wavy.flow.IPort;
 import com.terpomo.wavy.ui.UIController;
-import com.terpomo.wavy.ui.components.WavyPanel;
 import com.terpomo.wavy.ui.components.IWavyRepr;
+import com.terpomo.wavy.ui.components.WavyPanel;
 import com.terpomo.wavy.util.RepeatableTask;
 
 import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 public class PortRepr extends WavyPanel implements IWavyRepr {
 
@@ -29,17 +26,18 @@ public class PortRepr extends WavyPanel implements IWavyRepr {
 	private static final Color FULL_BUFFER_PORT_COLOR = new Color(200, 10, 10);
 	private final RepeatableTask updaterWorker;
 
-	private IPort port;
-	private AbstractPipeRepr parentPipeRepr;
+	private final IPort port;
+	private final AbstractPipeRepr<?> parentPipeRepr;
 	private PortRepr linkedPortRepr;
 	private boolean isBeingHovered;
 	private boolean isSelected;
-	private PortContextMenu contextMenu;
+	private final PortContextMenu contextMenu;
 	private boolean isBufferFull;
 
-	public PortRepr(IPort port, AbstractPipeRepr parentPipeRepr) {
+	public PortRepr(IPort port, AbstractPipeRepr<?> parentPipeRepr) {
 		super();
 		this.port = port;
+		this.setFocusable(true);
 		UIController.getInstance().addModelToReprMapEntry(this.port, this);
 		this.isBufferFull = this.port.getBuffer().isFull();
 		this.contextMenu = new PortContextMenu();
@@ -47,12 +45,15 @@ public class PortRepr extends WavyPanel implements IWavyRepr {
 		this.isBeingHovered = false;
 		this.isSelected = false;
 		this.addMouseListener(new PortMouseListener());
+		this.addFocusListener(new PortFocusListener());
+		this.addKeyListener(new PortKeyAdapter());
 		this.addPropertyChangeListener(IS_BEING_HOVERED_PROPERTY, new RepaintOnPropertyChangedListener());
 		this.addPropertyChangeListener(IS_SELECTED_PROPERTY, new RepaintOnPropertyChangedListener());
-		this.addPropertyChangeListener(LINKED_PORT_REPR_PROPERTY, new RepaintOnPropertyChangedListener());
+		this.addPropertyChangeListener(LINKED_PORT_REPR_PROPERTY, new LinkedPortReprPropertyChangedListener());
 		this.port.addPropertyChangeListener(IPort.LINKED_PORT_PROPERTY, new LinkedPortPropertyChangedListener());
 		this.port.addPropertyChangeListener(IS_BUFFER_FULL_PROPERTY, new RepaintOnPropertyChangedListener());
 
+		this.setLinkedPortRepr((PortRepr) UIController.getInstance().getReprFromModelObj(port.getLinkedPort()));
 		this.updaterWorker = new RepeatableTask(this::updatePortState, 100);
 		this.updaterWorker.start();
 	}
@@ -67,15 +68,18 @@ public class PortRepr extends WavyPanel implements IWavyRepr {
 		this.firePropertyChange(IS_BUFFER_FULL_PROPERTY, oldValue, bufferFull);
 	}
 
-	public void setLinkedPortRepr(PortRepr linkedPortRepr) {
-		PortRepr oldValue = this.linkedPortRepr;
-		this.linkedPortRepr = linkedPortRepr;
+	private void setTooltipForLinkedPort(PortRepr linkedPortRepr) {
 		if (linkedPortRepr != null) {
-			this.setToolTipText(linkedPortRepr.getParentPipeRepr().getPipeName());
+			this.setToolTipText(linkedPortRepr.getParentPipeRepr().getName());
 		}
 		else {
 			this.setToolTipText(null);
 		}
+	}
+
+	public void setLinkedPortRepr(PortRepr linkedPortRepr) {
+		PortRepr oldValue = this.linkedPortRepr;
+		this.linkedPortRepr = linkedPortRepr;
 		this.firePropertyChange(LINKED_PORT_REPR_PROPERTY, oldValue, linkedPortRepr);
 	}
 	
@@ -99,7 +103,7 @@ public class PortRepr extends WavyPanel implements IWavyRepr {
 		}
 	}
 	
-	public AbstractPipeRepr getParentPipeRepr() {
+	public AbstractPipeRepr<?> getParentPipeRepr() {
 		return parentPipeRepr;
 	}
 	
@@ -109,7 +113,7 @@ public class PortRepr extends WavyPanel implements IWavyRepr {
 		Graphics2D g2d = (Graphics2D)g.create();
 		if (this.isBeingHovered || this.isSelected) {
 			g2d.setColor(Color.BLACK);
-			g2d.fillRoundRect(0, 0, PANEL_DIMENSION.width, PANEL_DIMENSION.width, 2, 2);
+			g2d.fillRoundRect(0, 0, PANEL_DIMENSION.width, PANEL_DIMENSION.height, 2, 2);
 		}
 		Color bgColor = this.getPortColor();
 		g2d.setColor(bgColor);
@@ -152,9 +156,8 @@ public class PortRepr extends WavyPanel implements IWavyRepr {
 
 		@Override
 		public void propertyChange(PropertyChangeEvent evt) {
-			IWavyModel modelObj = (IWavyModel) evt.getNewValue();
-			IWavyRepr reprObj = UIController.getInstance().getReprFromModelObj(modelObj);
-			PortRepr.this.setLinkedPortRepr((PortRepr) reprObj);
+			IPort modelObj = (IPort) evt.getNewValue();
+			PortRepr.this.setLinkedPortRepr((PortRepr) UIController.getInstance().getReprFromModelObj(modelObj));
 		}
 	}
 
@@ -164,6 +167,20 @@ public class PortRepr extends WavyPanel implements IWavyRepr {
 		public void run() {
 			PortRepr.this.revalidate();
 			PortRepr.this.repaint();
+		}
+	}
+
+	class LinkedPortReprPropertyChangedListener implements PropertyChangeListener {
+
+		@Override
+		public void propertyChange(PropertyChangeEvent evt) {
+			PortRepr _linkedPortRepr = (PortRepr) evt.getNewValue();
+			EventQueue.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					PortRepr.this.setTooltipForLinkedPort(_linkedPortRepr);
+				}
+			});
 		}
 	}
 
@@ -184,21 +201,21 @@ public class PortRepr extends WavyPanel implements IWavyRepr {
 
 		@Override
 		public void mouseClicked(MouseEvent e) {
+
+		}
+
+		@Override
+		public void mousePressed(MouseEvent e) {
+
+		}
+
+		@Override
+		public void mouseReleased(MouseEvent e) {
 			if (e.getButton() == MouseEvent.BUTTON1) {
 				UIController.getInstance().onPortClicked(PortRepr.this);
 			} else if (e.getButton() == MouseEvent.BUTTON2) {
 				PortRepr.this.contextMenu.show(e.getComponent(), e.getX(), e.getY());
 			}
-		}
-
-		@Override
-		public void mousePressed(MouseEvent e) {
-			
-		}
-
-		@Override
-		public void mouseReleased(MouseEvent e) {
-			
 		}
 
 		@Override
@@ -211,6 +228,28 @@ public class PortRepr extends WavyPanel implements IWavyRepr {
 			PortRepr.this.setBeingHovered(false);
 		}
 		
+	}
+
+	class PortFocusListener implements FocusListener {
+		@Override
+		public void focusGained(FocusEvent e) {
+			PortRepr.this.setBeingHovered(true);
+		}
+
+		@Override
+		public void focusLost(FocusEvent e) {
+			PortRepr.this.setBeingHovered(false);
+		}
+	}
+
+	class PortKeyAdapter extends KeyAdapter {
+		@Override
+		public void keyTyped(KeyEvent e) {
+			super.keyTyped(e);
+			char keyChar = e.getKeyChar();
+			if (keyChar == KeyEvent.VK_SPACE || keyChar == KeyEvent.VK_ENTER)
+				UIController.getInstance().onPortClicked(PortRepr.this);
+		}
 	}
 	
 }

@@ -1,4 +1,6 @@
 package com.terpomo.wavy.core;
 
-public interface IWavyModel {
+import com.terpomo.wavy.marshal.IMarshallable;
+
+public interface IWavyModel extends IMarshallable {
 }

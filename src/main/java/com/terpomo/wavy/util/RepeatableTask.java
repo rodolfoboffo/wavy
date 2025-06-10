@@ -1,11 +1,11 @@
 package com.terpomo.wavy.util;
 
-import com.terpomo.wavy.WavyDisposable;
+import com.terpomo.wavy.IWavyDisposable;
 
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class RepeatableTask implements WavyDisposable {
+public class RepeatableTask implements IWavyDisposable {
 
     private static final int GUI_UPDATER_INTERVAL = 100;
     private boolean isRunning;

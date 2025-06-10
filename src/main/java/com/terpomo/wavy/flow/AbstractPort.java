@@ -5,19 +5,19 @@ import com.terpomo.wavy.core.ObservableObject;
 public abstract class AbstractPort extends ObservableObject implements IPort {
 
 	private final IPipe pipe;
-	private final Buffer buffer;
+	private final SignalBuffer buffer;
 	protected IPort linkedPort;
 	
 	public AbstractPort(IPipe pipe) {
 		super();
 		this.pipe = pipe;
-		this.buffer = new Buffer();
+		this.buffer = new SignalBuffer();
 	}
 	
 	public IPipe getPipe() {
 		return pipe;
 	}
-	public Buffer getBuffer() {
+	public SignalBuffer getBuffer() {
 		return buffer;
 	}
 
@@ -38,5 +38,9 @@ public abstract class AbstractPort extends ObservableObject implements IPort {
 		}
 		this.firePropertyChange(LINKED_PORT_PROPERTY, previousLinkedPort, p);
 	}
-	
+
+	@Override
+	public void wavyDispose() {
+		this.setLinkedPort(null);
+	}
 }

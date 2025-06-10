@@ -9,38 +9,44 @@ import java.awt.event.FocusListener;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public class PipePropertyRepr<T> {
 
 	private static final int FIELD_PADDING = 4;
 	private static final Font DEFAULT_FONT = new Font(null, Font.PLAIN, 12);
 	private final Class<T> clazz;
-	private final AbstractPipeRepr parentPipe;
+	private final AbstractPipeRepr<?> parentPipe;
 	private final IPort inputPort;
 	private final PortRepr inputPortRepr;
 	private final String propertyName;
 	private final JLabel propertyLabel;
+	private final Supplier<T> getter;
 	private T value;
 	private final JTextField valueField;
 	private final IPort outputPort;
 	private final PortRepr outputPortRepr;
-	private final Consumer<T> callback;
+	private final Consumer<T> setter;
+	private final boolean readOnly;
 	
-	public PipePropertyRepr(Class<T> clazz, AbstractPipeRepr parentPipe, IPort inputPort, String propertyName, T value, IPort outputPort, Consumer<T> callback) {
+	public PipePropertyRepr(Class<T> clazz, AbstractPipeRepr<?> parentPipe, IPort inputPort, String propertyName, Supplier<T> getter, IPort outputPort, Consumer<T> setter, boolean readOnly) {
 		super();
 		this.clazz = clazz;
-		this.callback = callback;
+		this.setter = setter;
+		this.readOnly = readOnly;
 		this.parentPipe = parentPipe;
 		this.inputPort = inputPort;
 		this.inputPortRepr = inputPort != null ? new PortRepr(this.inputPort, this.parentPipe) : null;
 		this.propertyName = propertyName;
 		this.propertyLabel = new JLabel(this.propertyName);
 		this.propertyLabel.setFont(DEFAULT_FONT);
-		this.value = value;
+		this.getter = getter;
+		this.value = this.getter != null ? this.getter.get() : null;
 		if (value != null) {
 			String textValue = this.getTextValue(value);
 			this.valueField = new JTextField(textValue);
 			this.valueField.addFocusListener(new ValueFieldFocusListener());
+			this.valueField.setEnabled(!readOnly);
 		}
 		else {
 			this.valueField = null;
@@ -49,8 +55,16 @@ public class PipePropertyRepr<T> {
 		this.outputPortRepr = outputPort != null ? new PortRepr(this.outputPort, this.parentPipe) : null;
 	}
 	
-	public PipePropertyRepr(Class<T> clzz, AbstractPipeRepr parentPipe, IPort inputPort, String propertyName, T value, IPort outputPort) {
-		this(clzz, parentPipe, inputPort, propertyName, value, outputPort, null);
+	public PipePropertyRepr(Class<T> clazz, AbstractPipeRepr<?> parentPipe, IPort inputPort, String propertyName, Supplier<T> getter, IPort outputPort) {
+		this(clazz, parentPipe, inputPort, propertyName, getter, outputPort, null, false);
+	}
+
+	public PipePropertyRepr(Class<T> clazz, AbstractPipeRepr<?> parentPipe, IPort inputPort, String propertyName, Supplier<T> getter, IPort outputPort, boolean readOnly) {
+		this(clazz, parentPipe, inputPort, propertyName, getter, outputPort, null, readOnly);
+	}
+
+	public PipePropertyRepr(Class<T> clazz, AbstractPipeRepr<?> parentPipe, IPort inputPort, String propertyName, Supplier<T> getter, IPort outputPort, Consumer<T> setter) {
+		this(clazz, parentPipe, inputPort, propertyName, getter, outputPort, setter, false);
 	}
 	
 	public void layoutOnGrid(Container container, int rowIndex) {
@@ -96,13 +110,19 @@ public class PipePropertyRepr<T> {
 			value = NumberFormat.getInstance().parse(textValue).floatValue();
 		if (this.clazz.equals(Integer.class))
 			value = NumberFormat.getInstance().parse(textValue).intValue();
+		if (this.clazz.equals(Long.class))
+			value = NumberFormat.getInstance().parse(textValue).longValue();
+		if (this.clazz.equals(String.class))
+			value = textValue;
 		return (T)value;
 	}
 
 	public String getTextValue(T value) {
 		String text = "";
-		if (this.clazz.equals(Float.class))
+		if (this.clazz.equals(Float.class) || this.clazz.equals(Integer.class) || this.clazz.equals(Long.class))
 			text = NumberFormat.getInstance().format(value);
+		if (this.clazz.equals(String.class))
+			text = (String) value;
 		return text;
 	}
 	
@@ -110,16 +130,22 @@ public class PipePropertyRepr<T> {
 
 		@Override
 		public void focusGained(FocusEvent e) {
+			((JTextField)e.getSource()).selectAll();
 		}
 
 		@Override
 		public void focusLost(FocusEvent e) {
 			JTextField field = (JTextField) e.getComponent();
 			String valueText = field.getText();
-            T value = null;
+            T newValue = null;
             try {
-                value = PipePropertyRepr.this.parseTextValue(valueText);
-				PipePropertyRepr.this.callback.accept(value);
+                newValue = PipePropertyRepr.this.parseTextValue(valueText);
+				if (!newValue.equals(PipePropertyRepr.this.getter.get())) {
+					PipePropertyRepr.this.setter.accept(newValue);
+					T acceptedValue = PipePropertyRepr.this.getter.get();
+					PipePropertyRepr.this.value = acceptedValue;
+					field.setText(PipePropertyRepr.this.getTextValue(acceptedValue));
+				}
             } catch (ParseException ex) {
                 throw new RuntimeException(ex);
             }

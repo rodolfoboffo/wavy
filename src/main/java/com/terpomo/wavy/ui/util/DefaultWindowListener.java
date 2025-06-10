@@ -1,10 +1,10 @@
 package com.terpomo.wavy.ui.util;
 
-import java.awt.Frame;
+import com.terpomo.wavy.ui.UIController;
+
+import java.awt.*;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-
-import com.terpomo.wavy.ui.UIController;
 
 public class DefaultWindowListener implements WindowListener {
 
