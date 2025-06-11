@@ -7,18 +7,18 @@ import com.terpomo.wavy.flow.OutputPort;
 import com.terpomo.wavy.marshal.MarshalAttr;
 import com.terpomo.wavy.marshal.MarshallingKeys;
 import com.terpomo.wavy.signals.InterpolationMethod;
+import com.terpomo.wavy.util.Point;
 
 public class ResamplingPipe extends AbstractPipe {
 
     public static final int DEFAULT_INPUT_SAMPLE_RATE = Constants.DEFAULT_SAMPLE_RATE;
     public static final int DEFAULT_OUTPUT_SAMPLE_RATE = Constants.DEFAULT_SAMPLE_RATE;
-    public static final InterpolationMethod DEFAULT_INTERPOLATION_METHOD = InterpolationMethod.NEAREST;
+    public static final InterpolationMethod DEFAULT_INTERPOLATION_METHOD = InterpolationMethod.LINEAR;
 
     private int inputSampleRate;
     private int outputSampleRate;
     private float resamplingFactor;
     private float offset;
-    private float previousInputValue;
     private InterpolationMethod interpolationMethod;
 
     public ResamplingPipe() {
@@ -26,7 +26,6 @@ public class ResamplingPipe extends AbstractPipe {
         this.outputSampleRate = DEFAULT_OUTPUT_SAMPLE_RATE;
         this.interpolationMethod = DEFAULT_INTERPOLATION_METHOD;
         this.offset = 0.0f;
-        this.previousInputValue = Float.NaN;
         this.recalculateResamplingFactor();
         this.buildInputPorts(1);
         this.buildOutputPorts(1);
@@ -36,7 +35,21 @@ public class ResamplingPipe extends AbstractPipe {
     public synchronized void clearCache() {
         super.clearCache();
         this.offset = 0.0f;
-        this.previousInputValue = Float.NaN;
+    }
+
+    private float interpolate(Point p0, Point p1, float x) {
+        float value;
+        if (this.interpolationMethod.equals(InterpolationMethod.LINEAR)) {
+            // y-y0 = m(x-x0)
+            float yf = p1.getY();
+            float y0 = p0.getY();
+            float m = (yf-y0)/(p1.getX()-p0.getX());
+            value = m * (x- p0.getX()) + y0;
+        }
+        else {
+            value = Math.abs(x - p0.getX()) < Math.abs(x - p1.getX()) ? p0.getY() : p1.getY();
+        }
+        return value;
     }
 
     @Override
@@ -52,17 +65,9 @@ public class ResamplingPipe extends AbstractPipe {
                     else {
                         float nextOffset = (this.offset + this.resamplingFactor);
                         if (nextOffset >= 1.0f) {
-                            float value;
-                            if (this.interpolationMethod.equals(InterpolationMethod.LINEAR)) {
-                                // y-y0 = m(x-x0)
-                                float yf = this.getInputPort().getBuffer().getValue(1);
-                                float y0 = this.getInputPort().getBuffer().getValue(0);
-                                float m = (yf-y0)/(nextOffset-this.offset);
-                                value = m * (1.0f-this.offset) + y0;
-                            }
-                            else {
-                                value = this.getInputPort().getBuffer().getValue((1.0f - this.offset) < 0.5f ? 0 : 1);
-                            }
+                            Point p0 = new Point(this.offset, this.getInputPort().getBuffer().getValue(0));
+                            Point p1 = new Point(nextOffset, this.getInputPort().getBuffer().getValue(1));
+                            float value = this.interpolate(p0, p1, 1.0f);
                             this.getInputPort().getBuffer().pickOne();
                             this.getOutputPort().getLinkedPort().getBuffer().put(value);
                             this.offset = nextOffset % 1.0f;
@@ -70,6 +75,18 @@ public class ResamplingPipe extends AbstractPipe {
                         this.getInputPort().getBuffer().pickOne();
                         this.offset = nextOffset % 1.0f;
                     }
+                }
+                else {
+                    float inverseFactor = 1.0f / this.resamplingFactor;
+                    Point p0 = new Point(0f, this.getInputPort().getBuffer().getValue(0));
+                    Point p1 = new Point(1f, this.getInputPort().getBuffer().getValue(1));
+                    do {
+                        float value = this.interpolate(p0, p1, this.offset);
+                        this.offset += inverseFactor;
+                        this.getOutputPort().getLinkedPort().getBuffer().put(value);
+                    } while (this.offset < 1.0);
+                    this.getInputPort().getBuffer().pickOne();
+                    this.offset %= 1.0f;
                 }
             }
         }
