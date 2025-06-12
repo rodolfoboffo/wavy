@@ -12,7 +12,7 @@ public class ProjectMarshaller extends GenericMarshaller<Project> {
     @Override
     public Project unmarshal(JSONObject json) {
         Project project = super.unmarshal(json);
-        JSONArray jsonPipes = json.getJSONArray(MarshallingKeys.KEY_PIPES);
+        JSONArray jsonPipes = json.optJSONArray(MarshallingKeys.KEY_PIPES, new JSONArray());
         for (Object _jsonPipe : jsonPipes) {
             JSONObject jsonPipe = (JSONObject) _jsonPipe;
             IPipe pipe = (IPipe) MarshallerUtil.unmarshal(jsonPipe);

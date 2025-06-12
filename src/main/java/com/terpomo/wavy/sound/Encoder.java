@@ -17,7 +17,11 @@ public abstract class Encoder extends AbstractCodec {
 		return this.audioFormat;
 	}
 
-	public abstract byte[] encode(int n, SignalBuffer[] buffers);
+	public abstract byte[] encode(int n, SignalBuffer[] buffers, float multiplier);
+
+	public byte[] encode(int n, SignalBuffer[] buffers) {
+		return this.encode(n, buffers, 1f);
+	}
 
 	public int getBytesPerFrame() {
 		return this.audioFormat.getSampleSizeInBits() * this.audioFormat.getChannels() / 8;

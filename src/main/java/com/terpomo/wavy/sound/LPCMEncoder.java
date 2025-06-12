@@ -18,7 +18,7 @@ public class LPCMEncoder extends Encoder {
 	}
 	
 	@Override
-	public byte[] encode (int numOfFrames, SignalBuffer[] buffers) {
+	public byte[] encode (int numOfFrames, SignalBuffer[] buffers, float multiplier) {
 		int bitsPerFrame = buffers.length*this.bitsPerSample;
 		if (bitsPerFrame % 8 != 0)
 			throw new RuntimeException("Number of bits per frame should be multiple of 8.");
@@ -34,7 +34,7 @@ public class LPCMEncoder extends Encoder {
 			buffer.clear();
 			for (SignalBuffer b : buffers) {
 				frameInt <<= this.bitsPerSample;
-				float v = b.pickOne();
+				float v = b.pickOne() * multiplier;
 				int sampleInt = (int) ((v / 2.0f * SIGNED_MAX) % SIGNED_MAX);
 				if (!this.signed)
 					sampleInt += SIGNED_MAX/2;
