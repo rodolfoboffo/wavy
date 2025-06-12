@@ -1,7 +1,5 @@
 package com.terpomo.wavy;
 
-import java.awt.*;
-
 public class Constants {
 
 	public static final int DEFAULT_SAMPLE_RATE = 256000;
@@ -9,6 +7,7 @@ public class Constants {
 	
 	public static final String CONSTANT_WAVE = "Constant Wave";
 	public static final String CONSTANT_VALUE = "Constant Value";
+	public static final String NOISE = "Noise";
 	public static final String AUDIO_PLAYER = "Audio Player";
 	public static final String OSCILLOSCOPE = "Oscilloscope";
 	public static final String SPLITTER = "Splitter";
@@ -26,5 +25,4 @@ public class Constants {
 	public static final String IQ_DEMODULATION = "IQ Demodulation";
 	public static final String RESAMPLING = "Resampling";
 
-	public static final Color LIGHT_CYAN = new Color(230, 230, 255);
 }

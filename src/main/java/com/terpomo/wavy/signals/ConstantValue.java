@@ -3,15 +3,11 @@ package com.terpomo.wavy.signals;
 public class ConstantValue extends Signal {
 
 	public static final float DEFAULT_CONSTANT_VALUE = 1.0f;
-	protected float constantValue;
+	private float constantValue;
 	
 	public ConstantValue(float value, int sampleRate) {
 		super(sampleRate);
 		this.constantValue = value;
-	}
-
-	public ConstantValue(float value) {
-		this(value, DEFAULT_SAMPLE_RATE);
 	}
 
 	public ConstantValue() {
