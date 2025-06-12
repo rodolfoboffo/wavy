@@ -6,7 +6,6 @@ import com.terpomo.wavy.flow.InputPort;
 import com.terpomo.wavy.flow.OutputPort;
 import com.terpomo.wavy.marshal.MarshalAttr;
 import com.terpomo.wavy.marshal.MarshallingKeys;
-import com.terpomo.wavy.marshal.PipeMarshaller;
 
 public class SplitterPipe extends AbstractPipe {
 

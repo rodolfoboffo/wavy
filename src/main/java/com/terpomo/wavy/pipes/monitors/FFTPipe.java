@@ -5,7 +5,6 @@ import com.terpomo.wavy.flow.AbstractPipe;
 import com.terpomo.wavy.flow.SignalBuffer;
 import com.terpomo.wavy.marshal.MarshalAttr;
 import com.terpomo.wavy.marshal.MarshallingKeys;
-import com.terpomo.wavy.marshal.PipeMarshaller;
 import com.terpomo.wavy.math.FFT;
 import com.terpomo.wavy.math.Utils;
 import com.terpomo.wavy.util.ListUtils;

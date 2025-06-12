@@ -9,12 +9,13 @@ import java.math.BigDecimal;
 
 public class GenericMarshaller<T extends IMarshallable> implements IMarshaller<T>{
 
+    @SuppressWarnings({"rawtypes", "unchecked"})
     @Override
     public T unmarshal(JSONObject json) {
         String className = json.getString(MarshallingKeys.KEY_CLASS);
         try {
             Class<?> clss = Thread.currentThread().getContextClassLoader().loadClass(className);
-            @SuppressWarnings("unchecked") T obj = (T) clss.getConstructor().newInstance();
+            T obj = (T) clss.getConstructor().newInstance();
             for (Method method : clss.getMethods()) {
                 MarshalAttr marshalAttrAnnotation = method.getAnnotation(MarshalAttr.class);
                 if (marshalAttrAnnotation != null && method.getName().startsWith("set")) {
@@ -27,10 +28,12 @@ public class GenericMarshaller<T extends IMarshallable> implements IMarshaller<T
                             if (JSONObject.class.equals(value.getClass()))
                                 value = MarshallerUtil.unmarshal((JSONObject) value);
                             Parameter param = method.getParameters()[0];
-//                            if (!value.getClass().equals(param.getType()))
-//                                value = param.getType().cast(value);
                             if (value.getClass().equals(Integer.class) && param.getType().equals(Float.class))
                                 value = new Float((Integer)value);
+                            if (param.getType().isEnum()) {
+                                Class<Enum> clssEnum = (Class<Enum>) param.getType();
+                                value = Enum.valueOf(clssEnum, (String) value);
+                            }
                             method.invoke(obj, value);
                         }
                     } catch (IllegalAccessException | InvocationTargetException | IllegalArgumentException | ClassCastException e) {

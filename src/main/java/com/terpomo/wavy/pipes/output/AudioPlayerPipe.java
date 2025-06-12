@@ -14,8 +14,11 @@ import javax.sound.sampled.*;
 
 public class AudioPlayerPipe extends AbstractPipe {
 	
+	public static final int DEFAULT_SAMPLE_RATE = Constants.DEFAULT_SAMPLE_RATE;
 	public static final int DEFAULT_NUM_CHANNELS = 1;
+	public static final float DEFAULT_VOLUME = 100f;
 	private int sampleRate;
+	private float volume;
 	private int numOfChannels;
 	private String mixerName;
 	private Encoder encoder;
@@ -25,13 +28,10 @@ public class AudioPlayerPipe extends AbstractPipe {
 	private int lineBufferSize;
 
 	public AudioPlayerPipe() {
-		this(DEFAULT_NUM_CHANNELS, Constants.DEFAULT_SAMPLE_RATE);
-	}
-	
-	public AudioPlayerPipe(int numOfChannels, int sampleRate) {
 		super();
-		this.numOfChannels = numOfChannels;
-		this.sampleRate = sampleRate;
+		this.volume = DEFAULT_VOLUME;
+		this.numOfChannels = DEFAULT_NUM_CHANNELS;
+		this.sampleRate = DEFAULT_SAMPLE_RATE;
 		this.mixerName = null;
 		this.mixer = null;
 		this.lineBufferSize = 0;
@@ -137,7 +137,7 @@ public class AudioPlayerPipe extends AbstractPipe {
 			if (bytesToRead >= this.lineBufferSize * 0.2) {
 				int bytesAvailbaleToWrite = this.line.available();
 				framesToRead = Math.min(framesToRead, bytesAvailbaleToWrite / bytesPerFrame);
-				byte[] buffer = this.encoder.encode(framesToRead, this.buffers);
+				byte[] buffer = this.encoder.encode(framesToRead, this.buffers, this.volume/100f);
 				this.line.write(buffer, 0, buffer.length);
 			}
 		}
@@ -165,5 +165,15 @@ public class AudioPlayerPipe extends AbstractPipe {
 
 	public String[] getMixerInfos() {
 		return AudioUtils.getMixerInfos(SourceDataLine.class, this.encoder.getAudioFormat());
+	}
+
+	@MarshalAttr(attrName= MarshallingKeys.KEY_VOLUME)
+	public synchronized void setVolume(float volume) {
+		this.volume = Math.max(Math.min(volume, 100), 0);
+	}
+
+	@MarshalAttr(attrName= MarshallingKeys.KEY_VOLUME)
+	public float getVolume() {
+		return volume;
 	}
 }
