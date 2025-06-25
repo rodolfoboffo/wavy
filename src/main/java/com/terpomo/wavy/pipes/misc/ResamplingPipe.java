@@ -57,36 +57,28 @@ public class ResamplingPipe extends AbstractPipe {
         if (this.allInputPortsConnected() && this.allOutputPortsConnected()) {
             if (this.getInputPort().getBuffer().getSize() >= 2 && !this.getOutputPort().getLinkedPort().getBuffer().isFull()) {
                 if (this.resamplingFactor <= 1.0f) {
-                    if (this.offset == 0.0f) {
-                        float value = this.getInputPort().getBuffer().pickOne();
-                        this.offset = (this.offset + this.resamplingFactor) % 1.0f;
+                    float nextOffset = (this.offset + this.resamplingFactor);
+                    if (nextOffset >= 1.0f) {
+                        Point p0 = new Point(this.offset, this.getInputPort().getBuffer().getValue(0));
+                        Point p1 = new Point(nextOffset, this.getInputPort().getBuffer().getValue(1));
+                        float value = this.interpolate(p0, p1, 1.0f);
                         this.getOutputPort().getLinkedPort().getBuffer().put(value);
-                    }
-                    else {
-                        float nextOffset = (this.offset + this.resamplingFactor);
-                        if (nextOffset >= 1.0f) {
-                            Point p0 = new Point(this.offset, this.getInputPort().getBuffer().getValue(0));
-                            Point p1 = new Point(nextOffset, this.getInputPort().getBuffer().getValue(1));
-                            float value = this.interpolate(p0, p1, 1.0f);
-                            this.getInputPort().getBuffer().pickOne();
-                            this.getOutputPort().getLinkedPort().getBuffer().put(value);
-                            this.offset = nextOffset % 1.0f;
-                        }
-                        this.getInputPort().getBuffer().pickOne();
                         this.offset = nextOffset % 1.0f;
                     }
+                    this.getInputPort().getBuffer().pickOne();
+                    this.offset = nextOffset % 1.0f;
                 }
                 else {
                     float inverseFactor = 1.0f / this.resamplingFactor;
                     Point p0 = new Point(0f, this.getInputPort().getBuffer().getValue(0));
                     Point p1 = new Point(1f, this.getInputPort().getBuffer().getValue(1));
-                    do {
-                        float value = this.interpolate(p0, p1, this.offset);
-                        this.offset += inverseFactor;
-                        this.getOutputPort().getLinkedPort().getBuffer().put(value);
-                    } while (this.offset < 1.0);
-                    this.getInputPort().getBuffer().pickOne();
-                    this.offset %= 1.0f;
+                    float value = this.interpolate(p0, p1, this.offset);
+                    this.offset += inverseFactor;
+                    this.getOutputPort().getLinkedPort().getBuffer().put(value);
+                    if (this.offset > 1.0) {
+                        this.getInputPort().getBuffer().pickOne();
+                        this.offset %= 1.0f;
+                    }
                 }
             }
         }
