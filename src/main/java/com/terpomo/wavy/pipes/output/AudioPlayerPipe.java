@@ -39,6 +39,17 @@ public class AudioPlayerPipe extends AbstractPipe {
 		this.buildEncoder();
 	}
 
+	@Override
+	public synchronized void clearCache() {
+		super.clearCache();
+		for (SignalBuffer b : this.buffers) {
+			b.clear();
+		}
+		if (this.line != null) {
+			this.line.flush();
+		}
+	}
+
 	synchronized private void buildPipes() {
 		this.buildInputPorts(this.numOfChannels);
 		this.buffers = new SignalBuffer[this.numOfChannels];

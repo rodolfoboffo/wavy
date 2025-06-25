@@ -70,6 +70,11 @@ public abstract class AbstractPipe extends ObservableObject implements IPipe {
 		for (IPort port : this.getInputPorts()) {
 			port.getBuffer().clear();
 		}
+		for (IPort port : this.getOutputPorts()) {
+			if (port.getLinkedPort() != null) {
+				port.getLinkedPort().getPipe().clearCache();
+			}
+ 		}
 	}
 
 	public int getMinInputBufferSizes() {
