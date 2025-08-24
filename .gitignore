@@ -1,3 +1,9 @@
 /bin/
 target/
 /.*/
+wpf-ui-project/obj/
+wpf-ui-project/bin/
+wpf-ui-project/x64/
+dll-project/.vs/
+dll-project/x64/
+wpf-ui-project/.vs/
