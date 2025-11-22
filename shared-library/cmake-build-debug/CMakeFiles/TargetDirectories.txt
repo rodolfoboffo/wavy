@@ -1,3 +1,0 @@
-C:/working/wavy/shared-library/cmake-build-debug/CMakeFiles/shared_library.dir
-C:/working/wavy/shared-library/cmake-build-debug/CMakeFiles/edit_cache.dir
-C:/working/wavy/shared-library/cmake-build-debug/CMakeFiles/rebuild_cache.dir
