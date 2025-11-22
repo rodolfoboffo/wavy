@@ -2,13 +2,12 @@
 using System.Data;
 using System.Windows;
 
-namespace wpf_app
+namespace Wavy
 {
-    /// <summary>
-    /// Interaction logic for App.xaml
-    /// </summary>
-    public partial class App : Application
+    namespace WPF
     {
+        public partial class WavyApp : Application
+        {
+        }
     }
-
 }

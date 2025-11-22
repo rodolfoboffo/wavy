@@ -1,0 +1,35 @@
+﻿<Window x:Class="Wavy.WPF.UI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Wavy.WPF.UI"
+        mc:Ignorable="d"
+        Title="Wavy" Height="450" Width="800">
+    <DockPanel>
+        <StackPanel Orientation="Vertical" DockPanel.Dock="Top">
+            <Menu Name="MenuMain">
+                <MenuItem Name="MenuItemFile" Header="_File">
+                    <MenuItem Name="MenuItemNewProject" Header="_New Project"/>
+                    <MenuItem Name="MenuItemOpenProject" Header="_Open Project"/>
+                    <MenuItem Name="MenuItemSaveProject" Header="_Save Project"/>
+                    <Separator/>
+                    <MenuItem Name="MenuItemExitApplication" Header="E_xit" Click="MenuItemExitApplication_Click"/>
+                </MenuItem>
+                <MenuItem Name="MenuItemPipes" Header="_Pipes">
+                </MenuItem>
+            </Menu>
+            <ToolBar>
+                <Button Content="Play"/>
+            </ToolBar>
+        </StackPanel>
+        <TabControl Name="TabControlProjects">
+            <TabItem Header="TabItem">
+                <Grid Background="#FFE5E5E5"/>
+            </TabItem>
+            <TabItem Header="TabItem">
+                <Grid Background="#FFE5E5E5"/>
+            </TabItem>
+        </TabControl>
+    </DockPanel>
+</Window>
