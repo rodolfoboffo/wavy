@@ -4,3 +4,5 @@ msvc-shared-library/x64/
 wpf-app/.vs/
 wpf-app/bin/
 wpf-app/obj/
+wpf-app/wavy.dll
+.idea/
