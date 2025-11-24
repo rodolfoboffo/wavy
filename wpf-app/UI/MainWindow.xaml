@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:ScottPlot="clr-namespace:ScottPlot.WPF;assembly=ScottPlot.WPF"
         xmlns:local="clr-namespace:Wavy.WPF.UI"
         mc:Ignorable="d"
         Title="Wavy" Height="450" Width="800">
@@ -20,16 +21,9 @@
                 </MenuItem>
             </Menu>
             <ToolBar>
-                <Button Content="Play"/>
+                <Button Content="Play" Name="ButtonPlayMain" Click="ButtonPlayMain_Click"/>
             </ToolBar>
         </StackPanel>
-        <TabControl Name="TabControlProjects">
-            <TabItem Header="TabItem">
-                <Grid Background="#FFE5E5E5"/>
-            </TabItem>
-            <TabItem Header="TabItem">
-                <Grid Background="#FFE5E5E5"/>
-            </TabItem>
-        </TabControl>
+        <ScottPlot:WpfPlot Name="WpfPlot"/>
     </DockPanel>
 </Window>

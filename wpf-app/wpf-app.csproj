@@ -10,6 +10,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="ScottPlot.WPF" Version="5.1.57" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="wavy.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
