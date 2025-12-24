@@ -1,17 +1,17 @@
-﻿<Window x:Class="Wavy.WPF.UI.MainWindow"
+﻿<Window x:Class="Wavy.UI.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:ScottPlot="clr-namespace:ScottPlot.WPF;assembly=ScottPlot.WPF"
-        xmlns:local="clr-namespace:Wavy.WPF.UI"
+        xmlns:local="clr-namespace:Wavy.UI"
         mc:Ignorable="d"
         Title="Wavy" Height="450" Width="800">
     <DockPanel>
         <StackPanel Orientation="Vertical" DockPanel.Dock="Top">
             <Menu Name="MenuMain">
                 <MenuItem Name="MenuItemFile" Header="_File">
-                    <MenuItem Name="MenuItemNewProject" Header="_New Project"/>
+                    <MenuItem Name="MenuItemNewProject" Header="_New Project" Click="MenuItemNewProject_Click"/>
                     <MenuItem Name="MenuItemOpenProject" Header="_Open Project"/>
                     <MenuItem Name="MenuItemSaveProject" Header="_Save Project"/>
                     <Separator/>
@@ -21,9 +21,11 @@
                 </MenuItem>
             </Menu>
             <ToolBar>
-                <Button Content="Play" Name="ButtonPlayMain" Click="ButtonPlayMain_Click"/>
+
             </ToolBar>
         </StackPanel>
-        <ScottPlot:WpfPlot Name="WpfPlot"/>
+        <TabControl Name="TabControlProjects">
+ 
+        </TabControl>
     </DockPanel>
 </Window>

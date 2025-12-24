@@ -4,7 +4,7 @@ using System.Windows;
 
 namespace Wavy
 {
-    namespace WPF
+    namespace UI
     {
         public partial class WavyApp : Application
         {

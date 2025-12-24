@@ -4,20 +4,25 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using Wavy.Bridge.Flow;
 
 namespace Wavy.Core
 {
     public class AppController
     {
-        private AppController() { }
+        private static AppController? _instance;
+        public Workspace Workspace {  get; private set; }
+        private AppController() {
+            this.Workspace = new Workspace();
+        }
 
-        private static AppController? Instance { get; set; }
-
-        public static AppController GetInstance()
-        {
-            if (Instance == null)
-                Instance = new AppController();
-            return Instance;
+        public static AppController Instance { 
+            get {
+                if (_instance == null)
+                    _instance = new AppController();
+                return _instance;
+            }
+            private set { _instance = value; } 
         }
 
         public void ExitApplication()
