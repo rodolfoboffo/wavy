@@ -7,7 +7,7 @@
              mc:Ignorable="d">
     <Border Style="{StaticResource PipeBorder}">
         <Grid>
-            <Label Style="{StaticResource PipeTitle}" Name="LabelPipeName" Content="Pipe Name"/>
+            <Label Style="{StaticResource PipeTitle}" Name="LabelPipeName" Content="{Binding Name}"/>
         </Grid>
     </Border>
 </UserControl>

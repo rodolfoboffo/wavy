@@ -1,13 +1,12 @@
 ﻿using System.ComponentModel;
-using Wavy.Flow;
 
-namespace Wavy.Core
+namespace Wavy.Flow
 {
     public class Workspace : INotifyPropertyChanged
     {
         public delegate void ProjectsModifiedEventHandler(object sender, ProjectsEventArgs e);
-        public event ProjectsModifiedEventHandler? ProjectAdded;
-        public event ProjectsModifiedEventHandler? ProjectRemoved;
+        public event ProjectsModifiedEventHandler? OnProjectAdded;
+        public event ProjectsModifiedEventHandler? OnProjectRemoved;
 
         public delegate void SelectedProjectChangedEventHandler(object sender, ProjectsEventArgs e);
         public event SelectedProjectChangedEventHandler? SelectedProjectChanged;
@@ -37,7 +36,7 @@ namespace Wavy.Core
         {
             Project p = new Project();
             this.Projects.Add(p);
-            this.ProjectAdded?.Invoke(this, new ProjectsEventArgs(p));
+            this.OnProjectAdded?.Invoke(this, new ProjectsEventArgs(p));
             this.SelectedProject = p;
             return p;
         }
@@ -49,7 +48,7 @@ namespace Wavy.Core
                 this.SelectedProject = null;
             }
             this.Projects.Remove(p);
-            this.ProjectRemoved?.Invoke(this, new ProjectsEventArgs(p));
+            this.OnProjectRemoved?.Invoke(this, new ProjectsEventArgs(p));
         }
     }
 

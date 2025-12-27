@@ -19,7 +19,7 @@
                 </MenuItem>
                 <MenuItem Name="MenuItemPipes" Header="_Pipes" IsEnabled="{Binding IsProjectSelected}">
                     <MenuItem Name="MenuItemSource" Header="_Sources">
-                        <MenuItem Name="MenuItemConstantWave" Header="_Constant Wave" />
+                        <MenuItem Name="MenuItemConstantWave" Header="_Constant Wave" Click="MenuItemConstantWave_Click"/>
                     </MenuItem>
                 </MenuItem>
             </Menu>

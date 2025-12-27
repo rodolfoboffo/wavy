@@ -11,9 +11,15 @@ namespace Wavy.UI
             this.InitializeComponent();
             this.DataContext = p;
             this.Project = p;
-            this.Content = new ProjectArea();
-            AppController.Instance.Workspace.ProjectRemoved += Workspace_ProjectRemoved;
+            this.Project.OnPipeAdded += Project_OnPipeAdded;
+            AppController.Instance.Workspace.OnProjectRemoved += Workspace_ProjectRemoved;
             AppController.Instance.Workspace.SelectedProjectChanged += Workspace_SelectedProjectChanged;
+        }
+
+        private void Project_OnPipeAdded(object sender, PipesEventArgs e)
+        {
+            PipePanel panel = new PipePanel(e.Pipe);
+            this.ProjectCanvas.Children.Add(panel);
         }
 
         private void Workspace_SelectedProjectChanged(object sender, ProjectsEventArgs e)

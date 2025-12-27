@@ -2,6 +2,7 @@
 using System.Windows.Controls;
 using Wavy.Core;
 using Wavy.Flow;
+using Wavy.Pipes;
 
 namespace Wavy.UI
 {
@@ -11,7 +12,7 @@ namespace Wavy.UI
         {
             InitializeComponent();
             this.DataContext = AppController.Instance.Workspace;
-            AppController.Instance.Workspace.ProjectAdded += Workspace_ProjectAdded;
+            AppController.Instance.Workspace.OnProjectAdded += Workspace_ProjectAdded;
             this.TabControlProjects.SelectionChanged += TabControlProjects_SelectionChanged;
         }
 
@@ -44,6 +45,11 @@ namespace Wavy.UI
         private void MenuItemNewProject_Click(object sender, RoutedEventArgs e)
         {
             AppController.Instance.Workspace.CreateNewProject();
+        }
+
+        private void MenuItemConstantWave_Click(object sender, RoutedEventArgs e)
+        {
+            AppController.Instance.Workspace.SelectedProject?.AddPipe(new ConstantWavePipe());
         }
     }
 }

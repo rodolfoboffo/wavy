@@ -1,4 +1,6 @@
-﻿namespace Wavy.Core
+﻿using Wavy.Flow;
+
+namespace Wavy.Core
 {
     public class AppController
     {

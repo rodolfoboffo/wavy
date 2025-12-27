@@ -12,4 +12,9 @@
             <MenuItem Name="ContextMenuCloseTab" Header="Close Tab" Click="ContextMenuCloseTab_Click"/>
         </ContextMenu>
     </TabItem.ContextMenu>
+    <Border Style="{StaticResource ProjectAreaBorder}">
+        <Canvas Name="ProjectCanvas">
+
+        </Canvas>
+    </Border>
 </TabItem>

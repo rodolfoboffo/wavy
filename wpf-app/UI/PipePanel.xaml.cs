@@ -10,6 +10,7 @@ namespace Wavy.UI
         public PipePanel(Pipe pipe)
         {
             InitializeComponent();
+            this.DataContext = pipe;
             this._Pipe = pipe;
         }
     }
