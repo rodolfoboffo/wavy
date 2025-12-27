@@ -1,18 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Wavy.Bridge.Flow;
+﻿using System.ComponentModel;
+using Wavy.Flow;
 
 namespace Wavy.Core
 {
-    public class Workspace
+    public class Workspace : INotifyPropertyChanged
     {
-        public delegate void ProjectAddedEventHandler(object sender, ProjectsModifiedEventArgs e);
-        public event ProjectAddedEventHandler? ProjectAdded;
-        public event ProjectAddedEventHandler? ProjectRemoved;
+        public delegate void ProjectsModifiedEventHandler(object sender, ProjectsEventArgs e);
+        public event ProjectsModifiedEventHandler? ProjectAdded;
+        public event ProjectsModifiedEventHandler? ProjectRemoved;
 
+        public delegate void SelectedProjectChangedEventHandler(object sender, ProjectsEventArgs e);
+        public event SelectedProjectChangedEventHandler? SelectedProjectChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        public bool IsProjectSelected { get { return (this.SelectedProject != null); } }
+
+        private Project? _SelectedProject;
+        public Project? SelectedProject {  
+            get { return this._SelectedProject; } 
+            set {
+                if (this._SelectedProject != value)
+                {
+                    this._SelectedProject = value;
+                    this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IsProjectSelected"));
+                    this.SelectedProjectChanged?.Invoke(this, new ProjectsEventArgs(value));
+                }
+            }
+        }
         private HashSet<Project> Projects;
 
         public Workspace() {
@@ -23,21 +37,26 @@ namespace Wavy.Core
         {
             Project p = new Project();
             this.Projects.Add(p);
-            this.ProjectAdded?.Invoke(this, new ProjectsModifiedEventArgs(p));
+            this.ProjectAdded?.Invoke(this, new ProjectsEventArgs(p));
+            this.SelectedProject = p;
             return p;
         }
 
         public void RemoveProject(Project p)
         {
+            if (this.SelectedProject == p)
+            {
+                this.SelectedProject = null;
+            }
             this.Projects.Remove(p);
-            this.ProjectRemoved?.Invoke(this, new ProjectsModifiedEventArgs(p));
+            this.ProjectRemoved?.Invoke(this, new ProjectsEventArgs(p));
         }
     }
 
-    public class ProjectsModifiedEventArgs : EventArgs
+    public class ProjectsEventArgs : EventArgs
     {
-        public Project Project { get; set; }
-        public ProjectsModifiedEventArgs(Project project)
+        public Project? Project { get; set; }
+        public ProjectsEventArgs(Project? project)
         {
             this.Project = project;
         }

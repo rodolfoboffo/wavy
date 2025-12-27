@@ -17,7 +17,10 @@
                     <Separator/>
                     <MenuItem Name="MenuItemExitApplication" Header="E_xit" Click="MenuItemExitApplication_Click"/>
                 </MenuItem>
-                <MenuItem Name="MenuItemPipes" Header="_Pipes">
+                <MenuItem Name="MenuItemPipes" Header="_Pipes" IsEnabled="{Binding IsProjectSelected}">
+                    <MenuItem Name="MenuItemSource" Header="_Sources">
+                        <MenuItem Name="MenuItemConstantWave" Header="_Constant Wave" />
+                    </MenuItem>
                 </MenuItem>
             </Menu>
             <ToolBar>

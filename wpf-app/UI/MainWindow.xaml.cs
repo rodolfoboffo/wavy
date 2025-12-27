@@ -1,17 +1,7 @@
-﻿using ScottPlot.Plottables;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using Wavy.Core;
-using Wavy;
+using Wavy.Flow;
 
 namespace Wavy.UI
 {
@@ -20,10 +10,27 @@ namespace Wavy.UI
         public MainWindow()
         {
             InitializeComponent();
+            this.DataContext = AppController.Instance.Workspace;
             AppController.Instance.Workspace.ProjectAdded += Workspace_ProjectAdded;
+            this.TabControlProjects.SelectionChanged += TabControlProjects_SelectionChanged;
         }
 
-        private void Workspace_ProjectAdded(object? sender, ProjectsModifiedEventArgs e)
+
+
+        private void TabControlProjects_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            ProjectTabItem selectedProjectTabItem = ((ProjectTabItem)((TabControl)e.Source).SelectedItem);
+            if (selectedProjectTabItem != null)
+            {
+                Project p = ((ProjectTabItem)((TabControl)e.Source).SelectedItem).Project;
+                AppController.Instance.Workspace.SelectedProject = p;
+            }else
+            {
+                AppController.Instance.Workspace.SelectedProject = null;
+            }
+        }
+
+        private void Workspace_ProjectAdded(object? sender, ProjectsEventArgs e)
         {
             ProjectTabItem tab = new ProjectTabItem(e.Project);
             this.TabControlProjects.Items.Add(tab);

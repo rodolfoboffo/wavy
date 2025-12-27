@@ -1,6 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace Wavy.Bridge.Math
+namespace Wavy.Math
 {
     public class SineTable
     {
