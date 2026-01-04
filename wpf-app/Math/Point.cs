@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Wavy.Math
+﻿namespace Wavy.Math
 {
     public class Point
     {
@@ -15,6 +9,37 @@ namespace Wavy.Math
         {
             X = x;
             Y = y;
+        }
+
+        public Point(double x, double y)
+        {
+            X = (float)x;
+            Y = (float)y;
+        }
+
+        public static Point Zero()
+        {
+            return new Point(0, 0);
+        }
+
+        public static Point FromWindowsPoint(System.Windows.Point p)
+        {
+            return new Point(p.X, p.Y);
+        }
+
+        public Point Sum(Point b)
+        {
+            return new Point(this.X + b.X, this.Y + b.Y);
+        }
+
+        public Point Subtract(Point b)
+        {
+            return new Point(this.X - b.X, this.Y - b.Y);
+        }
+
+        public override string ToString()
+        {
+            return String.Format("{{0}, {1}}", this.X, this.Y);
         }
     }
 }

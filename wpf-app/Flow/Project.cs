@@ -1,6 +1,4 @@
-﻿using Wavy.Pipes;
-
-namespace Wavy.Flow
+﻿namespace Wavy.Flow
 {
     public class Project
     {

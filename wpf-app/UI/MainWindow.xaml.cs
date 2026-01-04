@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System.Net.Http.Json;
+using System.Text.Json.Nodes;
+using System.Windows;
 using System.Windows.Controls;
 using Wavy.Core;
 using Wavy.Flow;
@@ -12,13 +14,30 @@ namespace Wavy.UI
         {
             InitializeComponent();
             this.DataContext = AppController.Instance.Workspace;
+            this.BuildPipesMenu();
             AppController.Instance.Workspace.OnProjectAdded += Workspace_ProjectAdded;
             this.TabControlProjects.SelectionChanged += TabControlProjects_SelectionChanged;
         }
 
+        private void BuildPipesMenuRecursive(List<KeyValuePair<string, JsonNode?>> nodes, MenuItem parent)
+        {
+            foreach (KeyValuePair<string, JsonNode?> node in nodes)
+            {
+                MenuItem newMenuItem = new MenuItem();
+                newMenuItem.Header = node.Key;
+                parent.Items.Add(newMenuItem);
+                List<KeyValuePair<string, JsonNode?>> childrenNodes = node.Value.AsObject().ToList();
+                this.BuildPipesMenuRecursive(childrenNodes, newMenuItem);
+            }
+        }
+        private void BuildPipesMenu()
+        {
+            string jsonContent = Wavy.UIResource.PipesMenu;
+            List<KeyValuePair<string, JsonNode?>> nodes = JsonNode.Parse(jsonContent).AsObject().ToList();
+            this.BuildPipesMenuRecursive(nodes, this.MenuItemPipes);
+        }
 
-
-        private void TabControlProjects_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        private void TabControlProjects_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             ProjectTabItem selectedProjectTabItem = ((ProjectTabItem)((TabControl)e.Source).SelectedItem);
             if (selectedProjectTabItem != null)
@@ -49,7 +68,7 @@ namespace Wavy.UI
 
         private void MenuItemConstantWave_Click(object sender, RoutedEventArgs e)
         {
-            AppController.Instance.Workspace.SelectedProject?.AddPipe(new ConstantWavePipe());
+            AppController.Instance.Workspace.SelectedProject?.AddPipe(new ConstantValuePipe());
         }
     }
 }
