@@ -5,13 +5,16 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Wavy.UI"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800"
-             Header="{Binding Name}">
-    <TabItem.ContextMenu>
-        <ContextMenu>
-            <MenuItem Name="ContextMenuCloseTab" Header="Close Tab" Click="ContextMenuCloseTab_Click"/>
-        </ContextMenu>
-    </TabItem.ContextMenu>
+             d:DesignHeight="450" d:DesignWidth="800">
+    <TabItem.Header>
+        <Label Content="{Binding Name}" Style="{StaticResource ProjectTabItemHeader}">
+            <Label.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Name="ContextMenuCloseTab" Header="Close Tab" Click="ContextMenuCloseTab_Click"/>
+                </ContextMenu>
+            </Label.ContextMenu>
+        </Label>
+    </TabItem.Header>
     <Border Style="{StaticResource ProjectAreaBorder}">
         <Canvas Name="ProjectCanvas">
 

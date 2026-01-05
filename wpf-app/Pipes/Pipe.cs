@@ -39,7 +39,7 @@ namespace Wavy.Flow
         }
         public Pipe() {
             this._Position = new Point(0, 0);
-            this._Name = String.Format("Constant Wave {0}", Random.Shared.Next());
+            this._Name = String.Format("Pipe {0}", Random.Shared.Next());
         }
     }
 }

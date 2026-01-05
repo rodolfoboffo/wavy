@@ -15,6 +15,11 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Update="UIResource.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
     <Page Update="UI\MainWindow.xaml">
       <SubType>Designer</SubType>
     </Page>

@@ -1,4 +1,5 @@
-﻿using System.Net.Http.Json;
+﻿using System.Text;
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Windows;
 using System.Windows.Controls;
@@ -23,18 +24,38 @@ namespace Wavy.UI
         {
             foreach (KeyValuePair<string, JsonNode?> node in nodes)
             {
-                MenuItem newMenuItem = new MenuItem();
-                newMenuItem.Header = node.Key;
-                parent.Items.Add(newMenuItem);
-                List<KeyValuePair<string, JsonNode?>> childrenNodes = node.Value.AsObject().ToList();
-                this.BuildPipesMenuRecursive(childrenNodes, newMenuItem);
+                if (node.Value != null)
+                {
+                    MenuItem newMenuItem = new MenuItem();
+                    newMenuItem.Header = node.Key;
+                    JsonNode nodeValue = node.Value;
+                    if (nodeValue.GetValueKind().Equals(JsonValueKind.Object))
+                    {
+                        List<KeyValuePair<string, JsonNode?>> childrenNodes = nodeValue.AsObject().ToList();
+                        this.BuildPipesMenuRecursive(childrenNodes, newMenuItem);
+                    }
+                    else if (nodeValue.GetValueKind().Equals(JsonValueKind.String))
+                    {
+                        string pipeEnumNodeValue = nodeValue.GetValue<String>();
+                        PipeEnum pipeEnum = (PipeEnum)Enum.Parse(typeof(PipeEnum), pipeEnumNodeValue);
+                        newMenuItem.Tag = pipeEnum;
+                        newMenuItem.Click += MenuItemPipeInstance_Click;
+                    }
+                    parent.Items.Add(newMenuItem);
+                }
             }
         }
+
         private void BuildPipesMenu()
         {
-            string jsonContent = Wavy.UIResource.PipesMenu;
-            List<KeyValuePair<string, JsonNode?>> nodes = JsonNode.Parse(jsonContent).AsObject().ToList();
-            this.BuildPipesMenuRecursive(nodes, this.MenuItemPipes);
+            byte[] pipesMenuFileContent = Wavy.UIResource.PipesMenu;
+            string jsonContent = Encoding.ASCII.GetString(pipesMenuFileContent);
+            JsonNode? jsonParsedContent = JsonNode.Parse(jsonContent);
+            if (jsonParsedContent != null)
+            {
+                List<KeyValuePair<string, JsonNode?>> nodes = jsonParsedContent.AsObject().ToList();
+                this.BuildPipesMenuRecursive(nodes, this.MenuItemPipes);
+            }
         }
 
         private void TabControlProjects_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -52,8 +73,11 @@ namespace Wavy.UI
 
         private void Workspace_ProjectAdded(object? sender, ProjectsEventArgs e)
         {
-            ProjectTabItem tab = new ProjectTabItem(e.Project);
-            this.TabControlProjects.Items.Add(tab);
+            if (e.Project != null)
+            {
+                ProjectTabItem tab = new ProjectTabItem(e.Project);
+                this.TabControlProjects.Items.Add(tab);
+            }
         }
 
         private void MenuItemExitApplication_Click(object sender, RoutedEventArgs e)
@@ -66,9 +90,11 @@ namespace Wavy.UI
             AppController.Instance.Workspace.CreateNewProject();
         }
 
-        private void MenuItemConstantWave_Click(object sender, RoutedEventArgs e)
+        private void MenuItemPipeInstance_Click(object sender, RoutedEventArgs e)
         {
-            AppController.Instance.Workspace.SelectedProject?.AddPipe(new ConstantValuePipe());
+            PipeEnum pipeEnum = (PipeEnum)((MenuItem)sender).Tag;
+            Pipe pipe = PipeMap.Instance.GetPipeByEnum(pipeEnum);
+            AppController.Instance.Workspace.SelectedProject?.AddPipe(pipe);
         }
     }
 }

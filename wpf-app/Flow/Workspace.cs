@@ -54,7 +54,7 @@ namespace Wavy.Flow
 
     public class ProjectsEventArgs : EventArgs
     {
-        public Project? Project { get; set; }
+        public Project? Project { get; private set; }
         public ProjectsEventArgs(Project? project)
         {
             this.Project = project;

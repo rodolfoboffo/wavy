@@ -1,5 +1,6 @@
-﻿{
+{
   "Source": {
-    "Constant Wave": "CONSTANT_WAVE"
+    "Constant Wave": "CONSTANT_WAVE",
+    "Constant Value": "CONSTANT_VALUE"
   }
 }

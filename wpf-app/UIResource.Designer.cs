@@ -19,7 +19,7 @@ namespace Wavy {
     // através de uma ferramenta como ResGen ou Visual Studio.
     // Para adicionar ou remover um associado, edite o arquivo .ResX e execute ResGen novamente
     // com a opção /str, ou recrie o projeto do VS.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "18.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class UIResource {
@@ -61,15 +61,12 @@ namespace Wavy {
         }
         
         /// <summary>
-        ///   Consulta uma cadeia de caracteres localizada semelhante a {
-        ///  &quot;Source&quot;: {
-        ///    &quot;Constant Wave&quot;: &quot;CONSTANT_WAVE&quot;
-        ///  }
-        ///}.
+        ///   Consulta um recurso localizado do tipo System.Byte[].
         /// </summary>
-        public static string PipesMenu {
+        public static byte[] PipesMenu {
             get {
-                return ResourceManager.GetString("PipesMenu", resourceCulture);
+                object obj = ResourceManager.GetObject("PipesMenu", resourceCulture);
+                return ((byte[])(obj));
             }
         }
     }

@@ -1,4 +1,6 @@
-﻿namespace Wavy.Flow
+﻿using Wavy.Pipes;
+
+namespace Wavy.Flow
 {
     public class Project
     {
@@ -12,6 +14,11 @@
             this._Pipes = new HashSet<Pipe>();
         }
         public string Name { get; set; }
+
+        public void AddPipe(PipeEnum pipeEnum)
+        {
+            
+        }
 
         public void AddPipe(Pipe pipe)
         {
