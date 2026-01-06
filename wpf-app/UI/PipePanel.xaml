@@ -9,6 +9,11 @@
              MouseLeftButtonDown="PipePanel_MouseLeftButtonDown"
              Canvas.Top="{Binding PosY, Mode=TwoWay}"
              Canvas.Left="{Binding PosX, Mode=TwoWay}">
+    <UserControl.ContextMenu>
+        <ContextMenu>
+            <MenuItem Name="RemovePipeMenuItem" Header="Remove Pipe" Click="RemovePipeMenuItem_Click"/>
+        </ContextMenu>
+    </UserControl.ContextMenu>
     <Border Style="{StaticResource PipeBorder}">
         <Grid>
             <Label Style="{StaticResource PipeTitle}" Name="LabelPipeName" Content="{Binding Name}"/>

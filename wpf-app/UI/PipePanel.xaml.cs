@@ -18,6 +18,17 @@ namespace Wavy.UI
             this._Pipe = pipe;
             this._StartingPosition = this.Pipe.Position;
             this._StartingPositionRelativeToCanvas = Math.Point.Zero();
+            if (this.Pipe.Project != null)
+                this.Pipe.Project.OnPipeRemoved += PipePanel_OnPipeRemoved;
+        }
+
+        private void PipePanel_OnPipeRemoved(object sender, PipesEventArgs e)
+        {
+            if (this.Pipe == e.Pipe)
+            {
+                Canvas parentCanvas = (Canvas)this.Parent;
+                parentCanvas.Children.Remove(this);
+            }
         }
 
         private void PipePanel_MouseMove(object sender, MouseEventArgs e)
@@ -38,6 +49,11 @@ namespace Wavy.UI
             Canvas parentCanvas = (Canvas)pipePanel.Parent;
             this._StartingPositionRelativeToCanvas = Wavy.Math.Point.FromWindowsPoint(e.GetPosition(parentCanvas));
             this._StartingPosition = new Math.Point(Canvas.GetLeft(pipePanel), Canvas.GetTop(pipePanel));
+        }
+
+        private void RemovePipeMenuItem_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            this.Pipe.Project?.RemovePipe(this.Pipe);
         }
     }
 }

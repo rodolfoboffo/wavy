@@ -2,20 +2,20 @@
 
 namespace Wavy.Pipes
 {
-    public class PipeMap
+    public class PipeClassMap
     {
-        private static PipeMap? _Instance;
-        public static PipeMap Instance { 
+        private static PipeClassMap? _Instance;
+        public static PipeClassMap Instance { 
             get {
                 if (_Instance == null)
-                    _Instance = new PipeMap();
+                    _Instance = new PipeClassMap();
                 return _Instance;
             } 
         }
 
         private Dictionary<PipeEnum, Type> Map;
 
-        private PipeMap()
+        private PipeClassMap()
         {
             this.Map = new Dictionary<PipeEnum, Type>
             {
@@ -31,13 +31,13 @@ namespace Wavy.Pipes
             throw new Exception(String.Format("Pipe type not found for Enum {0}", pipeEnum.ToString()));
         }
 
-        public Pipe GetPipeByEnum(PipeEnum pipeEnum)
+        public Pipe GetPipeInstanceByEnum(PipeEnum pipeEnum, Project project)
         {
             Type pipeType = this.GetPipeTypeByEnum(pipeEnum);
-            System.Reflection.ConstructorInfo? constructor = pipeType.GetConstructor(new Type[] { });
+            System.Reflection.ConstructorInfo? constructor = pipeType.GetConstructor(new Type[] {typeof(Project)});
             if (constructor != null)
             {
-                Pipe pipe = (Pipe)constructor.Invoke(new object[] { });
+                Pipe pipe = (Pipe)constructor.Invoke(new object[] {project});
                 return pipe;
             }
             throw new Exception(String.Format("Could not create pipe instance from enum {0}", pipeEnum.ToString()));

@@ -92,9 +92,12 @@ namespace Wavy.UI
 
         private void MenuItemPipeInstance_Click(object sender, RoutedEventArgs e)
         {
-            PipeEnum pipeEnum = (PipeEnum)((MenuItem)sender).Tag;
-            Pipe pipe = PipeMap.Instance.GetPipeByEnum(pipeEnum);
-            AppController.Instance.Workspace.SelectedProject?.AddPipe(pipe);
+            Project? selectedProject = AppController.Instance.Workspace.SelectedProject;
+            if (selectedProject != null) {
+                PipeEnum pipeEnum = (PipeEnum)((MenuItem)sender).Tag;
+                Pipe pipe = PipeClassMap.Instance.GetPipeInstanceByEnum(pipeEnum, selectedProject);
+                AppController.Instance.Workspace.SelectedProject?.AddPipe(pipe);
+            }
         }
     }
 }

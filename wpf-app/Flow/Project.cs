@@ -34,6 +34,7 @@ namespace Wavy.Flow
             {
                 this._Pipes.Remove(pipe);
                 this.OnPipeRemoved?.Invoke(this, new PipesEventArgs(pipe));
+                pipe.Dispose();
             }
         }
     }

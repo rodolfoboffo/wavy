@@ -1,10 +1,25 @@
 ﻿using System.ComponentModel;
+using System.Runtime.InteropServices;
 using Wavy.Math;
 
 namespace Wavy.Flow
 {
-    public abstract class Pipe : INotifyPropertyChanged
+    public abstract class Pipe : INotifyPropertyChanged, IDisposable
     {
+        [DllImport("wavy.dll")]
+        private static extern IntPtr Pipe_new();
+        [DllImport("wavy.dll")]
+        private static extern void Pipe_free(IntPtr p);
+        [DllImport("wavy.dll")]
+        private static extern uint Pipe_getInputPortsCount(IntPtr p);
+        [DllImport("wavy.dll")]
+        private static extern uint Pipe_getOuputPortsCount(IntPtr p);
+
+        private static Dictionary<IntPtr, Pipe> PipeInstancesMap = new Dictionary<IntPtr, Pipe>();
+        private static Pipe? GetInstanceByNativeRef(IntPtr p) { return PipeInstancesMap[p]; }
+
+        public Project Project { get;}
+        private readonly IntPtr _NativePtr;
         private String _Name;
 
         public event PropertyChangedEventHandler? PropertyChanged;
@@ -37,9 +52,21 @@ namespace Wavy.Flow
                 this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("PosY"));
             }
         }
-        public Pipe() {
+        public Pipe(Project project) {
+            this.Project = project;
+            this._NativePtr = Pipe_new();
+            PipeInstancesMap.Add(this._NativePtr, this);
             this._Position = new Point(0, 0);
             this._Name = String.Format("Pipe {0}", Random.Shared.Next());
+        }
+        ~Pipe()
+        {
+            this.Dispose();
+        }
+        public void Dispose()
+        {
+            PipeInstancesMap.Remove(this._NativePtr);
+            Pipe_free(this._NativePtr);
         }
     }
 }
