@@ -7,13 +7,11 @@ namespace Wavy.Flow
     public abstract class Pipe : INotifyPropertyChanged, IDisposable
     {
         [DllImport("wavy.dll")]
-        private static extern IntPtr Pipe_new();
+        protected static extern void Pipe_free(IntPtr p);
         [DllImport("wavy.dll")]
-        private static extern void Pipe_free(IntPtr p);
+        protected static extern uint Pipe_getInputPortsCount(IntPtr p);
         [DllImport("wavy.dll")]
-        private static extern uint Pipe_getInputPortsCount(IntPtr p);
-        [DllImport("wavy.dll")]
-        private static extern uint Pipe_getOuputPortsCount(IntPtr p);
+        protected static extern uint Pipe_getOutputPortsCount(IntPtr p);
 
         private static Dictionary<IntPtr, Pipe> PipeInstancesMap = new Dictionary<IntPtr, Pipe>();
         private static Pipe? GetInstanceByNativeRef(IntPtr p) { return PipeInstancesMap[p]; }
@@ -54,11 +52,14 @@ namespace Wavy.Flow
         }
         public Pipe(Project project) {
             this.Project = project;
-            this._NativePtr = Pipe_new();
+            this._NativePtr = CreateNativePipeInstance();
             PipeInstancesMap.Add(this._NativePtr, this);
             this._Position = new Point(0, 0);
             this._Name = String.Format("Pipe {0}", Random.Shared.Next());
         }
+
+        protected abstract nint CreateNativePipeInstance();
+
         ~Pipe()
         {
             this.Dispose();

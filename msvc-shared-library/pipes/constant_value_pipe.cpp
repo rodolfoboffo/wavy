@@ -1,7 +1,23 @@
 #include "./constant_value_pipe.h"
 #include "./port.h"
 
-ConstantValuePipe::ConstantValuePipe() {
-	Port outputPort = Port();
-	this->ports[INPUT_PORTS_INDEX].push_back(outputPort);
+#ifdef _DEBUG
+#include <iostream>
+#endif
+
+ConstantValuePipe::ConstantValuePipe() : Pipe() {
+	this->createPorts();
+};
+
+void ConstantValuePipe::createPorts() {
+	Port* outputPort = new Port();
+	this->ports[OUTPUT_PORTS_INDEX].push_back(outputPort);
+}
+
+ConstantValuePipe* ConstantValuePipe_new()
+{
+	#ifdef _DEBUG
+	std::cout << "ConstantValuePipe_new called." << std::endl;
+	#endif
+	return new ConstantValuePipe();
 }

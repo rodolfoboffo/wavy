@@ -1,7 +1,7 @@
 #pragma once
 
-#define INPUT_PORTS_INDEX 0
-#define OUTPUT_PORTS_INDEX 1
+#define INPUT_PORTS_INDEX 0U
+#define OUTPUT_PORTS_INDEX 1U
 
 class Pipe;
 
