@@ -1,4 +1,5 @@
-﻿using System.Windows.Controls;
+﻿using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using Wavy.Flow;
 
@@ -24,11 +25,13 @@ namespace Wavy.UI
 
         private void PipePanel_OnPipeRemoved(object sender, PipesEventArgs e)
         {
-            if (this.Pipe == e.Pipe)
-            {
-                Canvas parentCanvas = (Canvas)this.Parent;
-                parentCanvas.Children.Remove(this);
-            }
+            Application.Current.Dispatcher.Invoke(new Action(() => {
+                if (this.Pipe == e.Pipe)
+                {
+                    Canvas parentCanvas = (Canvas)this.Parent;
+                    parentCanvas.Children.Remove(this);
+                }
+            }));
         }
 
         private void PipePanel_MouseMove(object sender, MouseEventArgs e)
@@ -53,7 +56,7 @@ namespace Wavy.UI
 
         private void RemovePipeMenuItem_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            this.Pipe.Project?.RemovePipe(this.Pipe);
+            Task.Run(() => { this.Pipe.Project?.RemovePipe(this.Pipe); ; });
         }
     }
 }

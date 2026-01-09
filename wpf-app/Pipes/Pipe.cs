@@ -9,6 +9,10 @@ namespace Wavy.Flow
         [DllImport("wavy.dll")]
         protected static extern void Pipe_free(IntPtr p);
         [DllImport("wavy.dll")]
+        protected static extern void Pipe_init(IntPtr p);
+        [DllImport("wavy.dll")]
+        protected static extern void Pipe_shutdown(IntPtr p);
+        [DllImport("wavy.dll")]
         protected static extern uint Pipe_getInputPortsCount(IntPtr p);
         [DllImport("wavy.dll")]
         protected static extern uint Pipe_getOutputPortsCount(IntPtr p);
@@ -54,11 +58,17 @@ namespace Wavy.Flow
             this.Project = project;
             this._NativePtr = CreateNativePipeInstance();
             PipeInstancesMap.Add(this._NativePtr, this);
+            this.Init();
             this._Position = new Point(0, 0);
             this._Name = String.Format("Pipe {0}", Random.Shared.Next());
         }
 
         protected abstract nint CreateNativePipeInstance();
+
+        private void Init()
+        {
+            Pipe_init(this._NativePtr);
+        }
 
         ~Pipe()
         {
@@ -66,6 +76,7 @@ namespace Wavy.Flow
         }
         public void Dispose()
         {
+            Pipe_shutdown(this._NativePtr);
             PipeInstancesMap.Remove(this._NativePtr);
             Pipe_free(this._NativePtr);
         }

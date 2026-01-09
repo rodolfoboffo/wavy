@@ -19,8 +19,7 @@ namespace Wavy.Pipes
         {
             this.Map = new Dictionary<PipeEnum, Type>
             {
-                { PipeEnum.CONSTANT_VALUE, typeof(ConstantValuePipe) },
-                { PipeEnum.CONSTANT_WAVE, typeof(ConstantWavePipe) }
+                { PipeEnum.CONSTANT_VALUE, typeof(ConstantValuePipe) }
             };
         }
 

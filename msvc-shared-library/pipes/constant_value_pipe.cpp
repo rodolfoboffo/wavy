@@ -10,6 +10,9 @@ ConstantValuePipe::ConstantValuePipe() : Pipe() {
 };
 
 void ConstantValuePipe::createPorts() {
+#ifdef _DEBUG
+	std::cout << "Creating ports for ConstantValuePipe." << std::endl;
+#endif
 	Port* outputPort = new Port();
 	this->ports[OUTPUT_PORTS_INDEX].push_back(outputPort);
 }
