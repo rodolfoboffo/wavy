@@ -11,7 +11,7 @@ class Pipe {
 private:
 	bool threadedWorker;
 	bool running;
-	std::mutex* mtx;
+	std::recursive_mutex* mtx;
 	std::thread* workerThread;
 protected:
 	std::vector<Port*> ports[2];

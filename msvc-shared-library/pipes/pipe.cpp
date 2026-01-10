@@ -25,7 +25,7 @@ unsigned int Pipe::getPortsCount(unsigned short inputOutput)
 
 Pipe::Pipe() {
 	this->workerThread = NULL;
-	this->mtx = new std::mutex();
+	this->mtx = new std::recursive_mutex();
 	this->running = true;
 	this->threadedWorker = true;
 }
