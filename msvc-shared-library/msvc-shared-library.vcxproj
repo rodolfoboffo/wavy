@@ -148,7 +148,9 @@
     <ClInclude Include="math\constants.h" />
     <ClInclude Include="math\sine.h" />
     <ClInclude Include="math\table.h" />
+    <ClInclude Include="pipes\buffer.h" />
     <ClInclude Include="pipes\constant_value_pipe.h" />
+    <ClInclude Include="pipes\oscilloscope_pipe.h" />
     <ClInclude Include="pipes\pipe.h" />
     <ClInclude Include="pipes\port.h" />
     <ClInclude Include="wavy.h" />
@@ -158,8 +160,11 @@
     <ClCompile Include="math\point.cpp" />
     <ClCompile Include="math\sine.cpp" />
     <ClCompile Include="math\table.cpp" />
+    <ClCompile Include="pipes\buffer.cpp" />
     <ClCompile Include="pipes\constant_value_pipe.cpp" />
+    <ClCompile Include="pipes\oscilloscope_pipe.cpp" />
     <ClCompile Include="pipes\pipe.cpp" />
+    <ClCompile Include="pipes\port.cpp" />
     <ClCompile Include="wavy.cpp" />
   </ItemGroup>
   <ItemGroup>

@@ -25,8 +25,9 @@ unsigned int Pipe::getPortsCount(unsigned short inputOutput)
 
 Pipe::Pipe() {
 	this->workerThread = NULL;
-	this->mtx = new std::recursive_mutex();
+	this->mtx = new std::mutex();
 	this->running = true;
+	this->isShuttingDown = false;
 	this->threadedWorker = true;
 }
 
@@ -38,14 +39,31 @@ void Pipe::createAndStartWorker() {
 }
 
 void Pipe::workerTask() {
-	while (this->running) {
+	bool _keepRunning = true;
+	while (_keepRunning) {
+		if (!this->isShuttingDown) {
+			if (this->running) {
+				this->process();
+			}
+			else {
 #ifdef _DEBUG
-		std::cout << "Worker task doing nothing." << std::endl;
+				std::cout << "Pipe paused. Worker task doing nothing." << std::endl;
 #endif
-		std::this_thread::sleep_for(std::chrono::seconds(5));
-	}
+			}
+			std::this_thread::yield();
+		}
+		else {
 #ifdef _DEBUG
-	std::cout << "Worker task finishing." << std::endl;
+			std::cout << "Worker thread finishing." << std::endl;
+#endif
+			_keepRunning = false;
+		}
+	}
+}
+
+void Pipe::process() {
+#ifdef _DEBUG
+	std::cout << "Worker task doing job." << std::endl;
 #endif
 }
 
@@ -91,10 +109,16 @@ Port* Pipe::getOutputPort(unsigned short portIndex)
 
 void Pipe::init()
 {
-	this->mtx->lock();
+	std::lock_guard<std::mutex> lock(*(this->mtx));
+	this->createPorts();
 	if (this->threadedWorker)
 		this->createAndStartWorker();
-	this->mtx->unlock();
+}
+
+void Pipe::setRunning(bool r)
+{
+	std::lock_guard<std::mutex> lock(*(this->mtx));
+	this->running = r;
 }
 
 void Pipe::shutdown()
@@ -104,6 +128,8 @@ void Pipe::shutdown()
 	std::cout << "Pipe shutting down." << std::endl;
 #endif
 	this->running = false;
+	this->isShuttingDown = true;
+	this->mtx->unlock();
 	if (this->threadedWorker && this->workerThread != NULL) {
 #ifdef _DEBUG
 		std::cout << "Waiting worker thread to join." << std::endl;
@@ -113,7 +139,6 @@ void Pipe::shutdown()
 		std::cout << "Worker thread joined." << std::endl;
 #endif
 	}
-	this->mtx->unlock();
 }
 
 void Pipe_free(Pipe* p) {
@@ -126,6 +151,11 @@ void Pipe_shutdown(Pipe* p) {
 
 void Pipe_init(Pipe* p) {
 	p->init();
+}
+
+void Pipe_setRunning(Pipe* p, bool r)
+{
+	p->setRunning(r);
 }
 
 unsigned int Pipe_getInputPortsCount(Pipe* p)

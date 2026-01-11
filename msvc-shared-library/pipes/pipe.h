@@ -10,17 +10,18 @@ class Port;
 class Pipe {
 private:
 	bool threadedWorker;
-	bool running;
-	std::recursive_mutex* mtx;
+	bool running, isShuttingDown;
 	std::thread* workerThread;
 protected:
+	std::mutex* mtx;
 	std::vector<Port*> ports[2];
 	std::vector<Port*> getPorts(unsigned short inputOutput);
 	Port* getPort(unsigned short inputOutput, unsigned short portIndex);
 	unsigned int getPortsCount(unsigned short inputOutput);
 	virtual void createPorts() = 0;
 	void createAndStartWorker();
-	virtual void workerTask();
+	void workerTask();
+	virtual void process();
 public:
 	Pipe();
 	unsigned int getInputPortsCount();
@@ -32,6 +33,7 @@ public:
 	Port* getInputPort(unsigned short portIndex);
 	Port* getOutputPort(unsigned short portIndex);
 	void init();
+	void setRunning(bool p);
 	void shutdown();
 };
 
@@ -39,6 +41,7 @@ extern "C" {
 	WAVYLIBRARY_API void Pipe_free(Pipe* p);
 	WAVYLIBRARY_API void Pipe_shutdown(Pipe* p);
 	WAVYLIBRARY_API void Pipe_init(Pipe* p);
+	WAVYLIBRARY_API void Pipe_setRunning(Pipe* p, bool r);
 	WAVYLIBRARY_API unsigned int Pipe_getInputPortsCount(Pipe* p);
 	WAVYLIBRARY_API unsigned int Pipe_getOutputPortsCount(Pipe* p);
 }

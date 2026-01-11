@@ -1,5 +1,8 @@
 {
   "Source": {
     "Constant Value": "CONSTANT_VALUE"
+  },
+  "Monitor": {
+    "Oscilloscope": "OSCILLOSCOPE"
   }
 }
