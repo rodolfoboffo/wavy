@@ -10,7 +10,7 @@ void OscilloscopePipe::createPorts()
 #ifdef _DEBUG
 	std::cout << "Creating ports for OscilloscopePipe." << std::endl;
 #endif
-	Port* inputPort = new Port(this);
+	Port* inputPort = new Port(this, "Input");
 	this->ports[INPUT_PORTS_INDEX].push_back(inputPort);
 }
 

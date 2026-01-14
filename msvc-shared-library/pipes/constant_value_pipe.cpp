@@ -20,7 +20,7 @@ void ConstantValuePipe::createPorts() {
 #ifdef _DEBUG
 	std::cout << "Creating ports for ConstantValuePipe." << std::endl;
 #endif
-	Port* outputPort = new Port(this);
+	Port* outputPort = new Port(this, "Output");
 	this->ports[OUTPUT_PORTS_INDEX].push_back(outputPort);
 }
 
@@ -39,4 +39,9 @@ ConstantValuePipe* ConstantValuePipe_new()
 	std::cout << "ConstantValuePipe_new called." << std::endl;
 	#endif
 	return new ConstantValuePipe();
+}
+
+void ConstantValuePipe_setValue(ConstantValuePipe* p, float v)
+{
+	p->setValue(v);
 }

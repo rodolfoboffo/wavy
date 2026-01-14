@@ -95,8 +95,7 @@ namespace Wavy.UI
             Project? selectedProject = AppController.Instance.Workspace.SelectedProject;
             if (selectedProject != null) {
                 PipeEnum pipeEnum = (PipeEnum)((MenuItem)sender).Tag;
-                Pipe pipe = PipeClassMap.Instance.GetPipeInstanceByEnum(pipeEnum, selectedProject);
-                AppController.Instance.Workspace.SelectedProject?.AddPipe(pipe);
+                selectedProject.CreatePipe(pipeEnum);
             }
         }
     }

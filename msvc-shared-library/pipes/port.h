@@ -14,9 +14,16 @@ private:
 	Pipe* pipe;
 	Port* linkedPort;
 	Buffer* buffer;
+protected:
+	const char* name;
 public:
-	Port(Pipe* p);
+	Port(Pipe* p, const char* name);
+	const char* getName();
 	void setLinkedPort(Port* p);
 	Port* getLinkedPort();
 	bool putValue(float v);
 };
+
+extern "C" {
+	WAVYLIBRARY_API const char* Port_getName(Port* p);
+}

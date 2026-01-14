@@ -13,7 +13,7 @@ namespace Wavy.Pipes
             return ConstantValuePipe_new();
         }
 
-        public ConstantValuePipe(Project project) : base(project)
+        public ConstantValuePipe() : base()
         {
         }
     }

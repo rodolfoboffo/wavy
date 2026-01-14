@@ -42,6 +42,8 @@ extern "C" {
 	WAVYLIBRARY_API void Pipe_shutdown(Pipe* p);
 	WAVYLIBRARY_API void Pipe_init(Pipe* p);
 	WAVYLIBRARY_API void Pipe_setRunning(Pipe* p, bool r);
-	WAVYLIBRARY_API unsigned int Pipe_getInputPortsCount(Pipe* p);
-	WAVYLIBRARY_API unsigned int Pipe_getOutputPortsCount(Pipe* p);
+	WAVYLIBRARY_API unsigned short Pipe_getInputPortsCount(Pipe* p);
+	WAVYLIBRARY_API unsigned short Pipe_getOutputPortsCount(Pipe* p);
+	WAVYLIBRARY_API Port* Pipe_getInputPort(Pipe* p, unsigned short portIndex);
+	WAVYLIBRARY_API Port* Pipe_getOutputPort(Pipe* p, unsigned short portIndex);
 }

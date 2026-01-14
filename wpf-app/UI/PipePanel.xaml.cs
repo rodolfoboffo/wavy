@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Threading;
 using Wavy.Flow;
 
 namespace Wavy.UI
@@ -21,6 +22,27 @@ namespace Wavy.UI
             this._StartingPositionRelativeToCanvas = Math.Point.Zero();
             if (this.Pipe.Project != null)
                 this.Pipe.Project.OnPipeRemoved += PipePanel_OnPipeRemoved;
+            this.RecreatePortPanels();
+            this.Pipe.OnPortAdded += Pipe_OnPortAdded;
+        }
+
+        private void Pipe_OnPortAdded(object sender, PortsEventArgs e)
+        {
+            Application.Current.Dispatcher.Invoke(new Action(() => {
+                this.RecreatePortPanels();
+            }));
+        }
+
+        private void RecreatePortPanels()
+        {
+            this.PortsStackPanel.Children.Clear();
+            foreach (Port p in this.Pipe.InputPorts)
+            {
+                this.PortsStackPanel.Children.Add(new PortPanel(p));
+            }
+            foreach (Port p in this.Pipe.OutputPorts) {
+                this.PortsStackPanel.Children.Add(new PortPanel(p));
+            }
         }
 
         private void PipePanel_OnPipeRemoved(object sender, PipesEventArgs e)

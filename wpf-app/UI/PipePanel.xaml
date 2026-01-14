@@ -14,9 +14,12 @@
             <MenuItem Name="RemovePipeMenuItem" Header="Remove Pipe" Click="RemovePipeMenuItem_Click"/>
         </ContextMenu>
     </UserControl.ContextMenu>
-    <Border Style="{StaticResource PipeBorder}">
-        <Grid>
+    <Border Style="{StaticResource PipeBorder}" Width="Auto" Height="Auto">
+        <StackPanel Orientation="Vertical">
             <Label Style="{StaticResource PipeTitle}" Name="LabelPipeName" Content="{Binding Name}"/>
-        </Grid>
+            <StackPanel Name="PortsStackPanel"  Orientation="Vertical" HorizontalAlignment="Center">
+
+            </StackPanel>
+        </StackPanel>
     </Border>
 </UserControl>

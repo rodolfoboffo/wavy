@@ -1,4 +1,6 @@
-﻿using Wavy.Pipes;
+﻿using System.Windows.Controls;
+using Wavy.Core;
+using Wavy.Pipes;
 
 namespace Wavy.Flow
 {
@@ -36,6 +38,14 @@ namespace Wavy.Flow
                 this.OnPipeRemoved?.Invoke(this, new PipesEventArgs(pipe));
                 pipe.Dispose();
             }
+        }
+
+        public Pipe CreatePipe(PipeEnum pipeEnum)
+        {
+            Pipe pipe = PipeClassMap.Instance.GetPipeInstanceByEnum(pipeEnum);
+            pipe.Project = this;
+            this.AddPipe(pipe);
+            return pipe;
         }
     }
 

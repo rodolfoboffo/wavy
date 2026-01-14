@@ -16,5 +16,5 @@ public:
 
 extern "C" {
 	WAVYLIBRARY_API ConstantValuePipe* ConstantValuePipe_new();
-	WAVYLIBRARY_API ConstantValuePipe* ConstantValuePipe_setValue(float v);
+	WAVYLIBRARY_API void ConstantValuePipe_setValue(ConstantValuePipe* p, float v);
 }

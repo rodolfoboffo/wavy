@@ -4,11 +4,17 @@
 #include <iostream>
 #endif
 
-Port::Port(Pipe* p) {
+Port::Port(Pipe* p, const char* name) {
 	this->mtx = new std::mutex();
+	this->name = name;
 	this->pipe = p;
 	this->buffer = new Buffer();
 	this->linkedPort = nullptr;
+}
+
+const char* Port::getName()
+{
+	return this->name;
 }
 
 void Port::setLinkedPort(Port* p)
@@ -44,4 +50,9 @@ bool Port::putValue(float v)
 		}
 	}
 	return false;
+}
+
+const char* Port_getName(Port* p)
+{
+	return p->getName();
 }

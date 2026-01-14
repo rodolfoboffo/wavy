@@ -13,7 +13,7 @@ namespace Wavy.Pipes
             return OscilloscopePipe_new();
         }
 
-        public OscilloscopePipe(Project project) : base(project)
+        public OscilloscopePipe() : base()
         {
         }
     }

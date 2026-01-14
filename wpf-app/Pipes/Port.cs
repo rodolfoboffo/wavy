@@ -1,12 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Runtime.InteropServices;
 
-namespace Wavy.Pipes
+namespace Wavy.Flow
 {
-    internal class Port
+    public class Port
     {
+        [DllImport("wavy.dll")]
+        protected static extern IntPtr Port_getName(IntPtr p);
+
+        private static Dictionary<IntPtr, Port> NativeInstancesMap = new Dictionary<IntPtr, Port>();
+        private readonly IntPtr _NativePtr;
+        public String Name { get; private set; }
+        
+        public Port(IntPtr p) {
+            this._NativePtr = p;
+            NativeInstancesMap.Add(p, this);
+
+            string? name = Marshal.PtrToStringAnsi(Port_getName(this._NativePtr));
+            this.Name = name == null ? String.Empty : name;
+        }
     }
 }

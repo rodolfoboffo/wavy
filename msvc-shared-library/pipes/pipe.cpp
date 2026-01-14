@@ -158,12 +158,22 @@ void Pipe_setRunning(Pipe* p, bool r)
 	p->setRunning(r);
 }
 
-unsigned int Pipe_getInputPortsCount(Pipe* p)
+unsigned short Pipe_getInputPortsCount(Pipe* p)
 {
 	return p->getInputPortsCount();
 }
 
-unsigned int Pipe_getOutputPortsCount(Pipe* p)
+unsigned short Pipe_getOutputPortsCount(Pipe* p)
 {
 	return p->getOutputPortsCount();
+}
+
+Port* Pipe_getInputPort(Pipe* p, unsigned short portIndex)
+{
+	return p->getInputPort(portIndex);
+}
+
+Port* Pipe_getOutputPort(Pipe* p, unsigned short portIndex)
+{
+	return p->getOutputPort(portIndex);
 }

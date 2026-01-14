@@ -31,13 +31,13 @@ namespace Wavy.Pipes
             throw new Exception(String.Format("Pipe type not found for Enum {0}", pipeEnum.ToString()));
         }
 
-        public Pipe GetPipeInstanceByEnum(PipeEnum pipeEnum, Project project)
+        public Pipe GetPipeInstanceByEnum(PipeEnum pipeEnum)
         {
             Type pipeType = this.GetPipeTypeByEnum(pipeEnum);
-            System.Reflection.ConstructorInfo? constructor = pipeType.GetConstructor(new Type[] {typeof(Project)});
+            System.Reflection.ConstructorInfo? constructor = pipeType.GetConstructor(new Type[] {});
             if (constructor != null)
             {
-                Pipe pipe = (Pipe)constructor.Invoke(new object[] {project});
+                Pipe pipe = (Pipe)constructor.Invoke(new object[] {});
                 return pipe;
             }
             throw new Exception(String.Format("Could not create pipe instance from enum {0}", pipeEnum.ToString()));
