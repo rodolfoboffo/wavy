@@ -24,6 +24,16 @@ public:
 	bool putValue(float v);
 };
 
+class InputPort : public Port {
+public:
+	InputPort(Pipe* p, const char* name) : Port(p, name) {};
+};
+
+class OutputPort : public Port {
+public:
+	OutputPort(Pipe* p, const char* name) : Port(p, name) {};
+};
+
 extern "C" {
 	WAVYLIBRARY_API const char* Port_getName(Port* p);
 }

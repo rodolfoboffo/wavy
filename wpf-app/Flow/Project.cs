@@ -1,6 +1,4 @@
-﻿using System.Windows.Controls;
-using Wavy.Core;
-using Wavy.Pipes;
+﻿using Wavy.Pipes;
 
 namespace Wavy.Flow
 {

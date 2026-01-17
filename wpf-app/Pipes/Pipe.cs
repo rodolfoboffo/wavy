@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Runtime.InteropServices;
 using Wavy.Math;
-using Wavy.Pipes;
 
 namespace Wavy.Flow
 {
@@ -31,7 +30,7 @@ namespace Wavy.Flow
         public event PropertyChangedEventHandler? PropertyChanged;
 
         public Project? Project { get; set; }
-        private readonly IntPtr _NativePtr;
+        private readonly IntPtr NativePtr;
         private String _Name;
         public List<Port> InputPorts, OutputPorts;
 
@@ -69,8 +68,8 @@ namespace Wavy.Flow
             this._Position = new Point(0, 0);
             this._Name = String.Format("Pipe {0}", Random.Shared.Next());
 
-            this._NativePtr = CreateNativePipeInstance();
-            NativeInstancesMap.Add(this._NativePtr, this);
+            this.NativePtr = CreateNativePipeInstance();
+            NativeInstancesMap.Add(this.NativePtr, this);
 
             this.Init();
             this.SyncPorts();
@@ -79,18 +78,18 @@ namespace Wavy.Flow
         private void SyncPorts()
         {
             this.InputPorts.Clear();
-            ushort pCount = Pipe_getInputPortsCount(this._NativePtr);
+            ushort pCount = Pipe_getInputPortsCount(this.NativePtr);
             for (ushort i = 0; i < pCount; i++)
             {
-                Port p = new Port(Pipe_getInputPort(this._NativePtr, i));
+                Port p = new InputPort(Pipe_getInputPort(this.NativePtr, i));
                 this.InputPorts.Add(p);
                 this.OnPortAdded?.Invoke(this, new PortsEventArgs(p));
             }
             this.OutputPorts.Clear();
-            pCount = Pipe_getOutputPortsCount(this._NativePtr);
+            pCount = Pipe_getOutputPortsCount(this.NativePtr);
             for (ushort i = 0; i < pCount; i++)
             {
-                Port p = new Port(Pipe_getOutputPort(this._NativePtr, i));
+                Port p = new OutputPort(Pipe_getOutputPort(this.NativePtr, i));
                 this.OutputPorts.Add(p);
                 this.OnPortAdded?.Invoke(this, new PortsEventArgs(p));
             }
@@ -100,7 +99,7 @@ namespace Wavy.Flow
 
         private void Init()
         {
-            Pipe_init(this._NativePtr);
+            Pipe_init(this.NativePtr);
         }
 
         ~Pipe()
@@ -109,9 +108,9 @@ namespace Wavy.Flow
         }
         public void Dispose()
         {
-            Pipe_shutdown(this._NativePtr);
-            NativeInstancesMap.Remove(this._NativePtr);
-            Pipe_free(this._NativePtr);
+            Pipe_shutdown(this.NativePtr);
+            NativeInstancesMap.Remove(this.NativePtr);
+            Pipe_free(this.NativePtr);
         }
     }
     public class PortsEventArgs : EventArgs

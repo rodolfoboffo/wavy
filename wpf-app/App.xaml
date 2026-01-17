@@ -13,17 +13,31 @@
             <Setter Property="BorderThickness" Value="2pt" />
             <Setter Property="BorderBrush" Value="SteelBlue"/>
             <Setter Property="CornerRadius" Value="10" />
+            <Setter Property="Padding" Value="4"/>
         </Style>
         <Style x:Key="PipeTitle" TargetType="Label">
-            <Setter Property="FontSize" Value="10" />
+            <Setter Property="FontSize" Value="11" />
             <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
         </Style>
         <Style x:Key="PortName" TargetType="Label">
-            <Setter Property="FontSize" Value="10" />
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="Margin" Value="2,0,2,0" />
         </Style>
         <Style x:Key="ProjectTabItemHeader" TargetType="Label">
             <Setter Property="FontSize" Value="11" />
             <Setter Property="Padding" Value="0" />
+        </Style>
+        <Style x:Key="PortHandleRectangle" TargetType="Rectangle">
+            <Setter Property="Width" Value="8" />
+            <Setter Property="Height" Value="8" />
+            <Setter Property="Stroke" Value="Black" />
+            <Setter Property="Fill" Value="DarkGreen" />
+            <Setter Property="Margin" Value="2,0,2,0" />
+        </Style>
+        <Style x:Key="PortValueTextBox" TargetType="TextBox">
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="Margin" Value="2,0,2,0" />
         </Style>
     </Application.Resources>
 </Application>

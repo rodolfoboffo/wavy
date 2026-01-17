@@ -14,10 +14,10 @@
             <MenuItem Name="RemovePipeMenuItem" Header="Remove Pipe" Click="RemovePipeMenuItem_Click"/>
         </ContextMenu>
     </UserControl.ContextMenu>
-    <Border Style="{StaticResource PipeBorder}" Width="Auto" Height="Auto">
+    <Border Style="{StaticResource PipeBorder}">
         <StackPanel Orientation="Vertical">
             <Label Style="{StaticResource PipeTitle}" Name="LabelPipeName" Content="{Binding Name}"/>
-            <StackPanel Name="PortsStackPanel"  Orientation="Vertical" HorizontalAlignment="Center">
+            <StackPanel Name="PortsStackPanel"  Orientation="Vertical">
 
             </StackPanel>
         </StackPanel>
