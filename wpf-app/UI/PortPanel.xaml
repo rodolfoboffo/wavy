@@ -15,7 +15,8 @@
         <Grid.RowDefinitions>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        <Rectangle Style="{StaticResource PortHandleRectangle}" 
+        <Rectangle Name="InputPortHandleRect"
+                   Style="{StaticResource PortHandleRectangle}" 
                    Grid.Column="0" 
                    Visibility="{Binding InputPortHandleVisibility}" />
         <Label Style="{StaticResource PortName}" 
@@ -27,7 +28,8 @@
                  Visibility="{Binding ValueTextBoxVisibility}" 
                  MouseLeftButtonDown="PortValueTextBox_MouseLeftButtonDown"
                  MouseMove="PortValueTextBox_MouseMove"/>
-        <Rectangle Style="{StaticResource PortHandleRectangle}" 
+        <Rectangle Name="OutputPortHandleRect"
+                   Style="{StaticResource PortHandleRectangle}" 
                    Grid.Column="3" 
                    Visibility="{Binding OutputPortHandleVisibility}" />
     </Grid>
