@@ -1,21 +1,26 @@
-﻿using System.Windows;
+﻿using System.ComponentModel;
+using System.Windows;
 using System.Windows.Controls;
 using Wavy.Flow;
 
 namespace Wavy.UI
 {
-    public partial class PortPanel : UserControl
+    public partial class PortPanel : UserControl, INotifyPropertyChanged
     {
         private Port Port;
+
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         public String PortName
         {
             get { return this.Port.Name; }
         }
 
+        public bool IsSelected { get { return this.Port.IsSelected; }  }
+
         public Visibility ValueTextBoxVisibility
         {
-            get { return Visibility.Visible; }
+            get { return Visibility.Collapsed; }
         }
 
         public Visibility InputPortHandleVisibility

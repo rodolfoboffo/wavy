@@ -34,6 +34,11 @@
             <Setter Property="Stroke" Value="Black" />
             <Setter Property="Fill" Value="DarkGreen" />
             <Setter Property="Margin" Value="2,0,2,0" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                    <Setter Property="Fill" Value="Green" />
+                </DataTrigger>
+            </Style.Triggers>
         </Style>
         <Style x:Key="PortValueTextBox" TargetType="TextBox">
             <Setter Property="VerticalContentAlignment" Value="Center" />
