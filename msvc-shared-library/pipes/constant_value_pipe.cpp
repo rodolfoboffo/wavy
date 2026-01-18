@@ -17,7 +17,7 @@ void ConstantValuePipe::setValue(float v)
 ;
 
 void ConstantValuePipe::createPorts() {
-#ifdef _DEBUG
+#if _LOGGING_LEVEL <= _LOGGING_LEVEL_INFO
 	std::cout << "Creating ports for ConstantValuePipe." << std::endl;
 #endif
 	Port* outputPort = new OutputPort(this, "Output");
@@ -25,7 +25,7 @@ void ConstantValuePipe::createPorts() {
 }
 
 void ConstantValuePipe::process() {
-#ifdef _DEBUG
+#if _LOGGING_LEVEL <= _LOGGING_LEVEL_DEBUG
 	std::cout << "ConstantValuePipe Worker task doing job." << std::endl;
 #endif
 	std::lock_guard<std::mutex> lock(*(this->mtx));
@@ -35,9 +35,9 @@ void ConstantValuePipe::process() {
 
 ConstantValuePipe* ConstantValuePipe_new()
 {
-	#ifdef _DEBUG
+#if _LOGGING_LEVEL <= _LOGGING_LEVEL_INFO
 	std::cout << "ConstantValuePipe_new called." << std::endl;
-	#endif
+#endif
 	return new ConstantValuePipe();
 }
 

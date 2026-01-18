@@ -24,9 +24,15 @@ void Port::setLinkedPort(Port* p)
 	this->linkedPort = p;
 	if (previousLinkedPort != nullptr && p != previousLinkedPort) {
 		previousLinkedPort->setLinkedPort(nullptr);
+#if _LOGGING_LEVEL <= _LOGGING_LEVEL_INFO
+		std::cout << "Link removed from port." << std::endl;
+#endif
 	}
 	if (p != nullptr && p->getLinkedPort() != this) {
 		p->setLinkedPort(this);
+#if _LOGGING_LEVEL <= _LOGGING_LEVEL_INFO
+		std::cout << "Link between ports created." << std::endl;
+#endif
 	}
 }
 
@@ -44,7 +50,7 @@ bool Port::putValue(float v)
 			return true;
 		}
 		else {
-#ifdef _DEBUG
+#if _LOGGING_LEVEL <= _LOGGING_LEVEL_DEBUG
 			std::cout << "Buffer is full." << std::endl;
 #endif
 		}
@@ -56,3 +62,14 @@ const char* Port_getName(Port* p)
 {
 	return p->getName();
 }
+
+void Port_setLinkedPort(Port* p1, Port* p2)
+{
+	return p1->setLinkedPort(p2);
+}
+
+Port* Port_getLinkedPort(Port* p)
+{
+	return p->getLinkedPort();
+}
+

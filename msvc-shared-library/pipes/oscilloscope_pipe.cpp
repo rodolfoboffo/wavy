@@ -7,7 +7,7 @@
 
 void OscilloscopePipe::createPorts()
 {
-#ifdef _DEBUG
+#if _LOGGING_LEVEL <= _LOGGING_LEVEL_INFO
 	std::cout << "Creating ports for OscilloscopePipe." << std::endl;
 #endif
 	Port* inputPort = new InputPort(this, "Input");
@@ -18,7 +18,7 @@ OscilloscopePipe::OscilloscopePipe() {}
 
 OscilloscopePipe* OscilloscopePipe_new()
 {
-#ifdef _DEBUG
+#if _LOGGING_LEVEL <= _LOGGING_LEVEL_INFO
 	std::cout << "OscilloscopePipe_new called." << std::endl;
 #endif
 	return new OscilloscopePipe();

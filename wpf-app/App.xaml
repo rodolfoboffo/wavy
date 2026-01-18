@@ -34,9 +34,10 @@
             <Setter Property="Stroke" Value="Black" />
             <Setter Property="Fill" Value="DarkGreen" />
             <Setter Property="Margin" Value="2,0,2,0" />
+            <Setter Property="Cursor" Value="Hand" />
             <Style.Triggers>
                 <DataTrigger Binding="{Binding IsSelected}" Value="True">
-                    <Setter Property="Fill" Value="Green" />
+                    <Setter Property="Fill" Value="LightGreen" />
                 </DataTrigger>
             </Style.Triggers>
         </Style>

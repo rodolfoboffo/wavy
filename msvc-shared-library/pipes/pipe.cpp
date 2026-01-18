@@ -32,7 +32,7 @@ Pipe::Pipe() {
 }
 
 void Pipe::createAndStartWorker() {
-#ifdef _DEBUG
+#if _LOGGING_LEVEL <= _LOGGING_LEVEL_INFO
 	std::cout << "Creating worker thread for Pipe." << std::endl;
 #endif
 	this->workerThread = new std::thread(&Pipe::workerTask, this);
@@ -46,14 +46,14 @@ void Pipe::workerTask() {
 				this->process();
 			}
 			else {
-#ifdef _DEBUG
+#if _LOGGING_LEVEL <= _LOGGING_LEVEL_DEBUG
 				std::cout << "Pipe paused. Worker task doing nothing." << std::endl;
 #endif
 			}
 			std::this_thread::yield();
 		}
 		else {
-#ifdef _DEBUG
+#if _LOGGING_LEVEL <= _LOGGING_LEVEL_INFO
 			std::cout << "Worker thread finishing." << std::endl;
 #endif
 			_keepRunning = false;
@@ -62,7 +62,7 @@ void Pipe::workerTask() {
 }
 
 void Pipe::process() {
-#ifdef _DEBUG
+#if _LOGGING_LEVEL <= _LOGGING_LEVEL_DEBUG
 	std::cout << "Worker task doing job." << std::endl;
 #endif
 }
@@ -124,18 +124,18 @@ void Pipe::setRunning(bool r)
 void Pipe::shutdown()
 {
 	this->mtx->lock();
-#ifdef _DEBUG
+#if _LOGGING_LEVEL <= _LOGGING_LEVEL_INFO
 	std::cout << "Pipe shutting down." << std::endl;
 #endif
 	this->running = false;
 	this->isShuttingDown = true;
 	this->mtx->unlock();
 	if (this->threadedWorker && this->workerThread != NULL) {
-#ifdef _DEBUG
+#if _LOGGING_LEVEL <= _LOGGING_LEVEL_INFO
 		std::cout << "Waiting worker thread to join." << std::endl;
 #endif
 		this->workerThread->join();
-#ifdef _DEBUG
+#if _LOGGING_LEVEL <= _LOGGING_LEVEL_INFO
 		std::cout << "Worker thread joined." << std::endl;
 #endif
 	}

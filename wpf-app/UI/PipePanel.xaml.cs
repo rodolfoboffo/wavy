@@ -7,18 +7,19 @@ namespace Wavy.UI
 {
     public partial class PipePanel : UserControl
     {
-        private Pipe _Pipe;
-        private Math.Point _StartingPositionRelativeToCanvas;
-        private Math.Point _StartingPosition;
+        public Pipe Pipe { get; set; }
+        public bool IsMoving { get; set; }
+        private Math.Point StartingPositionRelativeToCanvas;
+        private Math.Point StartingPosition;
 
-        public Pipe Pipe { get { return _Pipe; } set { _Pipe = value; }  }
         public PipePanel(Pipe pipe)
         {
             InitializeComponent();
             this.DataContext = pipe;
-            this._Pipe = pipe;
-            this._StartingPosition = this.Pipe.Position;
-            this._StartingPositionRelativeToCanvas = Math.Point.Zero();
+            this.Pipe = pipe;
+            this.IsMoving = false;
+            this.StartingPosition = this.Pipe.Position;
+            this.StartingPositionRelativeToCanvas = Math.Point.Zero();
             if (this.Pipe.Project != null)
                 this.Pipe.Project.OnPipeRemoved += PipePanel_OnPipeRemoved;
             this.RecreatePortPanels();
@@ -59,11 +60,18 @@ namespace Wavy.UI
         {
             PipePanel pipePanel = (PipePanel)sender;
             Canvas parentCanvas = (Canvas)pipePanel.Parent;
-            if (pipePanel != null && e.LeftButton == MouseButtonState.Pressed)
+            if (this.IsMoving)
             {
-                Math.Point currentPosition = Math.Point.FromWindowsPoint(e.GetPosition(parentCanvas));
-                Math.Point displacement = currentPosition.Subtract(this._StartingPositionRelativeToCanvas);
-                this.Pipe.Position = this._StartingPosition.Sum(displacement);
+                if (pipePanel != null && e.LeftButton == MouseButtonState.Pressed)
+                {
+                    Math.Point currentPosition = Math.Point.FromWindowsPoint(e.GetPosition(parentCanvas));
+                    Math.Point displacement = currentPosition.Subtract(this.StartingPositionRelativeToCanvas);
+                    this.Pipe.Position = this.StartingPosition.Sum(displacement);
+                }
+                else
+                {
+                    this.IsMoving = false;
+                }
             }
         }
 
@@ -71,8 +79,9 @@ namespace Wavy.UI
         {
             PipePanel pipePanel = (PipePanel)sender;
             Canvas parentCanvas = (Canvas)pipePanel.Parent;
-            this._StartingPositionRelativeToCanvas = Wavy.Math.Point.FromWindowsPoint(e.GetPosition(parentCanvas));
-            this._StartingPosition = new Math.Point(Canvas.GetLeft(pipePanel), Canvas.GetTop(pipePanel));
+            this.IsMoving = true;
+            this.StartingPositionRelativeToCanvas = Wavy.Math.Point.FromWindowsPoint(e.GetPosition(parentCanvas));
+            this.StartingPosition = new Math.Point(Canvas.GetLeft(pipePanel), Canvas.GetTop(pipePanel));
         }
 
         private void RemovePipeMenuItem_Click(object sender, System.Windows.RoutedEventArgs e)

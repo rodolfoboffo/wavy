@@ -36,4 +36,6 @@ public:
 
 extern "C" {
 	WAVYLIBRARY_API const char* Port_getName(Port* p);
+	WAVYLIBRARY_API void Port_setLinkedPort(Port* p1, Port* p2);
+	WAVYLIBRARY_API Port* Port_getLinkedPort(Port* p);
 }

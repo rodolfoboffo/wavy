@@ -18,7 +18,10 @@
         <Rectangle Name="InputPortHandleRect"
                    Style="{StaticResource PortHandleRectangle}" 
                    Grid.Column="0" 
-                   Visibility="{Binding InputPortHandleVisibility}" />
+                   Visibility="{Binding InputPortHandleVisibility}"
+                   MouseLeftButtonUp="InputPortHandleRect_MouseLeftButtonUp"
+                   MouseLeftButtonDown="InputPortHandleRect_MouseLeftButtonDown"
+                   MouseMove="InputPortHandleRect_MouseMove"/>
         <Label Style="{StaticResource PortName}" 
                Content="{Binding PortName}" 
                Grid.Column="1"/>
@@ -31,6 +34,9 @@
         <Rectangle Name="OutputPortHandleRect"
                    Style="{StaticResource PortHandleRectangle}" 
                    Grid.Column="3" 
-                   Visibility="{Binding OutputPortHandleVisibility}" />
+                   Visibility="{Binding OutputPortHandleVisibility}"
+                   MouseLeftButtonUp="OutputPortHandleRect_MouseLeftButtonUp"
+                   MouseLeftButtonDown="OutputPortHandleRect_MouseLeftButtonDown"
+                   MouseMove="OutputPortHandleRect_MouseMove"/>
     </Grid>
 </UserControl>
