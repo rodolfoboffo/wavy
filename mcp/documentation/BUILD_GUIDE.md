@@ -254,27 +254,46 @@ dotnet run --project wpf-app.csproj --configuration Debug
 
 ## Multi-Component Build
 
-### Build All Components (PowerShell)
+### Automated Full Recompile (Recommended)
+
+**Quick Command**:
+```powershell
+.\mcp\scripts\full-recompile.ps1
+```
+
+**Features**:
+- ✅ Builds C++ DLL in Debug x64
+- ✅ Copies wavy.dll to WPF output
+- ✅ Builds WPF application
+- ✅ Launches WPF executable
+- ✅ Supports Release configuration: `-Configuration Release`
+- ✅ Supports build-only mode: `-NoRun`
+
+See [FULL_RECOMPILE.md](FULL_RECOMPILE.md) for complete documentation.
+
+### Manual Build All Components (PowerShell)
 
 ```powershell
-# Build C++ first (dependency for both Java and C#)
+$msbuild = "C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\MSBuild.exe"
+
+# Step 1: Build C++ first (dependency for both Java and C#)
 Write-Host "Building C++ Core..."
 cd msvc-shared-library
-msbuild msvc-shared-library.sln /p:Configuration=Release /p:Platform=x64
+& $msbuild msvc-shared-library.sln /p:Configuration=Release /p:Platform=x64
 if ($LASTEXITCODE -ne 0) { Write-Error "C++ build failed"; exit 1 }
 cd ..
 
-# Copy DLL to known location
+# Step 2: Copy DLL to known location
 Copy-Item "msvc-shared-library/x64/Release/wavy.dll" "./wavy.dll"
 
-# Build Java
+# Step 3: Build Java
 Write-Host "Building Java Application..."
 cd java-app
 mvn clean package -DskipTests
 if ($LASTEXITCODE -ne 0) { Write-Error "Java build failed"; exit 1 }
 cd ..
 
-# Build C#
+# Step 4: Build C#
 Write-Host "Building C# WPF Application..."
 cd wpf-app
 dotnet build wpf-app.csproj -c Release

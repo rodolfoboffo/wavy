@@ -89,18 +89,41 @@ Output (Speaker, File, Network)
 
 ### 2. Building the Project
 
-**One-step build** (PowerShell):
+### Full Recompile (Recommended)
+
+Automated full build with C++ DLL copy and WPF execution:
+
 ```powershell
-# C++ first (dependency)
-cd msvc-shared-library
-msbuild msvc-shared-library.sln /p:Configuration=Release /p:Platform=x64
+.\mcp\scripts\full-recompile.ps1               # Build + Run (Debug)
+.\mcp\scripts\full-recompile.ps1 -Configuration Release  # Release build
+.\mcp\scripts\full-recompile.ps1 -NoRun        # Build without running
+```
 
-# Java
-cd ../java-app
+**Steps executed**:
+1. Build C++ DLL (Debug x64)
+2. Copy wavy.dll to WPF output directory
+3. Build WPF Application
+4. Run WPF Application
+
+See [FULL_RECOMPILE.md](FULL_RECOMPILE.md) for details.
+
+### Component-by-Component Build
+
+**C++ only** (dependency for Java/C#):
+```powershell
+$msbuild = "C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\MSBuild.exe"
+& $msbuild msvc-shared-library\msvc-shared-library.sln /p:Configuration=Release /p:Platform=x64
+```
+
+**Java**:
+```powershell
+cd java-app
 mvn clean package -DskipTests
+```
 
-# C#
-cd ../wpf-app
+**C#**:
+```powershell
+cd wpf-app
 dotnet build wpf-app.csproj -c Release
 ```
 

@@ -81,11 +81,24 @@ The configuration enables Claude to:
 ✅ **Debug interop issues** with JNA/P/Invoke documentation  
 ✅ **Extend functionality** with common patterns for adding new pipes  
 
+### Standard Build Procedure
+
+When requesting a **full recompile**, the following automated steps are executed:
+
+1. **Build C++ DLL** - `wavy.dll` in Debug x64 configuration
+2. **Copy DLL** - To `wpf-app\bin\Debug\net8.0-windows\`
+3. **Build WPF App** - C# application in Debug configuration
+4. **Run Application** - Launch the WPF executable
+
+**Documented in**: [FULL_RECOMPILE.md](documentation/FULL_RECOMPILE.md)  
+**PowerShell Script**: [mcp/scripts/full-recompile.ps1](scripts/full-recompile.ps1)
+
 ### Example Queries Claude Can Handle
 
 - "What's the architecture of Wavy?"
 - "How do I add a new pipe type?"
 - "Show me the ConstantWavePipe implementation"
+- "Full recompile" (executes complete build + run)
 - "Build the Java application"
 - "What are the inputs/outputs of FMModulationPipe?"
 - "How does Java communicate with the C++ DLL?"
