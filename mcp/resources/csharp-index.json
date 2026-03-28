@@ -1,0 +1,404 @@
+{
+  "language": "C#",
+  "version": "C# 11+ (.NET 8.0)",
+  "rootPath": "wpf-app/",
+  "symbolCount": 35,
+  "lastUpdated": "2026-03-28",
+  "namespaces": {
+    "App": {
+      "path": ".",
+      "description": "Application entry point",
+      "classes": {
+        "App": {
+          "file": "App.xaml.cs",
+          "type": "class",
+          "extends": "Application",
+          "description": "Main application class with startup logic",
+          "methods": [
+            {
+              "name": "App",
+              "signature": "public App()",
+              "description": "Default constructor"
+            },
+            {
+              "name": "Application_Startup",
+              "signature": "private void Application_Startup(object sender, StartupEventArgs e)",
+              "description": "Startup event handler"
+            }
+          ]
+        }
+      }
+    },
+    "Flow": {
+      "path": "Flow/",
+      "description": "Workflow and project management (mirrors Java design)",
+      "classes": {
+        "Workspace": {
+          "file": "Flow/Workspace.cs",
+          "type": "class",
+          "description": "Container for multiple projects",
+          "methods": [
+            {
+              "name": "AddProject",
+              "signature": "public void AddProject(Project project)",
+              "description": "Add project to workspace"
+            },
+            {
+              "name": "RemoveProject",
+              "signature": "public void RemoveProject(Project project)",
+              "description": "Remove project from workspace"
+            },
+            {
+              "name": "Projects",
+              "signature": "public List<Project> Projects { get; }",
+              "description": "Get all projects (property)"
+            }
+          ],
+          "events": [
+            {
+              "name": "ProjectAdded",
+              "signature": "public event EventHandler ProjectAdded",
+              "description": "Raised when project is added"
+            },
+            {
+              "name": "ProjectRemoved",
+              "signature": "public event EventHandler ProjectRemoved",
+              "description": "Raised when project is removed"
+            }
+          ]
+        },
+        "Project": {
+          "file": "Flow/Project.cs",
+          "type": "class",
+          "description": "Collection of pipes with connection management",
+          "methods": [
+            {
+              "name": "Project",
+              "signature": "public Project(string name)",
+              "description": "Constructor with project name"
+            },
+            {
+              "name": "AddPipe",
+              "signature": "public void AddPipe(Pipe pipe)",
+              "description": "Add pipe to project"
+            },
+            {
+              "name": "RemovePipe",
+              "signature": "public void RemovePipe(Pipe pipe)",
+              "description": "Remove pipe from project"
+            },
+            {
+              "name": "ConnectPorts",
+              "signature": "public void ConnectPorts(Port from, Port to)",
+              "description": "Connect output port to input port"
+            },
+            {
+              "name": "Name",
+              "signature": "public string Name { get; set; }",
+              "description": "Project name (property)"
+            }
+          ],
+          "events": [
+            {
+              "name": "PipeAdded",
+              "signature": "public event EventHandler PipeAdded",
+              "description": "Raised when pipe is added"
+            },
+            {
+              "name": "PipeRemoved",
+              "signature": "public event EventHandler PipeRemoved",
+              "description": "Raised when pipe is removed"
+            }
+          ]
+        }
+      }
+    },
+    "Pipes": {
+      "path": "Pipes/",
+      "description": "P/Invoke wrappers around C++ DLL",
+      "classes": {
+        "Pipe": {
+          "file": "Pipes/Pipe.cs",
+          "type": "class",
+          "description": "Managed wrapper around native Pipe",
+          "methods": [
+            {
+              "name": "Pipe",
+              "signature": "public Pipe(string pipeName)",
+              "description": "Constructor: creates native pipe via P/Invoke"
+            },
+            {
+              "name": "Init",
+              "signature": "public void Init()",
+              "description": "Initialize pipe (call Pipe_init)"
+            },
+            {
+              "name": "Shutdown",
+              "signature": "public void Shutdown()",
+              "description": "Stop and cleanup pipe"
+            },
+            {
+              "name": "SetRunning",
+              "signature": "public void SetRunning(bool running)",
+              "description": "Start/stop pipe execution"
+            },
+            {
+              "name": "GetInputPort",
+              "signature": "public Port GetInputPort(int index)",
+              "description": "Get input port by index"
+            },
+            {
+              "name": "GetOutputPort",
+              "signature": "public Port GetOutputPort(int index)",
+              "description": "Get output port by index"
+            },
+            {
+              "name": "Handle",
+              "signature": "public IntPtr Handle { get; }",
+              "description": "Native pointer handle (property)"
+            }
+          ],
+          "pinvoke": [
+            {
+              "name": "Pipe_init",
+              "signature": "[DllImport(\"wavy.dll\", CallingConvention = CallingConvention.Cdecl)] private static extern IntPtr Pipe_init(string pipeName);",
+              "description": "Initialize pipe"
+            },
+            {
+              "name": "Pipe_shutdown",
+              "signature": "[DllImport(\"wavy.dll\", CallingConvention = CallingConvention.Cdecl)] private static extern void Pipe_shutdown(IntPtr handle);",
+              "description": "Shutdown pipe"
+            },
+            {
+              "name": "Pipe_setRunning",
+              "signature": "[DllImport(\"wavy.dll\", CallingConvention = CallingConvention.Cdecl)] private static extern void Pipe_setRunning(IntPtr handle, bool running);",
+              "description": "Control running state"
+            },
+            {
+              "name": "Pipe_getInputPort",
+              "signature": "[DllImport(\"wavy.dll\", CallingConvention = CallingConvention.Cdecl)] private static extern IntPtr Pipe_getInputPort(IntPtr handle, int index);",
+              "description": "Get input port"
+            },
+            {
+              "name": "Pipe_getOutputPort",
+              "signature": "[DllImport(\"wavy.dll\", CallingConvention = CallingConvention.Cdecl)] private static extern IntPtr Pipe_getOutputPort(IntPtr handle, int index);",
+              "description": "Get output port"
+            }
+          ]
+        },
+        "Port": {
+          "file": "Pipes/Port.cs",
+          "type": "class",
+          "description": "Managed wrapper around native Port",
+          "methods": [
+            {
+              "name": "Port",
+              "signature": "public Port(IntPtr handle)",
+              "description": "Constructor: wrap native port"
+            },
+            {
+              "name": "GetName",
+              "signature": "public string GetName()",
+              "description": "Get port name"
+            },
+            {
+              "name": "SetLinkedPort",
+              "signature": "public void SetLinkedPort(Port linkedPort)",
+              "description": "Link to another port"
+            },
+            {
+              "name": "GetLinkedPort",
+              "signature": "public Port GetLinkedPort()",
+              "description": "Get linked port"
+            },
+            {
+              "name": "Handle",
+              "signature": "public IntPtr Handle { get; }",
+              "description": "Native pointer handle (property)"
+            }
+          ],
+          "pinvoke": [
+            {
+              "name": "Port_getName",
+              "signature": "[DllImport(\"wavy.dll\", CallingConvention = CallingConvention.Cdecl)] private static extern IntPtr Port_getName(IntPtr handle);",
+              "description": "Get port name (returns char*)"
+            },
+            {
+              "name": "Port_setLinkedPort",
+              "signature": "[DllImport(\"wavy.dll\", CallingConvention = CallingConvention.Cdecl)] private static extern void Port_setLinkedPort(IntPtr thisPort, IntPtr linkedPort);",
+              "description": "Link two ports"
+            },
+            {
+              "name": "Port_getLinkedPort",
+              "signature": "[DllImport(\"wavy.dll\", CallingConvention = CallingConvention.Cdecl)] private static extern IntPtr Port_getLinkedPort(IntPtr handle);",
+              "description": "Get linked port"
+            }
+          ]
+        }
+      }
+    },
+    "Core": {
+      "path": "Core/",
+      "description": "Application controller and management",
+      "classes": {
+        "AppController": {
+          "file": "Core/AppController.cs",
+          "type": "class",
+          "description": "Singleton controller for pipe and port management",
+          "staticProperties": [
+            {
+              "name": "Instance",
+              "signature": "public static AppController Instance { get; }",
+              "description": "Singleton instance"
+            }
+          ],
+          "methods": [
+            {
+              "name": "CreatePipe",
+              "signature": "public Pipe CreatePipe(string pipeName)",
+              "description": "Create pipe by name"
+            },
+            {
+              "name": "DestroyPipe",
+              "signature": "public void DestroyPipe(Pipe pipe)",
+              "description": "Destroy pipe"
+            },
+            {
+              "name": "GetAllPipes",
+              "signature": "public List<Pipe> GetAllPipes()",
+              "description": "Get all active pipes"
+            }
+          ]
+        }
+      }
+    },
+    "Math": {
+      "path": "Math/",
+      "description": "Mathematical utilities",
+      "classes": {
+        "Point": {
+          "file": "Math/Point.cs",
+          "type": "struct",
+          "description": "2D coordinate",
+          "properties": [
+            {
+              "name": "X",
+              "type": "float",
+              "description": "X coordinate"
+            },
+            {
+              "name": "Y",
+              "type": "float",
+              "description": "Y coordinate"
+            }
+          ],
+          "methods": [
+            {
+              "name": "Point",
+              "signature": "public Point(float x, float y)",
+              "description": "Constructor"
+            },
+            {
+              "name": "Distance",
+              "signature": "public float Distance(Point other)",
+              "description": "Euclidean distance"
+            }
+          ]
+        },
+        "SineTable": {
+          "file": "Math/SineTable.cs",
+          "type": "class",
+          "description": "Optimized sine lookup table",
+          "methods": [
+            {
+              "name": "SineTable",
+              "signature": "public SineTable(int resolution)",
+              "description": "Constructor with resolution"
+            },
+            {
+              "name": "GetValue",
+              "signature": "public float GetValue(float angle)",
+              "description": "Get sin(angle) with interpolation"
+            }
+          ]
+        }
+      }
+    },
+    "UI": {
+      "path": "UI/",
+      "description": "WPF user interface components",
+      "elements": [
+        "MainWindow.xaml / MainWindow.xaml.cs",
+        "ProjectView.xaml / ProjectView.xaml.cs",
+        "PipeEditor.xaml / PipeEditor.xaml.cs",
+        "OscilloscopeView.xaml"
+      ]
+    },
+    "Pipes_Subdir": {
+      "path": "Pipes/",
+      "description": "P/Invoke wrappers (redundant naming with namespace above)",
+      "note": "Actually contains wrapper implementations for C++ interop"
+    },
+    "Themes": {
+      "path": "Themes/",
+      "description": "WPF theme and style resources",
+      "elements": [
+        "Generic.xaml",
+        "Dark.xaml",
+        "Light.xaml"
+      ]
+    }
+  },
+  "projectConfiguration": {
+    "file": "wpf-app.csproj",
+    "framework": "net8.0-windows",
+    "outputType": "WinExe",
+    "targetFramework": ".NET 8.0 (Windows desktop)",
+    "properties": {
+      "LangVersion": "latest",
+      "Nullable": "enable",
+      "UseWPF": "true",
+      "UseWindowsDesktopSDK": "true"
+    }
+  },
+  "nugetDependencies": [
+    {
+      "name": "ScottPlot",
+      "version": "5.1.57",
+      "used_by": ["Oscilloscope visualization", "Spectrum analysis"]
+    }
+  ],
+  "pinvokeConventions": {
+    "callingConvention": "CallingConvention.Cdecl",
+    "charSet": "CharSet.Ansi",
+    "dllName": "wavy.dll",
+    "notes": [
+      "All P/Invoke functions use Cdecl calling convention (C++ default)",
+      "DLL must be in PATH or same directory as executable",
+      "IntPtr used for all native pointers (32/64-bit safe)"
+    ]
+  },
+  "commonPatterns": [
+    {
+      "name": "Creating and Using a Pipe",
+      "example": [
+        "var pipe = AppController.Instance.CreatePipe(\"ConstantWavePipe\");",
+        "pipe.Init();",
+        "pipe.SetRunning(true);",
+        "var outputPort = pipe.GetOutputPort(0);"
+      ]
+    },
+    {
+      "name": "Connecting Two Pipes",
+      "example": [
+        "var outputPort = pipe1.GetOutputPort(0);",
+        "var inputPort = pipe2.GetInputPort(0);",
+        "outputPort.SetLinkedPort(inputPort);"
+      ]
+    },
+    {
+      "name": "P/Invoke Marshalling Pattern",
+      "pattern": "[DllImport(\"wavy.dll\", CallingConvention = CallingConvention.Cdecl)] private static extern <RETURN_TYPE> <FUNCTION_NAME>(<PARAMETERS>);"
+    }
+  ]
+}

@@ -1,0 +1,270 @@
+{
+  "metadata": {
+    "projectName": "Wavy",
+    "projectType": "Signal Processing & Audio Visualization Platform",
+    "description": "Multi-platform signal processing application with node-based pipe architecture for audio synthesis, filtering, modulation, and real-time visualization",
+    "lastUpdated": "2026-03-28",
+    "rootPath": "c:\\working\\wavy"
+  },
+  "architecture": {
+    "pattern": "Three-Tier Architecture with Native Interop",
+    "layers": {
+      "presentation": {
+        "description": "User Interface Layer",
+        "components": [
+          {
+            "name": "Java Swing UI",
+            "path": "java-app/src/main/java/com/terpomo/wavy/ui",
+            "framework": "Swing + JFreeChart",
+            "entryPoint": "UIApplication.java",
+            "responsibilities": ["Graph editor", "Pipe visualization", "Real-time charts"]
+          },
+          {
+            "name": "C# WPF UI",
+            "path": "wpf-app",
+            "framework": "WPF (.NET8)",
+            "entryPoint": "App.xaml.cs",
+            "responsibilities": ["Alternative modern UI", "Cross-platform target"]
+          }
+        ]
+      },
+      "application": {
+        "description": "Business Logic & Workflows",
+        "components": [
+          {
+            "name": "Java Flow Management",
+            "path": "java-app/src/main/java/com/terpomo/wavy/flow",
+            "classes": {
+              "Workspace": "Container for projects",
+              "Project": "Collection of pipes with event model",
+              "InputPort": "Data connection point (input)",
+              "OutputPort": "Data connection point (output)",
+              "Signal": "Abstract data type"
+            }
+          },
+          {
+            "name": "Java Pipe Implementations",
+            "path": "java-app/src/main/java/com/terpomo/wavy/pipes",
+            "submodules": {
+              "sources": ["ConstantWavePipe", "NoisePipe", "FileReaderPipe", "MicPipe", "RTLPipe"],
+              "filters": ["BandPassFilterPipe"],
+              "operators": ["CombinationPipe", "MultiplicationPipe", "ResamplingPipe", "FMModulationPipe", "IQModulationPipe", "IQDemodulationPipe"],
+              "monitors": ["OscilloscopePipe", "FFTPipe"],
+              "output": ["AudioPlayerPipe", "FileWriterPipe"]
+            }
+          },
+          {
+            "name": "Java Marshalling",
+            "path": "java-app/src/main/java/com/terpomo/wavy/marshal",
+            "purpose": "JSON serialization/deserialization of project graphs"
+          },
+          {
+            "name": "C# Wrappers",
+            "path": "wpf-app/Pipes, wpf-app/Flow",
+            "purpose": "P/Invoke bindings to C++ DLL with managed interfaces"
+          }
+        ]
+      },
+      "performance": {
+        "description": "Native Performance Layer",
+        "components": [
+          {
+            "name": "C++ Core Library",
+            "path": "msvc-shared-library",
+            "type": "Windows DLL (wavy.dll)",
+            "language": "C++",
+            "architecture": "Node-based pipe graph with threading",
+            "modules": {
+              "pipe": "Base Pipe class with async worker tasks",
+              "port": "Port connection system with buffer management",
+              "math": "Signal processing math (FFT, sine tables)",
+              "pipes_subdir": "Pre-built pipe implementations (buffer, constant, oscilloscope)"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "modules": {
+    "cpp": {
+      "name": "C++ Shared Library",
+      "path": "msvc-shared-library",
+      "language": "C++",
+      "buildSystem": "MSVC Solution",
+      "coreClasses": {
+        "Pipe": {
+          "file": "pipe.h/pipe.cpp",
+          "description": "Base class for all signal processing nodes",
+          "methods": ["init()", "shutdown()", "setRunning()", "getInputPort()", "getOutputPort()"],
+          "pattern": "Thread pool with async workerTask()",
+          "visibility": "C ABI export (extern \"C\")"
+        },
+        "Port": {
+          "file": "port.h/port.cpp",
+          "description": "Data connection point between pipes",
+          "types": ["InputPort", "OutputPort"],
+          "methods": ["getName()", "setLinkedPort()", "getLinkedPort()"]
+        },
+        "SineTable": {
+          "file": "math/sine.h/sine.cpp",
+          "description": "Optimized sine lookup table with interpolation",
+          "extends": "ValuedTable<float>",
+          "methods": ["getValue(angle)", "getLength()"]
+        },
+        "Buffer": {
+          "file": "pipes/buffer.h/buffer.cpp",
+          "description": "Thread-safe circular buffer for inter-pipe communication"
+        }
+      },
+      "mathModule": {
+        "path": "msvc-shared-library/math",
+        "exports": ["constants.h (PI, PI2, HALF_PI)", "Point", "SineTable", "ValuedTable"]
+      },
+      "pipeImplementations": {
+        "path": "msvc-shared-library/pipes",
+        "builtIn": ["ConstantValuePipe", "OscilloscopePipe", "BufferPipe"]
+      }
+    },
+    "java": {
+      "name": "Java Application",
+      "path": "java-app",
+      "language": "Java",
+      "buildSystem": "Maven 3.x",
+      "artifactId": "wavy",
+      "version": "1.0-SNAPSHOT",
+      "mainClass": "com.terpomo.wavy.ui.UIApplication",
+      "packages": {
+        "com.terpomo.wavy.flow": {
+          "description": "Project and workspace management",
+          "classes": ["Workspace", "Project", "InputPort", "OutputPort", "Signal"]
+        },
+        "com.terpomo.wavy.pipes": {
+          "description": "15+ pipe implementations",
+          "subpackages": ["sources", "filters", "operators", "monitors", "output"]
+        },
+        "com.terpomo.wavy.signals": {
+          "description": "Signal types and waveforms",
+          "classes": ["Signal", "ConstantWave", "Noise", "ConstantValue"]
+        },
+        "com.terpomo.wavy.math": {
+          "description": "Signal processing math",
+          "classes": ["FFT", "SineTable", "ValuedTable", "ExpressionEvaluator"]
+        },
+        "com.terpomo.wavy.ui": {
+          "description": "Swing UI components",
+          "classes": ["UIApplication", "MainWindow", "ProjectRepr", "AbstractPipeRepr"]
+        },
+        "com.terpomo.wavy.marshal": {
+          "description": "JSON serialization",
+          "classes": ["ProjectMarshaller", "PipeMarshaller"]
+        },
+        "com.terpomo.wavy.sound": {
+          "description": "Audio codec support",
+          "features": ["LPCM encoding/decoding"]
+        },
+        "com.terpomo.wavy.rtl": {
+          "description": "RTL-SDR integration",
+          "classes": ["RTLPipe"]
+        }
+      },
+      "dependencies": {
+        "jfreeChart": "1.5.3",
+        "jna": "5.17.0",
+        "json": "20250107",
+        "guava": "33.4.8-jre",
+        "exp4j": "0.4.8",
+        "junit": "4.13.2"
+      }
+    },
+    "csharp": {
+      "name": "C# WPF Application",
+      "path": "wpf-app",
+      "language": "C#",
+      "framework": ".NET8-windows",
+      "buildSystem": "Visual Studio / dotnet CLI",
+      "projectFile": "wpf-app.csproj",
+      "namespaces": {
+        "App": {
+          "description": "Application entry point",
+          "classes": ["App (code-behind)"]
+        },
+        "Flow": {
+          "description": "Project workflow management",
+          "path": "wpf-app/Flow",
+          "classes": ["Workspace", "Project"]
+        },
+        "Pipes": {
+          "description": "P/Invoke wrappers around C++ DLL",
+          "path": "wpf-app/Pipes",
+          "classes": ["Pipe", "Port"]
+        },
+        "Core": {
+          "description": "Application controller",
+          "path": "wpf-app/Core",
+          "classes": ["AppController (singleton)"]
+        },
+        "Math": {
+          "description": "Math utilities",
+          "path": "wpf-app/Math",
+          "classes": ["Point", "SineTable"]
+        },
+        "UI": {
+          "description": "WPF UI components",
+          "path": "wpf-app/UI"
+        }
+      },
+      "dependencies": {
+        "ScottPlot": "5.1.57"
+      }
+    }
+  },
+  "interConnections": {
+    "java_to_cpp": {
+      "mechanism": "JNA (Java Native Access)",
+      "direction": "Java UI ←→ C++ DLL",
+      "dllPath": "x64/{Debug|Release}/wavy.dll",
+      "callPattern": "Java.createPipe() → JNA marshalling → C++ Pipe::init()",
+      "dataFlow": "Native pointers (IntPtr) passed between JVM and C++",
+      "threadSafety": "Mutexes in C++, synchronized blocks in Java"
+    },
+    "csharp_to_cpp": {
+      "mechanism": "P/Invoke (.NET Interop)",
+      "direction": "C# WPF ←→ C++ DLL",
+      "dllPath": "x64/{Debug|Release}/wavy.dll",
+      "callPattern": "[DllImport] declarations → C++ functions",
+      "dataFlow": "Managed/unmanaged boundary marshalling",
+      "threadSafety": "Native mutexes with managed lock() statements"
+    }
+  },
+  "dataFlow": {
+    "projectPersistence": {
+      "format": "JSON",
+      "location": "saved-projects/*.json",
+      "structure": {
+        "root": "Project object",
+        "children": ["Pipe array", "each Pipe has InputPorts/OutputPorts"],
+        "connections": "Port.linkedPort references create graph"
+      }
+    },
+    "runtime": {
+      "bufferChain": "InputPorts → Buffers → OutputPorts",
+      "threading": "Each Pipe runs async workerTask() in thread pool",
+      "scheduling": "Topologically sorted pipe execution based on connections"
+    }
+  },
+  "buildArtifacts": {
+    "cpp": {
+      "debug": "msvc-shared-library/x64/Debug/wavy.dll",
+      "release": "msvc-shared-library/x64/Release/wavy.dll"
+    },
+    "java": {
+      "jar": "target/wavy-1.0-SNAPSHOT-jar-with-dependencies.jar",
+      "classes": "target/classes/",
+      "executable": "java -cp target/wavy-1.0-SNAPSHOT-jar-with-dependencies.jar com.terpomo.wavy.ui.UIApplication"
+    },
+    "csharp": {
+      "debug": "wpf-app/bin/Debug/net8.0-windows/wpf-app.exe",
+      "release": "wpf-app/bin/Release/net8.0-windows/wpf-app.exe"
+    }
+  }
+}

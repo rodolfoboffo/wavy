@@ -1,0 +1,264 @@
+{
+  "metadata": {
+    "projectName": "Wavy",
+    "description": "Complete catalog of Pipe types with configurations and parameters",
+    "lastUpdated": "2026-03-28",
+    "totalPipeTypes": 15
+  },
+  "pipes": {
+    "sources": {
+      "count": 5,
+      "category": "Signal generation",
+      "pipes": [
+        {
+          "name": "ConstantWavePipe",
+          "class": "com.terpomo.wavy.pipes.sources.ConstantWavePipe",
+          "description": "Generate sinusoidal waveform",
+          "inputs": 0,
+          "outputs": 1,
+          "parameters": {
+            "frequency": {"type": "double", "default": 1000.0, "min": 0.1, "max": 100000.0, "unit": "Hz"},
+            "amplitude": {"type": "float", "default": 1.0, "min": 0.0, "max": 10.0, "unit": "linear"},
+            "phase": {"type": "float", "default": 0.0, "min": 0.0, "max": 6.283185, "unit": "radians"},
+            "sampleRate": {"type": "int", "default": 44100, "min": 8000, "max": 192000, "unit": "Hz"}
+          }
+        },
+        {
+          "name": "NoisePipe",
+          "class": "com.terpomo.wavy.pipes.sources.NoisePipe",
+          "description": "Generate random noise signal",
+          "inputs": 0,
+          "outputs": 1,
+          "parameters": {
+            "noiseType": {"type": "enum", "options": ["WHITE", "PINK", "BROWN"], "default": "WHITE"},
+            "amplitude": {"type": "float", "default": 1.0, "min": 0.0, "max": 10.0, "unit": "linear"}
+          }
+        },
+        {
+          "name": "FileReaderPipe",
+          "class": "com.terpomo.wavy.pipes.sources.FileReaderPipe",
+          "description": "Read audio from WAV file",
+          "inputs": 0,
+          "outputs": 1,
+          "parameters": {
+            "filePath": {"type": "string", "default": "", "description": "Path to audio file"},
+            "loopAudio": {"type": "boolean", "default": false, "description": "Loop playback at end"}
+          }
+        },
+        {
+          "name": "MicPipe",
+          "class": "com.terpomo.wavy.pipes.sources.MicPipe",
+          "description": "Capture microphone input",
+          "inputs": 0,
+          "outputs": 1,
+          "parameters": {
+            "sampleRate": {"type": "int", "default": 44100, "min": 8000, "max": 192000, "unit": "Hz"},
+            "bufferSize": {"type": "int", "default": 2048, "min": 256, "max": 8192, "unit": "samples"},
+            "deviceIndex": {"type": "int", "default": 0, "description": "Audio device index"}
+          }
+        },
+        {
+          "name": "RTLPipe",
+          "class": "com.terpomo.wavy.pipes.sources.RTLPipe",
+          "description": "RTL-SDR software-defined radio receiver",
+          "inputs": 0,
+          "outputs": 1,
+          "parameters": {
+            "frequency": {"type": "long", "default": 100000000, "min": 30000000, "max": 2000000000, "unit": "Hz"},
+            "sampleRate": {"type": "int", "default": 2400000, "min": 1000000, "max": 3200000, "unit": "Hz"},
+            "gain": {"type": "float", "default": 35.0, "min": 0.0, "max": 50.0, "unit": "dB"},
+            "deviceIndex": {"type": "int", "default": 0, "description": "RTL-SDR device index"}
+          }
+        }
+      ]
+    },
+    "filters": {
+      "count": 1,
+      "category": "Signal filtering and processing",
+      "pipes": [
+        {
+          "name": "BandPassFilterPipe",
+          "class": "com.terpomo.wavy.pipes.filters.BandPassFilterPipe",
+          "description": "Pass frequencies within specified band",
+          "inputs": 1,
+          "outputs": 1,
+          "parameters": {
+            "lowFrequency": {"type": "double", "default": 500.0, "min": 0.1, "max": 50000.0, "unit": "Hz"},
+            "highFrequency": {"type": "double", "default": 5000.0, "min": 0.1, "max": 50000.0, "unit": "Hz"},
+            "filterOrder": {"type": "int", "default": 4, "min": 1, "max": 10, "description": "Butterworth order"},
+            "filterType": {"type": "enum", "options": ["BUTTERWORTH", "CHEBYSHEV"], "default": "BUTTERWORTH"}
+          },
+          "constraints": "lowFrequency must be < highFrequency"
+        }
+      ]
+    },
+    "operators": {
+      "count": 6,
+      "category": "Signal manipulation and modulation",
+      "pipes": [
+        {
+          "name": "CombinationPipe",
+          "class": "com.terpomo.wavy.pipes.operators.CombinationPipe",
+          "description": "Add multiple signals together (summing amplifier)",
+          "inputs": 3,
+          "outputs": 1,
+          "parameters": {
+            "inputCount": {"type": "int", "default": 3, "min": 2, "max": 8, "description": "Number of inputs to combine"}
+          }
+        },
+        {
+          "name": "MultiplicationPipe",
+          "class": "com.terpomo.wavy.pipes.operators.MultiplicationPipe",
+          "description": "Multiply two signals (ring modulation)",
+          "inputs": 2,
+          "outputs": 1,
+          "parameters": {}
+        },
+        {
+          "name": "ResamplingPipe",
+          "class": "com.terpomo.wavy.pipes.operators.ResamplingPipe",
+          "description": "Change sample rate with interpolation",
+          "inputs": 1,
+          "outputs": 1,
+          "parameters": {
+            "targetSampleRate": {"type": "int", "default": 48000, "min": 8000, "max": 192000, "unit": "Hz"},
+            "filterOrder": {"type": "int", "default": 6, "min": 1, "max": 10, "description": "Anti-aliasing filter order"}
+          }
+        },
+        {
+          "name": "FMModulationPipe",
+          "class": "com.terpomo.wavy.pipes.operators.FMModulationPipe",
+          "description": "Frequency modulation synthesis",
+          "inputs": 2,
+          "outputs": 1,
+          "parameters": {
+            "carrierFrequency": {"type": "double", "default": 5000.0, "min": 0.1, "max": 100000.0, "unit": "Hz"},
+            "modulationIndex": {"type": "float", "default": 5.0, "min": 0.0, "max": 100.0, "description": "FM deviation ratio"}
+          }
+        },
+        {
+          "name": "IQModulationPipe",
+          "class": "com.terpomo.wavy.pipes.operators.IQModulationPipe",
+          "description": "In-phase/Quadrature modulation (complex modulation)",
+          "inputs": 2,
+          "outputs": 1,
+          "inputLabels": ["inPhase", "quadrature"],
+          "parameters": {
+            "carrierFrequency": {"type": "double", "default": 10000.0, "min": 0.1, "max": 100000.0, "unit": "Hz"}
+          }
+        },
+        {
+          "name": "IQDemodulationPipe",
+          "class": "com.terpomo.wavy.pipes.operators.IQDemodulationPipe",
+          "description": "In-phase/Quadrature demodulation (complex demod)",
+          "inputs": 1,
+          "outputs": 2,
+          "outputLabels": ["inPhase", "quadrature"],
+          "parameters": {
+            "carrierFrequency": {"type": "double", "default": 10000.0, "min": 0.1, "max": 100000.0, "unit": "Hz"}
+          }
+        }
+      ]
+    },
+    "monitors": {
+      "count": 2,
+      "category": "Real-time analysis and visualization",
+      "pipes": [
+        {
+          "name": "OscilloscopePipe",
+          "class": "com.terpomo.wavy.pipes.monitors.OscilloscopePipe",
+          "description": "Real-time waveform visualization (no output)",
+          "inputs": 1,
+          "outputs": 0,
+          "parameters": {
+            "bufferSize": {"type": "int", "default": 4096, "min": 1024, "max": 65536, "unit": "samples", "description": "Waveform display length"},
+            "triggerMode": {"type": "enum", "options": ["AUTO", "MANUAL", "SINGLE"], "default": "AUTO"},
+            "triggerLevel": {"type": "float", "default": 0.0, "min": -1.0, "max": 1.0, "description": "Trigger threshold"},
+            "timebaseScale": {"type": "float", "default": 1.0, "min": 0.1, "max": 10.0, "description": "Time scaling"}
+          }
+        },
+        {
+          "name": "FFTPipe",
+          "class": "com.terpomo.wavy.pipes.monitors.FFTPipe",
+          "description": "Frequency spectrum analysis via FFT",
+          "inputs": 1,
+          "outputs": 0,
+          "parameters": {
+            "fftSize": {"type": "int", "default": 4096, "min": 256, "max": 65536, "unit": "samples", "constraint": "Must be power of 2"},
+            "windowType": {"type": "enum", "options": ["RECTANGULAR", "HANN", "HAMMING", "BLACKMAN"], "default": "HANN"},
+            "overlap": {"type": "float", "default": 0.5, "min": 0.0, "max": 0.9, "description": "Frame overlap ratio"},
+            "dBScale": {"type": "boolean", "default": true, "description": "Display in dB or linear"}
+          }
+        }
+      ]
+    },
+    "output": {
+      "count": 2,
+      "category": "Output and data sinks",
+      "pipes": [
+        {
+          "name": "AudioPlayerPipe",
+          "class": "com.terpomo.wavy.pipes.output.AudioPlayerPipe",
+          "description": "Play audio to system speaker",
+          "inputs": 1,
+          "outputs": 0,
+          "parameters": {
+            "sampleRate": {"type": "int", "default": 44100, "min": 8000, "max": 192000, "unit": "Hz"},
+            "channels": {"type": "int", "default": 1, "min": 1, "max": 8, "description": "Number of audio channels"},
+            "bufferSize": {"type": "int", "default": 2048, "min": 256, "max": 8192, "unit": "samples"},
+            "gain": {"type": "float", "default": 1.0, "min": 0.0, "max": 2.0, "description": "Output gain multiplier"}
+          }
+        },
+        {
+          "name": "FileWriterPipe",
+          "class": "com.terpomo.wavy.pipes.output.FileWriterPipe",
+          "description": "Write audio to WAV file",
+          "inputs": 1,
+          "outputs": 0,
+          "parameters": {
+            "filePath": {"type": "string", "default": "recording.wav", "description": "Output file path"},
+            "sampleRate": {"type": "int", "default": 44100, "min": 8000, "max": 192000, "unit": "Hz"},
+            "channels": {"type": "int", "default": 1, "min": 1, "max": 2, "description": "Audio channels"},
+            "bitDepth": {"type": "int", "default": 16, "options": [8, 16, 24, 32], "unit": "bits"}
+          }
+        }
+      ]
+    }
+  },
+  "pipesByFunction": {
+    "synthesis": ["ConstantWavePipe", "NoisePipe"],
+    "analysis": ["OscilloscopePipe", "FFTPipe"],
+    "modulation": ["FMModulationPipe", "IQModulationPipe", "MultiplicationPipe"],
+    "demodulation": ["IQDemodulationPipe"],
+    "filtering": ["BandPassFilterPipe"],
+    "resampling": ["ResamplingPipe"],
+    "mixing": ["CombinationPipe"],
+    "io": ["FileReaderPipe", "MicPipe", "RTLPipe", "AudioPlayerPipe", "FileWriterPipe"]
+  },
+  "commonSignalChains": [
+    {
+      "name": "Simple Tone Generation",
+      "pipes": ["ConstantWavePipe → AudioPlayerPipe"]
+    },
+    {
+      "name": "FM Synthesis",
+      "pipes": ["ConstantWavePipe (carrier) → FMModulationPipe", "ConstantWavePipe (modulator) → FMModulationPipe", "FMModulationPipe → AudioPlayerPipe"]
+    },
+    {
+      "name": "Real-time Spectrum Analysis",
+      "pipes": ["MicPipe → FFTPipe"]
+    },
+    {
+      "name": "Band-Pass Filtering",
+      "pipes": ["FileReaderPipe → BandPassFilterPipe → AudioPlayerPipe"]
+    },
+    {
+      "name": "Ring Modulation",
+      "pipes": ["ConstantWavePipe → MultiplicationPipe", "ConstantWavePipe → MultiplicationPipe", "MultiplicationPipe → AudioPlayerPipe"]
+    },
+    {
+      "name": "Multi-Signal Mixing",
+      "pipes": ["ConstantWavePipe → CombinationPipe", "NoisePipe → CombinationPipe", "CombinationPipe → AudioPlayerPipe"]
+    }
+  ]
+}

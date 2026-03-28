@@ -1,0 +1,80 @@
+{
+  "folders": [
+    {
+      "path": ".",
+      "name": "Wavy Signal Processing"
+    }
+  ],
+  "settings": {
+    "editor.rulers": [80, 120],
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "files.exclude": {
+      "**/.git": true,
+      "**/node_modules": true,
+      "**/.vscode": false,
+      "**/target": false,
+      "**/.gradle": true,
+      "**/bin": false,
+      "**/.vs": true
+    },
+    "files.watcherExclude": {
+      "**/target/**": true,
+      "**/.vs/**": true,
+      "**/bin/**": true,
+      "**/obj/**": true
+    },
+    "[cpp]": {
+      "editor.defaultFormatter": "ms-vscode.cpptools",
+      "editor.formatOnSave": true
+    },
+    "[java]": {
+      "editor.defaultFormatter": "redhat.java",
+      "editor.formatOnSave": true
+    },
+    "[csharp]": {
+      "editor.defaultFormatter": "ms-dotnettools.csharp",
+      "editor.formatOnSave": true
+    },
+    "[json]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode",
+      "editor.formatOnSave": true
+    },
+    "[markdown]": {
+      "editor.wordWrap": "on",
+      "editor.rulers": [100]
+    },
+    "cmake.configureOnOpen": false,
+    "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
+    "java.home": "${env:JAVA_HOME}",
+    "java.maven.executable.path": "${env:MAVEN_HOME}/bin/mvn",
+    "dotnet.server.useOmnisharp": false,
+    "omnisharp.enableRoslynAnalyzers": true,
+    "omnisharp.enableEditorConfigSupport": true,
+    "mcp.enabled": true,
+    "mcp.resources": {
+      "architecture": "file:///${workspaceFolder}/mcp/documentation/ARCHITECTURE.md",
+      "schema": "file:///${workspaceFolder}/mcp/codebase-schema.json",
+      "buildGuide": "file:///${workspaceFolder}/mcp/documentation/BUILD_GUIDE.md",
+      "dataModels": "file:///${workspaceFolder}/mcp/documentation/DATA_MODELS.md",
+      "symbolIndexCpp": "file:///${workspaceFolder}/mcp/resources/cpp-index.json",
+      "symbolIndexJava": "file:///${workspaceFolder}/mcp/resources/java-index.json",
+      "symbolIndexCSharp": "file:///${workspaceFolder}/mcp/resources/csharp-index.json",
+      "pipeCatalog": "file:///${workspaceFolder}/mcp/resources/pipe-catalog.json"
+    }
+  },
+  "extensions": {
+    "recommendations": [
+      "ms-vscode.cpptools",
+      "redhat.java",
+      "ms-dotnettools.csharp",
+      "ms-dotnettools.vscode-dotnet-runtime",
+      "ms-vscode.cmake-tools",
+      "apache.maven",
+      "ms-vscode.makefile-tools",
+      "eamodio.gitlens",
+      "ms-vscode.json-editor",
+      "yzhang.markdown-all-in-one"
+    ]
+  }
+}

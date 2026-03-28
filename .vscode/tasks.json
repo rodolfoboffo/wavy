@@ -1,0 +1,222 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Build C++ (Debug)",
+      "type": "shell",
+      "command": "msbuild",
+      "args": [
+        "msvc-shared-library/msvc-shared-library.sln",
+        "/p:Configuration=Debug",
+        "/p:Platform=x64"
+      ],
+      "group": "build",
+      "problemMatcher": ["$msCompile"],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "Build C++ (Release)",
+      "type": "shell",
+      "command": "msbuild",
+      "args": [
+        "msvc-shared-library/msvc-shared-library.sln",
+        "/p:Configuration=Release",
+        "/p:Platform=x64"
+      ],
+      "group": "build",
+      "problemMatcher": ["$msCompile"],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "Clean C++",
+      "type": "shell",
+      "command": "msbuild",
+      "args": [
+        "msvc-shared-library/msvc-shared-library.sln",
+        "/p:Configuration=Debug",
+        "/p:Platform=x64",
+        "/t:Clean"
+      ],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always"
+      }
+    },
+    {
+      "label": "Build Java (Debug)",
+      "type": "shell",
+      "command": "mvn",
+      "args": [
+        "-f",
+        "java-app/pom.xml",
+        "clean",
+        "compile"
+      ],
+      "cwd": "${workspaceFolder}",
+      "group": "build",
+      "problemMatcher": ["$java-source"],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "Build Java (Package)",
+      "type": "shell",
+      "command": "mvn",
+      "args": [
+        "-f",
+        "java-app/pom.xml",
+        "clean",
+        "package",
+        "-DskipTests"
+      ],
+      "cwd": "${workspaceFolder}",
+      "group": "build",
+      "problemMatcher": ["$java-source"],
+      "presentation": {
+        "echo": true,
+        "reveal": "always"
+      }
+    },
+    {
+      "label": "Run Java Application",
+      "type": "shell",
+      "command": "java",
+      "args": [
+        "-jar",
+        "java-app/target/wavy-1.0-SNAPSHOT-jar-with-dependencies.jar"
+      ],
+      "cwd": "${workspaceFolder}",
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "new"
+      }
+    },
+    {
+      "label": "Build C# (Debug)",
+      "type": "shell",
+      "command": "dotnet",
+      "args": [
+        "build",
+        "wpf-app/wpf-app.csproj",
+        "-c",
+        "Debug"
+      ],
+      "cwd": "${workspaceFolder}",
+      "group": "build",
+      "problemMatcher": ["$msCompile"],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "Build C# (Release)",
+      "type": "shell",
+      "command": "dotnet",
+      "args": [
+        "build",
+        "wpf-app/wpf-app.csproj",
+        "-c",
+        "Release"
+      ],
+      "cwd": "${workspaceFolder}",
+      "group": "build",
+      "problemMatcher": ["$msCompile"],
+      "presentation": {
+        "echo": true,
+        "reveal": "always"
+      }
+    },
+    {
+      "label": "Run C# Application",
+      "type": "shell",
+      "command": "./wpf-app/bin/Debug/net8.0-windows/wpf-app.exe",
+      "cwd": "${workspaceFolder}",
+      "group": {
+        "kind": "test",
+        "isDefault": false
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "new"
+      }
+    },
+    {
+      "label": "Build All Components",
+      "type": "shell",
+      "command": "powershell",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-Command",
+        "cd msvc-shared-library; msbuild msvc-shared-library.sln /p:Configuration=Release /p:Platform=x64; cd ../java-app; mvn clean package -DskipTests; cd ../wpf-app; dotnet build wpf-app.csproj -c Release; cd .."
+      ],
+      "cwd": "${workspaceFolder}",
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "Java: Run Tests",
+      "type": "shell",
+      "command": "mvn",
+      "args": [
+        "-f",
+        "java-app/pom.xml",
+        "test"
+      ],
+      "cwd": "${workspaceFolder}",
+      "group": "test",
+      "problemMatcher": ["$java-source"],
+      "presentation": {
+        "echo": true,
+        "reveal": "always"
+      }
+    },
+    {
+      "label": "C#: Run Tests",
+      "type": "shell",
+      "command": "dotnet",
+      "args": [
+        "test",
+        "wpf-app/wpf-app.csproj"
+      ],
+      "cwd": "${workspaceFolder}",
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always"
+      }
+    }
+  ]
+}

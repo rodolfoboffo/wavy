@@ -1,0 +1,244 @@
+{
+  "metadata": {
+    "projectName": "Wavy",
+    "description": "Build system dependencies and configurations",
+    "lastUpdated": "2026-03-28"
+  },
+  "cpp": {
+    "buildSystem": "MSVC (Visual Studio Solution)",
+    "solutionFile": "msvc-shared-library/msvc-shared-library.sln",
+    "projectFile": "msvc-shared-library/msvc-shared-library.vcxproj",
+    "toolchain": {
+      "compiler": "MSVC (cl.exe)",
+      "version": "2019 or later",
+      "minimumVersion": "v142",
+      "language": "C++11/14"
+    },
+    "platformSDK": {
+      "name": "Windows SDK",
+      "minimumVersion": "10.0.20348",
+      "components": [
+        "Windows Development Tools",
+        "Win32 API Headers",
+        "Standard Libraries"
+      ]
+    },
+    "dependencies": [],
+    "externalLibraries": [],
+    "configurations": {
+      "Debug": {
+        "outputDirectory": "x64/Debug/",
+        "executable": "wavy.dll",
+        "size": "~8-10 MB",
+        "optimizations": "Disabled",
+        "debugSymbols": "Included"
+      },
+      "Release": {
+        "outputDirectory": "x64/Release/",
+        "executable": "wavy.dll",
+        "size": "~3-5 MB",
+        "optimizations": "Full",
+        "debugSymbols": "Stripped"
+      }
+    },
+    "buildCommands": {
+      "debug": "msbuild msvc-shared-library.sln /p:Configuration=Debug /p:Platform=x64",
+      "release": "msbuild msvc-shared-library.sln /p:Configuration=Release /p:Platform=x64",
+      "clean": "msbuild msvc-shared-library.sln /p:Configuration=Debug /p:Platform=x64 /t:Clean"
+    },
+    "postBuildSteps": [
+      "Copy wavy.dll to recognizable location (PATH or application directory)"
+    ]
+  },
+  "java": {
+    "buildSystem": "Apache Maven 3.x",
+    "pomFile": "java-app/pom.xml",
+    "groupId": "com.terpomo",
+    "artifactId": "wavy",
+    "version": "1.0-SNAPSHOT",
+    "packaging": "jar",
+    "javaVersion": "8+",
+    "toolchain": {
+      "compiler": "javac",
+      "jdkVersion": "8+",
+      "recommendedVersion": "11 (LTS)",
+      "distribution": "Eclipse Adoptium / Temurin / OpenJDK"
+    },
+    "buildTool": {
+      "name": "Maven",
+      "minimumVersion": "3.9",
+      "configuration": "pom.xml"
+    },
+    "dependencies": [
+      {
+        "groupId": "org.jfree",
+        "artifactId": "jfreechart",
+        "version": "1.5.3",
+        "scope": "compile",
+        "purpose": "Real-time charting library"
+      },
+      {
+        "groupId": "net.java.dev.jna",
+        "artifactId": "jna",
+        "version": "5.17.0",
+        "scope": "compile",
+        "purpose": "Java Native Access for C++ interop"
+      },
+      {
+        "groupId": "org.json",
+        "artifactId": "json",
+        "version": "20250107",
+        "scope": "compile",
+        "purpose": "JSON parsing and generation"
+      },
+      {
+        "groupId": "com.google.guava",
+        "artifactId": "guava",
+        "version": "33.4.8-jre",
+        "scope": "compile",
+        "purpose": "Utility libraries and collections"
+      },
+      {
+        "groupId": "net.objecthunter",
+        "artifactId": "exp4j",
+        "version": "0.4.8",
+        "scope": "compile",
+        "purpose": "Math expression evaluation"
+      },
+      {
+        "groupId": "junit",
+        "artifactId": "junit",
+        "version": "4.13.2",
+        "scope": "test",
+        "purpose": "Unit testing framework"
+      }
+    ],
+    "repositoryUrl": "https://repo.maven.apache.org/maven2/",
+    "configurations": {
+      "development": {
+        "mainClass": "com.terpomo.wavy.ui.UIApplication",
+        "outputDirectory": "target/",
+        "outputJar": "wavy-1.0-SNAPSHOT-jar-with-dependencies.jar",
+        "jarType": "uber-jar (fat JAR with dependencies)"
+      }
+    },
+    "buildCommands": {
+      "clean": "mvn clean",
+      "compile": "mvn compile",
+      "package": "mvn package",
+      "package_skipTests": "mvn package -DskipTests",
+      "install": "mvn install",
+      "test": "mvn test",
+      "resolveExternals": "mvn dependency:resolve"
+    },
+    "runCommands": {
+      "direct": "java -jar target/wavy-1.0-SNAPSHOT-jar-with-dependencies.jar",
+      "mainClass": "java -cp target/wavy-1.0-SNAPSHOT-jar-with-dependencies.jar com.terpomo.wavy.ui.UIApplication"
+    },
+    "runtimeRequirements": {
+      "jreVersion": "8+",
+      "dllDependency": "wavy.dll must be in PATH or same directory"
+    },
+    "buildProfiles": []
+  },
+  "csharp": {
+    "buildSystem": "Visual Studio / dotnet CLI (.NET 8.0)",
+    "projectFile": "wpf-app/wpf-app.csproj",
+    "solutionFile": "wpf-app/wpf-app.sln",
+    "framework": {
+      "name": ".NET",
+      "version": "8.0",
+      "supportLevel": "LTS (Long-Term Support)",
+      "platform": "net8.0-windows"
+    },
+    "language": "C# 11+",
+    "toolchain": {
+      "compiler": "Roslyn (csc.exe)",
+      "runtimeType": "JIT (.NET Runtime)"
+    },
+    "sdkRequirements": {
+      "dotnetSdk": "8.0 or later",
+      "downloadUrl": "https://dotnet.microsoft.com/download/dotnet/8.0"
+    },
+    "uiFramework": {
+      "technology": "WPF (Windows Presentation Foundation)",
+      "version": "Built into .NET",
+      "requirement": "Windows platform only"
+    },
+    "dependencies": [
+      {
+        "name": "ScottPlot",
+        "version": "5.1.57",
+        "packageManager": "NuGet",
+        "purpose": "Scientific plotting and data visualization"
+      }
+    ],
+    "configurations": {
+      "Debug": {
+        "outputDirectory": "bin/Debug/net8.0-windows/",
+        "executable": "wpf-app.exe",
+        "size": "~20-30 MB (with runtime libraries)",
+        "optimizations": "Disabled",
+        "runtimeLibraries": "Included"
+      },
+      "Release": {
+        "outputDirectory": "bin/Release/net8.0-windows/",
+        "executable": "wpf-app.exe",
+        "size": "~15-20 MB (with runtime libraries)",
+        "optimizations": "Full",
+        "runtimeLibraries": "Included"
+      }
+    },
+    "buildCommands": {
+      "debug": "dotnet build wpf-app.csproj -c Debug",
+      "release": "dotnet build wpf-app.csproj -c Release",
+      "clean": "dotnet clean wpf-app.csproj",
+      "restore": "dotnet restore wpf-app.csproj"
+    },
+    "runCommands": {
+      "direct": "dotnet run --project wpf-app.csproj --configuration Debug",
+      "executable": "./bin/Debug/net8.0-windows/wpf-app.exe"
+    },
+    "runtimeRequirements": {
+      "dotnetRuntime": ".NET 8.0 Runtime",
+      "os": "Windows only (due to WPF)",
+      "dllDependency": "wavy.dll must be in same directory or PATH"
+    },
+    "projectProperties": {
+      "OutputType": "WinExe",
+      "TargetFramework": "net8.0-windows",
+      "UseWPF": "true",
+      "LangVersion": "latest",
+      "Nullable": "enable"
+    }
+  },
+  "interComponentDependencies": {
+    "c++_to_other": {
+      "type": "Provides native core library",
+      "consumers": ["Java via JNA", "C# via P/Invoke"],
+      "requirement": "wavy.dll must be built and available BEFORE Java/C# builds"
+    },
+    "java_to_cpp": {
+      "mechanism": "JNA (Java Native Access)",
+      "dependency": "JNA 5.17.0 from Maven Central",
+      "dllLocation": "Must be in Java process PATH"
+    },
+    "csharp_to_cpp": {
+      "mechanism": "P/Invoke (Windows .NET Interop)",
+      "dependency": "Windows SDK, .NET Platform Invocation Services",
+      "dllLocation": "Must be in process PATH or same directory as EXE"
+    }
+  },
+  "globalBuildDefaults": {
+    "platform": "x64 (64-bit)",
+    "targetOS": "Windows 10 / Windows 11",
+    "buildOptimization": "Release for production, Debug for development",
+    "outputArtifactStorage": "Each component in its own target directory"
+  },
+  "recommendedBuildOrder": [
+    "1. Build C++ (msvc-shared-library) - generates wavy.dll",
+    "2. Place wavy.dll in accessible location (PATH or repo root)",
+    "3. Build Java (java-app) - uses JNA to interface with DLL",
+    "4. Build C# (wpf-app) - uses P/Invoke to interface with DLL"
+  ]
+}

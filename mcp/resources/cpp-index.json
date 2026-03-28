@@ -1,0 +1,348 @@
+{
+  "language": "C++",
+  "version": "C++11/14",
+  "rootPath": "msvc-shared-library/",
+  "symbolCount": 45,
+  "lastUpdated": "2026-03-28",
+  "classes": {
+    "Pipe": {
+      "file": "pipe.h",
+      "implementations": "pipe.cpp",
+      "type": "class",
+      "description": "Base class for all signal processing nodes",
+      "visibility": "public",
+      "extends": null,
+      "publicMethods": [
+        {
+          "name": "init",
+          "signature": "void init()",
+          "description": "Initialize pipe and start worker thread"
+        },
+        {
+          "name": "shutdown",
+          "signature": "void shutdown()",
+          "description": "Stop worker thread and clean up resources"
+        },
+        {
+          "name": "setRunning",
+          "signature": "void setRunning(bool running)",
+          "description": "Control pipe execution state"
+        },
+        {
+          "name": "getInputPort",
+          "signature": "InputPort* getInputPort(int index)",
+          "description": "Retrieve input port by index"
+        },
+        {
+          "name": "getOutputPort",
+          "signature": "OutputPort* getOutputPort(int index)",
+          "description": "Retrieve output port by index"
+        },
+        {
+          "name": "workerTask",
+          "signature": "virtual void workerTask() = 0",
+          "description": "Abstract method: called repeatedly in worker thread"
+        }
+      ],
+      "protectedMembers": [
+        {"name": "inputPorts", "type": "std::vector<InputPort*>"},
+        {"name": "outputPorts", "type": "std::vector<OutputPort*>"},
+        {"name": "isRunning", "type": "bool"},
+        {"name": "mutex", "type": "std::mutex"}
+      ],
+      "cExports": [
+        "Pipe_init",
+        "Pipe_shutdown",
+        "Pipe_setRunning",
+        "Pipe_getInputPort",
+        "Pipe_getOutputPort"
+      ]
+    },
+    "Port": {
+      "file": "port.h",
+      "implementations": "port.cpp",
+      "type": "class",
+      "description": "Base class for data connection points",
+      "visibility": "public",
+      "derives": [
+        {
+          "name": "InputPort",
+          "description": "Input data port"
+        },
+        {
+          "name": "OutputPort",
+          "description": "Output data port"
+        }
+      ],
+      "publicMethods": [
+        {
+          "name": "getName",
+          "signature": "const char* getName() const",
+          "description": "Get port name"
+        },
+        {
+          "name": "setLinkedPort",
+          "signature": "void setLinkedPort(Port* port)",
+          "description": "Link this port to another"
+        },
+        {
+          "name": "getLinkedPort",
+          "signature": "Port* getLinkedPort() const",
+          "description": "Get linked port reference"
+        }
+      ],
+      "cExports": [
+        "Port_getName",
+        "Port_setLinkedPort",
+        "Port_getLinkedPort"
+      ]
+    },
+    "InputPort": {
+      "file": "port.h",
+      "type": "class",
+      "extends": "Port",
+      "description": "Input port for receiving data",
+      "publicMethods": [
+        {
+          "name": "getValue",
+          "signature": "float getValue() const",
+          "description": "Read value from input buffer"
+        },
+        {
+          "name": "read",
+          "signature": "void read(float* buffer, size_t count)",
+          "description": "Read multiple values from buffer"
+        }
+      ]
+    },
+    "OutputPort": {
+      "file": "port.h",
+      "type": "class",
+      "extends": "Port",
+      "description": "Output port for sending data",
+      "publicMethods": [
+        {
+          "name": "setValue",
+          "signature": "void setValue(float value)",
+          "description": "Write value to output buffer"
+        },
+        {
+          "name": "write",
+          "signature": "void write(const float* buffer, size_t count)",
+          "description": "Write multiple values to buffer"
+        }
+      ]
+    },
+    "Buffer": {
+      "file": "pipes/buffer.h",
+      "implementations": "pipes/buffer.cpp",
+      "type": "template class",
+      "template": "template<typename T>",
+      "description": "Thread-safe circular buffer for inter-pipe communication",
+      "publicMethods": [
+        {
+          "name": "Buffer",
+          "signature": "Buffer(size_t capacity)",
+          "description": "Constructor with capacity"
+        },
+        {
+          "name": "push",
+          "signature": "bool push(const T& value)",
+          "description": "Add element to buffer (non-blocking)"
+        },
+        {
+          "name": "pop",
+          "signature": "bool pop(T& value)",
+          "description": "Remove element from buffer (non-blocking)"
+        },
+        {
+          "name": "size",
+          "signature": "size_t size() const",
+          "description": "Current number of elements"
+        },
+        {
+          "name": "capacity",
+          "signature": "size_t capacity() const",
+          "description": "Maximum buffer capacity"
+        }
+      ]
+    },
+    "SineTable": {
+      "file": "math/sine.h",
+      "implementations": "math/sine.cpp",
+      "type": "class",
+      "extends": "ValuedTable<float>",
+      "description": "Optimized sine wave lookup table with linear interpolation",
+      "publicMethods": [
+        {
+          "name": "SineTable",
+          "signature": "SineTable(size_t resolution)",
+          "description": "Constructor with table resolution"
+        },
+        {
+          "name": "getValue",
+          "signature": "float getValue(float angle) const",
+          "description": "Get sine value for angle [0, 2π], with interpolation"
+        },
+        {
+          "name": "getLength",
+          "signature": "size_t getLength() const",
+          "description": "Get table size"
+        }
+      ],
+      "cExports": [
+        "SineTable_new",
+        "SineTable_getValue",
+        "SineTable_getLength"
+      ]
+    },
+    "ValuedTable": {
+      "file": "math/table.h",
+      "implementations": "math/table.cpp",
+      "type": "template class",
+      "template": "template<typename T>",
+      "description": "Generic lookup table with interpolation",
+      "publicMethods": [
+        {
+          "name": "getValue",
+          "signature": "T getValue(float index) const",
+          "description": "Get value with linear interpolation"
+        },
+        {
+          "name": "size",
+          "signature": "size_t size() const",
+          "description": "Get number of entries"
+        }
+      ]
+    },
+    "Point": {
+      "file": "math/point.h",
+      "implementations": "math/point.cpp",
+      "type": "struct",
+      "description": "2D coordinate representation",
+      "members": [
+        {"name": "x", "type": "float"},
+        {"name": "y", "type": "float"}
+      ],
+      "publicMethods": [
+        {
+          "name": "Point",
+          "signature": "Point(float x = 0, float y = 0)",
+          "description": "Constructor with coordinates"
+        },
+        {
+          "name": "distance",
+          "signature": "float distance(const Point& other) const",
+          "description": "Euclidean distance to another point"
+        }
+      ]
+    },
+    "ConstantValuePipe": {
+      "file": "pipes/constant_value_pipe.h",
+      "implementations": "pipes/constant_value_pipe.cpp",
+      "type": "class",
+      "extends": "Pipe",
+      "description": "Built-in pipe: outputs constant value",
+      "parameters": [
+        {"name": "value", "type": "float", "description": "Constant output value"}
+      ]
+    },
+    "OscilloscopePipe": {
+      "file": "pipes/oscilloscope_pipe.h",
+      "implementations": "pipes/oscilloscope_pipe.cpp",
+      "type": "class",
+      "extends": "Pipe",
+      "description": "Built-in pipe: captures waveform samples for visualization",
+      "parameters": [
+        {"name": "bufferSize", "type": "size_t", "description": "Number of samples to capture"}
+      ]
+    }
+  },
+  "namespaces": {
+    "global": {
+      "description": "All exports in C ABI use global namespace with C linkage"
+    }
+  },
+  "cExportedFunctions": {
+    "PipeInterface": {
+      "Pipe_init": {
+        "signature": "IntPtr Pipe_init(const char* pipeName)",
+        "description": "Create and initialize a pipe of given type"
+      },
+      "Pipe_shutdown": {
+        "signature": "void Pipe_shutdown(IntPtr handle)",
+        "description": "Stop and destroy pipe"
+      },
+      "Pipe_setRunning": {
+        "signature": "void Pipe_setRunning(IntPtr handle, bool running)",
+        "description": "Start/stop pipe processing"
+      },
+      "Pipe_getInputPort": {
+        "signature": "IntPtr Pipe_getInputPort(IntPtr handle, int index)",
+        "description": "Get input port by index"
+      },
+      "Pipe_getOutputPort": {
+        "signature": "IntPtr Pipe_getOutputPort(IntPtr handle, int index)",
+        "description": "Get output port by index"
+      }
+    },
+    "PortInterface": {
+      "Port_getName": {
+        "signature": "const char* Port_getName(IntPtr handle)",
+        "description": "Get port name"
+      },
+      "Port_setLinkedPort": {
+        "signature": "void Port_setLinkedPort(IntPtr thisPort, IntPtr linkedPort)",
+        "description": "Link two ports"
+      },
+      "Port_getLinkedPort": {
+        "signature": "IntPtr Port_getLinkedPort(IntPtr handle)",
+        "description": "Get linked port"
+      }
+    }
+  },
+  "macros": {
+    "constants": {
+      "file": "math/constants.h",
+      "values": [
+        {"name": "PI", "value": "3.14159265358979323846"},
+        {"name": "PI2", "value": "6.28318530717958647692"},
+        {"name": "HALF_PI", "value": "1.57079632679489661923"}
+      ]
+    }
+  },
+  "fileStructure": {
+    "headers": [
+      "wavy.h",
+      "pipe.h",
+      "port.h",
+      "dllmain.cpp",
+      "math/constants.h",
+      "math/point.h",
+      "math/sine.h",
+      "math/table.h",
+      "pipes/buffer.h",
+      "pipes/pipe.h",
+      "pipes/port.h",
+      "pipes/constant_value_pipe.h",
+      "pipes/oscilloscope_pipe.h"
+    ]
+  },
+  "commonPatterns": [
+    {
+      "name": "Adding a New Pipe Type",
+      "steps": [
+        "1. Create header: NewPipe.h extending Pipe",
+        "2. Implement: NewPipe.cpp with workerTask() override",
+        "3. Add C export: extern \"C\" NewPipe_init()",
+        "4. Register in factory (if registry exists)",
+        "5. Add JNA/P/Invoke wrapper in Java/C#"
+      ]
+    },
+    {
+      "name": "Thread-Safe Buffer Access",
+      "pattern": "Lock Mutex → Read/Write → Unlock",
+      "example": "std::lock_guard<std::mutex> lock(buffer.mutex); data = buffer.getValue();"
+    }
+  ]
+}

@@ -1,0 +1,161 @@
+{
+  "name": "Wavy Project MCP Server",
+  "version": "1.0.0",
+  "description": "Model Context Protocol server for full-stack Wavy signal processing application (C++, Java, C#)",
+  "author": "Wavy Development Team",
+  "schema": "mcp://server/v1",
+  "capabilities": {
+    "resources": [
+      {
+        "name": "architecture",
+        "description": "Project architecture and component relationships",
+        "mimeType": "application/json",
+        "uriPattern": "mcp://wavy/architecture/{component}"
+      },
+      {
+        "name": "codebase-schema",
+        "description": "Codebase structure, modules, and inter-component relationships",
+        "mimeType": "application/json",
+        "uriPattern": "mcp://wavy/schema"
+      },
+      {
+        "name": "symbol-index",
+        "description": "Indexed symbols (classes, functions, methods) for each language",
+        "mimeType": "application/json",
+        "uriPattern": "mcp://wavy/symbols/{language}"
+      },
+      {
+        "name": "build-info",
+        "description": "Build systems, commands, and dependencies",
+        "mimeType": "application/json",
+        "uriPattern": "mcp://wavy/build/{component}"
+      },
+      {
+        "name": "data-models",
+        "description": "JSON schemas for project persistence and data models",
+        "mimeType": "application/json",
+        "uriPattern": "mcp://wavy/models/{type}"
+      },
+      {
+        "name": "documentation",
+        "description": "Human-readable documentation and guides",
+        "mimeType": "text/markdown",
+        "uriPattern": "mcp://wavy/docs/{doc}"
+      }
+    ],
+    "tools": [
+      {
+        "name": "find-symbol",
+        "description": "Find a symbol definition (class, function, method) across the codebase",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "symbol": {
+              "type": "string",
+              "description": "Symbol name to find"
+            },
+            "language": {
+              "type": "string",
+              "enum": ["cpp", "java", "csharp"],
+              "description": "Programming language to search in (omit to search all)"
+            },
+            "type": {
+              "type": "string",
+              "enum": ["class", "function", "method", "property"],
+              "description": "Symbol type (omit to search all types)"
+            }
+          },
+          "required": ["symbol"]
+        }
+      },
+      {
+        "name": "locate-file",
+        "description": "Find file by name or path pattern",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string",
+              "description": "File name, path, or glob pattern"
+            },
+            "component": {
+              "type": "string",
+              "enum": ["cpp", "java", "csharp", "all"],
+              "description": "Component to search in"
+            }
+          },
+          "required": ["path"]
+        }
+      },
+      {
+        "name": "get-pipe-definition",
+        "description": "Get the definition and parameters of a specific Pipe type",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "pipeName": {
+              "type": "string",
+              "description": "Name of the pipe (e.g., 'ConstantWavePipe')"
+            }
+          },
+          "required": ["pipeName"]
+        }
+      },
+      {
+        "name": "build-command",
+        "description": "Get build commands for a specific component",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "component": {
+              "type": "string",
+              "enum": ["java", "cpp", "csharp", "all"],
+              "description": "Component to build"
+            },
+            "configuration": {
+              "type": "string",
+              "enum": ["debug", "release"],
+              "description": "Build configuration (default: debug)"
+            }
+          },
+          "required": ["component"]
+        }
+      }
+    ]
+  },
+  "components": {
+    "cpp": {
+      "name": "C++ Signal Processing Core",
+      "language": "C++",
+      "buildSystem": "MSVC Solution",
+      "outputPath": "msvc-shared-library/x64/{Debug|Release}/wavy.dll",
+      "entryPoint": "msvc-shared-library/wavy.cpp"
+    },
+    "java": {
+      "name": "Java UI Application",
+      "language": "Java",
+      "buildSystem": "Maven 3.x",
+      "outputPath": "target/wavy-1.0-SNAPSHOT-jar-with-dependencies.jar",
+      "entryPoint": "java-app/src/main/java/com/terpomo/wavy/ui/UIApplication.java"
+    },
+    "csharp": {
+      "name": "C# WPF Application",
+      "language": "C#",
+      "buildSystem": "Visual Studio / dotnet CLI",
+      "outputPath": "wpf-app/bin/{Debug|Release}",
+      "entryPoint": "wpf-app/App.xaml.cs"
+    }
+  },
+  "interConnections": {
+    "java_to_cpp": {
+      "mechanism": "JNA (Java Native Access)",
+      "library": "java-app/src/main/java/com/terpomo/wavy/jni/*",
+      "protocol": "C ABI with extern \"C\" functions"
+    },
+    "csharp_to_cpp": {
+      "mechanism": "P/Invoke (.NET interop)",
+      "library": "wpf-app/Pipes/PipeWrapper.cs, wpf-app/Pipes/PortWrapper.cs",
+      "protocol": "Windows DLL import with native signatures"
+    }
+  }
+}

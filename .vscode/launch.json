@@ -1,0 +1,51 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Java: Debug Application",
+      "type": "java",
+      "name": "Debug Java UI",
+      "request": "launch",
+      "mainClass": "com.terpomo.wavy.ui.UIApplication",
+      "projectName": "wavy",
+      "cwd": "${workspaceFolder}/java-app",
+      "console": "integratedTerminal",
+      "preLaunchTask": "Build Java (Debug)"
+    },
+    {
+      "name": "C#: Debug WPF Application",
+      "type": "coreclr",
+      "request": "launch",
+      "program": "${workspaceFolder}/wpf-app/bin/Debug/net8.0-windows/wpf-app.exe",
+      "args": [],
+      "cwd": "${workspaceFolder}/wpf-app",
+      "stopAtEntry": false,
+      "console": "integratedTerminal",
+      "preLaunchTask": "Build C# (Debug)"
+    },
+    {
+      "name": "C++: Debug msvc-shared-library",
+      "type": "cppvsdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/msvc-shared-library/x64/Debug/wavy.dll",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}/msvc-shared-library",
+      "environment": [],
+      "externalConsole": false,
+      "preLaunchTask": "Build C++ (Debug)",
+      "sourceFileMap": {}
+    },
+    {
+      "name": "Python: MCP Test Server",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/mcp/server.py",
+      "console": "integratedTerminal",
+      "justMyCode": true,
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}/mcp"
+      }
+    }
+  ]
+}

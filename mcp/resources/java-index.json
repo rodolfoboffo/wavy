@@ -1,0 +1,565 @@
+{
+  "language": "Java",
+  "version": "Java 8+",
+  "rootPath": "java-app/src/main/java/com/terpomo/wavy/",
+  "symbolCount": 78,
+  "lastUpdated": "2026-03-28",
+  "packages": {
+    "com.terpomo.wavy.ui": {
+      "path": "ui/",
+      "description": "Swing UI components and main application",
+      "classes": {
+        "UIApplication": {
+          "file": "UIApplication.java",
+          "type": "class",
+          "description": "Main entry point for the application",
+          "methods": [
+            {
+              "name": "main",
+              "signature": "public static void main(String[] args)",
+              "description": "Application entry point"
+            }
+          ]
+        },
+        "MainWindow": {
+          "file": "MainWindow.java",
+          "type": "class",
+          "extends": "JFrame",
+          "description": "Main application window with menu bar and toolbar",
+          "methods": [
+            {
+              "name": "MainWindow",
+              "signature": "public MainWindow()",
+              "description": "Constructor: initializes UI components"
+            },
+            {
+              "name": "addMenuBar",
+              "signature": "private void addMenuBar()",
+              "description": "Create menu structure"
+            },
+            {
+              "name": "addToolbar",
+              "signature": "private void addToolbar()",
+              "description": "Create toolbar with pipe buttons"
+            }
+          ]
+        },
+        "ProjectRepr": {
+          "file": "ProjectRepr.java",
+          "type": "class",
+          "extends": "JPanel",
+          "description": "Canvas for visualizing and editing pipe networks",
+          "methods": [
+            {
+              "name": "ProjectRepr",
+              "signature": "public ProjectRepr(Project project)",
+              "description": "Constructor: attach to project"
+            },
+            {
+              "name": "paintComponent",
+              "signature": "protected void paintComponent(Graphics g)",
+              "description": "Render pipes and connections"
+            },
+            {
+              "name": "addPipe",
+              "signature": "public void addPipe(Pipe pipe, Point location)",
+              "description": "Add pipe to canvas at location"
+            },
+            {
+              "name": "connectPorts",
+              "signature": "public void connectPorts(OutputPort from, InputPort to)",
+              "description": "Draw connection between ports"
+            }
+          ]
+        },
+        "AbstractPipeRepr": {
+          "file": "AbstractPipeRepr.java",
+          "type": "abstract class",
+          "generic": "AbstractPipeRepr<T extends Pipe>",
+          "description": "Base class for pipe UI representations",
+          "methods": [
+            {
+              "name": "render",
+              "signature": "public abstract void render(Graphics2D g)",
+              "description": "Draw pipe on canvas"
+            },
+            {
+              "name": "getInputPortRepr",
+              "signature": "public PortRepr getInputPortRepr(int index)",
+              "description": "Get UI representation of input port"
+            },
+            {
+              "name": "getOutputPortRepr",
+              "signature": "public PortRepr getOutputPortRepr(int index)",
+              "description": "Get UI representation of output port"
+            },
+            {
+              "name": "isClicked",
+              "signature": "public boolean isClicked(int x, int y)",
+              "description": "Check if click is within pipe bounds"
+            }
+          ]
+        },
+        "PortRepr": {
+          "file": "PortRepr.java",
+          "type": "class",
+          "description": "Visual representation of a port; clickable for connections",
+          "methods": [
+            {
+              "name": "PortRepr",
+              "signature": "public PortRepr(Port port, Point location)",
+              "description": "Constructor: attach to model port"
+            },
+            {
+              "name": "render",
+              "signature": "public void render(Graphics2D g)",
+              "description": "Draw port circle"
+            },
+            {
+              "name": "contains",
+              "signature": "public boolean contains(int x, int y)",
+              "description": "Check if point is within port bounds"
+            }
+          ]
+        }
+      }
+    },
+    "com.terpomo.wavy.flow": {
+      "path": "flow/",
+      "description": "Project and workspace management with event model",
+      "classes": {
+        "Workspace": {
+          "file": "Workspace.java",
+          "type": "class",
+          "description": "Container for multiple projects",
+          "methods": [
+            {
+              "name": "addProject",
+              "signature": "public void addProject(Project project)",
+              "description": "Add project to workspace"
+            },
+            {
+              "name": "removeProject",
+              "signature": "public void removeProject(Project project)",
+              "description": "Remove project from workspace"
+            },
+            {
+              "name": "getProjects",
+              "signature": "public List<Project> getProjects()",
+              "description": "Get all projects"
+            }
+          ]
+        },
+        "Project": {
+          "file": "Project.java",
+          "type": "class",
+          "description": "Collection of pipes with add/remove/connection events",
+          "methods": [
+            {
+              "name": "Project",
+              "signature": "public Project(String name)",
+              "description": "Constructor with project name"
+            },
+            {
+              "name": "addPipe",
+              "signature": "public void addPipe(Pipe pipe)",
+              "description": "Add pipe to project"
+            },
+            {
+              "name": "removePipe",
+              "signature": "public void removePipe(Pipe pipe)",
+              "description": "Remove pipe from project"
+            },
+            {
+              "name": "connectPorts",
+              "signature": "public void connectPorts(OutputPort from, InputPort to) throws InvalidConnectionException",
+              "description": "Create connection between two ports"
+            },
+            {
+              "name": "addProjectListener",
+              "signature": "public void addProjectListener(ProjectListener listener)",
+              "description": "Register event listener"
+            },
+            {
+              "name": "getName",
+              "signature": "public String getName()",
+              "description": "Get project name"
+            }
+          ]
+        },
+        "InputPort": {
+          "file": "InputPort.java",
+          "type": "class",
+          "description": "Input data port",
+          "methods": [
+            {
+              "name": "getValue",
+              "signature": "public float getValue()",
+              "description": "Read value from input"
+            },
+            {
+              "name": "getName",
+              "signature": "public String getName()",
+              "description": "Get port name"
+            }
+          ]
+        },
+        "OutputPort": {
+          "file": "OutputPort.java",
+          "type": "class",
+          "description": "Output data port",
+          "methods": [
+            {
+              "name": "setValue",
+              "signature": "public void setValue(float value)",
+              "description": "Write value to output"
+            },
+            {
+              "name": "linkTo",
+              "signature": "public void linkTo(InputPort target)",
+              "description": "Connect to input port"
+            }
+          ]
+        },
+        "Signal": {
+          "file": "Signal.java",
+          "type": "abstract class",
+          "description": "Base class for all signal types",
+          "methods": [
+            {
+              "name": "getValue",
+              "signature": "public abstract float getValue()",
+              "description": "Get current signal value"
+            },
+            {
+              "name": "update",
+              "signature": "public abstract void update()",
+              "description": "Update signal state"
+            }
+          ]
+        }
+      }
+    },
+    "com.terpomo.wavy.pipes": {
+      "path": "pipes/",
+      "description": "15+ pipe implementations organized by category",
+      "categories": {
+        "sources": {
+          "path": "pipes/sources/",
+          "description": "Signal generation pipes",
+          "classes": [
+            {
+              "name": "ConstantWavePipe",
+              "description": "Generate sinusoidal wave",
+              "parameters": ["frequency: double", "amplitude: float", "phase: float", "sampleRate: int"]
+            },
+            {
+              "name": "NoisePipe",
+              "description": "Generate white/colored noise",
+              "parameters": ["noiseType: NoiseType", "amplitude: float"]
+            },
+            {
+              "name": "FileReaderPipe",
+              "description": "Read audio from file",
+              "parameters": ["filePath: String", "loopAudio: boolean"]
+            },
+            {
+              "name": "MicPipe",
+              "description": "Capture microphone input",
+              "parameters": ["sampleRate: int", "bufferSize: int"]
+            },
+            {
+              "name": "RTLPipe",
+              "description": "RTL-SDR software-defined radio receiver",
+              "parameters": ["frequency: long", "sampleRate: int", "gain: float"]
+            }
+          ]
+        },
+        "filters": {
+          "path": "pipes/filters/",
+          "description": "Signal filtering pipes",
+          "classes": [
+            {
+              "name": "BandPassFilterPipe",
+              "description": "Pass frequencies in specified band",
+              "parameters": ["lowFreq: double", "highFreq: double", "order: int"]
+            }
+          ]
+        },
+        "operators": {
+          "path": "pipes/operators/",
+          "description": "Signal manipulation and modulation",
+          "classes": [
+            {
+              "name": "CombinationPipe",
+              "description": "Add multiple signals together",
+              "parameters": ["inputCount: int"]
+            },
+            {
+              "name": "MultiplicationPipe",
+              "description": "Multiply two signals element-wise",
+              "parameters": []
+            },
+            {
+              "name": "ResamplingPipe",
+              "description": "Change sample rate",
+              "parameters": ["targetSampleRate: int", "filterOrder: int"]
+            },
+            {
+              "name": "FMModulationPipe",
+              "description": "Frequency modulation",
+              "parameters": ["carrierFreq: double", "modulationIndex: float"]
+            },
+            {
+              "name": "IQModulationPipe",
+              "description": "In-phase/Quadrature modulation",
+              "parameters": ["carrierFreq: double"]
+            },
+            {
+              "name": "IQDemodulationPipe",
+              "description": "In-phase/Quadrature demodulation",
+              "parameters": ["carrierFreq: double"]
+            }
+          ]
+        },
+        "monitors": {
+          "path": "pipes/monitors/",
+          "description": "Analysis and visualization pipes",
+          "classes": [
+            {
+              "name": "OscilloscopePipe",
+              "description": "Real-time waveform visualization",
+              "parameters": ["bufferSize: int"]
+            },
+            {
+              "name": "FFTPipe",
+              "description": "Frequency spectrum analysis",
+              "parameters": ["fftSize: int", "windowType: WindowType"]
+            }
+          ]
+        },
+        "output": {
+          "path": "pipes/output/",
+          "description": "Output and sink pipes",
+          "classes": [
+            {
+              "name": "AudioPlayerPipe",
+              "description": "Play audio to speaker",
+              "parameters": ["sampleRate: int", "channels: int"]
+            },
+            {
+              "name": "FileWriterPipe",
+              "description": "Write audio to file",
+              "parameters": ["filePath: String", "format: AudioFormat"]
+            }
+          ]
+        }
+      }
+    },
+    "com.terpomo.wavy.signals": {
+      "path": "signals/",
+      "description": "Signal type definitions",
+      "classes": {
+        "Signal": {
+          "file": "Signal.java",
+          "type": "abstract class",
+          "description": "Base signal type"
+        },
+        "ConstantWave": {
+          "file": "ConstantWave.java",
+          "type": "class",
+          "extends": "Signal",
+          "description": "Sinusoidal waveform"
+        },
+        "Noise": {
+          "file": "Noise.java",
+          "type": "class",
+          "extends": "Signal",
+          "description": "Random noise generator"
+        },
+        "ConstantValue": {
+          "file": "ConstantValue.java",
+          "type": "class",
+          "extends": "Signal",
+          "description": "Constant DC value"
+        }
+      }
+    },
+    "com.terpomo.wavy.math": {
+      "path": "math/",
+      "description": "Signal processing mathematics",
+      "classes": {
+        "FFT": {
+          "file": "FFT.java",
+          "type": "class",
+          "description": "Fast Fourier Transform implementation (Cooley-Tukey)",
+          "methods": [
+            {
+              "name": "transform",
+              "signature": "public static Complex[] transform(float[] real, float[] imaginary)",
+              "description": "Forward FFT"
+            },
+            {
+              "name": "inverseTransform",
+              "signature": "public static float[] inverseTransform(Complex[] spectrum)",
+              "description": "Inverse FFT"
+            },
+            {
+              "name": "getMagnitude",
+              "signature": "public static float[] getMagnitude(Complex[] spectrum)",
+              "description": "Extract magnitude spectrum"
+            }
+          ]
+        },
+        "SineTable": {
+          "file": "SineTable.java",
+          "type": "class",
+          "description": "Optimized sine lookup table with interpolation",
+          "methods": [
+            {
+              "name": "SineTable",
+              "signature": "public SineTable(int resolution)",
+              "description": "Constructor with table size"
+            },
+            {
+              "name": "getValue",
+              "signature": "public float getValue(float angle)",
+              "description": "Get sin(angle) with interpolation"
+            }
+          ]
+        },
+        "ValuedTable": {
+          "file": "ValuedTable.java",
+          "type": "generic class",
+          "generic": "ValuedTable<T>",
+          "description": "Generic lookup table with interpolation"
+        },
+        "ExpressionEvaluator": {
+          "file": "ExpressionEvaluator.java",
+          "type": "class",
+          "description": "Math expression parser and evaluator (uses exp4j)",
+          "methods": [
+            {
+              "name": "evaluate",
+              "signature": "public double evaluate(String expression)",
+              "description": "Parse and evaluate mathematical expression"
+            }
+          ]
+        }
+      }
+    },
+    "com.terpomo.wavy.marshal": {
+      "path": "marshal/",
+      "description": "JSON serialization/deserialization",
+      "classes": {
+        "ProjectMarshaller": {
+          "file": "ProjectMarshaller.java",
+          "type": "class",
+          "description": "Convert Project ←→ JSON",
+          "methods": [
+            {
+              "name": "toJson",
+              "signature": "public static JSONObject toJson(Project project)",
+              "description": "Serialize project to JSON"
+            },
+            {
+              "name": "fromJson",
+              "signature": "public static Project fromJson(JSONObject json)",
+              "description": "Deserialize project from JSON"
+            }
+          ]
+        },
+        "PipeMarshaller": {
+          "file": "PipeMarshaller.java",
+          "type": "class",
+          "description": "Convert Pipe ←→ JSON"
+        }
+      }
+    },
+    "com.terpomo.wavy.sound": {
+      "path": "sound/",
+      "description": "Audio codec and format support",
+      "classes": [
+        "AudioFormat",
+        "LPCMCodec",
+        "AudioBuffer"
+      ]
+    },
+    "com.terpomo.wavy.rtl": {
+      "path": "rtl/",
+      "description": "RTL-SDR integration",
+      "classes": [
+        "RTLDevice",
+        "RTLPipe"
+      ]
+    },
+    "com.terpomo.wavy.oscilloscope": {
+      "path": "oscilloscope/",
+      "description": "Real-time waveform visualization",
+      "classes": [
+        "OscilloscopeRenderer",
+        "WaveformBuffer"
+      ]
+    }
+  },
+  "dependencies": {
+    "external": [
+      {
+        "name": "JFreeChart",
+        "version": "1.5.3",
+        "used_by": ["oscilloscope/", "ui/"]
+      },
+      {
+        "name": "JNA",
+        "version": "5.17.0",
+        "used_by": ["C++ interop layer"]
+      },
+      {
+        "name": "org.json",
+        "version": "20250107",
+        "used_by": ["marshal/"]
+      },
+      {
+        "name": "Guava",
+        "version": "33.4.8-jre",
+        "used_by": ["collections, utilities"]
+      },
+      {
+        "name": "exp4j",
+        "version": "0.4.8",
+        "used_by": ["math/ExpressionEvaluator"]
+      }
+    ],
+    "internal": [
+      {
+        "name": "ui → flow",
+        "description": "UI components depend on data model"
+      },
+      {
+        "name": "pipes → flow",
+        "description": "Pipes implement Pipe base from flow"
+      },
+      {
+        "name": "marshal → pipes, flow",
+        "description": "Marshalling converts model objects to JSON"
+      }
+    ]
+  },
+  "commonPatterns": [
+    {
+      "name": "Adding a New Pipe Type",
+      "steps": [
+        "1. Create class extending Pipe in pipes/{category}/",
+        "2. Implement getInputPortCount() and getOutputPortCount()",
+        "3. Override process() method for signal handling",
+        "4. Register in PipeFactory",
+        "5. Create UI representation (extends AbstractPipeRepr)",
+        "6. Add marshalling support in PipeMarshaller"
+      ]
+    },
+    {
+      "name": "Connecting Pipes Programmatically",
+      "example": "project.connectPorts(pipe1.getOutputPort(0), pipe2.getInputPort(0));"
+    }
+  ]
+}

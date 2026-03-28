@@ -1,0 +1,17 @@
+{
+  "recommendations": [
+    "ms-vscode.cpptools",
+    "ms-vscode.cpptools-extension-pack",
+    "redhat.java",
+    "ms-dotnettools.csharp",
+    "ms-dotnettools.vscode-dotnet-runtime",
+    "apache.maven",
+    "ms-vscode.cmake-tools",
+    "ms-vscode.makefile-tools",
+    "eamodio.gitlens",
+    "ms-vscode.json-editor",
+    "yzhang.markdown-all-in-one",
+    "ms-vscode-remote.remote-wsl",
+    "github.github-vscode-theme"
+  ]
+}

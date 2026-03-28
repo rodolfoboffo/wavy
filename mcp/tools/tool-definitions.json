@@ -1,0 +1,300 @@
+{
+  "tools": [
+    {
+      "id": "find-symbol",
+      "name": "Find Symbol Definition",
+      "description": "Search for a symbol definition (class, function, method) across the codebase",
+      "category": "code-navigation",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string",
+            "description": "Symbol name to find (e.g., 'Pipe', 'ConstantWavePipe', 'getValue')"
+          },
+          "language": {
+            "type": "string",
+            "enum": ["cpp", "java", "csharp", "all"],
+            "description": "Language to search in (default: all)"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["class", "function", "method", "property", "all"],
+            "description": "Symbol type to search for (default: all)"
+          }
+        },
+        "required": ["symbol"]
+      },
+      "examples": [
+        {
+          "input": {"symbol": "ConstantWavePipe"},
+          "output": {
+            "found": true,
+            "results": [
+              {
+                "language": "java",
+                "file": "java-app/src/main/java/com/terpomo/wavy/pipes/sources/ConstantWavePipe.java",
+                "type": "class",
+                "extends": "Pipe",
+                "lineNumber": 42
+              }
+            ]
+          }
+        },
+        {
+          "input": {"symbol": "Pipe", "language": "cpp", "type": "class"},
+          "output": {
+            "found": true,
+            "results": [
+              {
+                "language": "cpp",
+                "file": "msvc-shared-library/pipe.h",
+                "type": "class",
+                "description": "Base class for signal processing nodes",
+                "lineNumber": 15
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "locate-file",
+      "name": "Locate File",
+      "description": "Find file by name, path pattern, or glob",
+      "category": "code-navigation",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "File name, path pattern, or glob (e.g., '*.cpp', 'pipes/*.java')"
+          },
+          "component": {
+            "type": "string",
+            "enum": ["cpp", "java", "csharp", "all"],
+            "description": "Component to search in (default: all)"
+          }
+        },
+        "required": ["path"]
+      },
+      "examples": [
+        {
+          "input": {"path": "pom.xml"},
+          "output": {
+            "found": true,
+            "results": [
+              {
+                "path": "java-app/pom.xml",
+                "type": "file",
+                "size": "3.2 KB"
+              }
+            ]
+          }
+        },
+        {
+          "input": {"path": "*.cpp", "component": "cpp"},
+          "output": {
+            "found": true,
+            "results": [
+              {"path": "msvc-shared-library/pipe.cpp"},
+              {"path": "msvc-shared-library/port.cpp"},
+              {"path": "msvc-shared-library/wavy.cpp"},
+              {"path": "msvc-shared-library/dllmain.cpp"}
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "get-pipe-definition",
+      "name": "Get Pipe Definition",
+      "description": "Retrieve the complete definition of a specific pipe type including inputs, outputs, and parameters",
+      "category": "signal-processing",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "pipeName": {
+            "type": "string",
+            "description": "Name of the pipe (e.g., 'ConstantWavePipe', 'FMModulationPipe')"
+          }
+        },
+        "required": ["pipeName"]
+      },
+      "examples": [
+        {
+          "input": {"pipeName": "ConstantWavePipe"},
+          "output": {
+            "name": "ConstantWavePipe",
+            "category": "source",
+            "description": "Generate sinusoidal waveform",
+            "inputs": 0,
+            "outputs": 1,
+            "parameters": {
+              "frequency": {"type": "double", "default": 1000.0, "unit": "Hz"},
+              "amplitude": {"type": "float", "default": 1.0},
+              "phase": {"type": "float", "default": 0.0},
+              "sampleRate": {"type": "int", "default": 44100}
+            },
+            "implementedIn": ["java", "cpp"],
+            "javaPath": "java-app/src/main/java/com/terpomo/wavy/pipes/sources/ConstantWavePipe.java",
+            "commonUsage": "Generate test signals, FM carrier waves"
+          }
+        }
+      ]
+    },
+    {
+      "id": "build-command",
+      "name": "Get Build Command",
+      "description": "Retrieve build commands for specific components with configuration options",
+      "category": "build-system",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "component": {
+            "type": "string",
+            "enum": ["java", "cpp", "csharp", "all"],
+            "description": "Component to build"
+          },
+          "configuration": {
+            "type": "string",
+            "enum": ["debug", "release"],
+            "description": "Build configuration (default: debug)"
+          },
+          "action": {
+            "type": "string",
+            "enum": ["build", "clean", "rebuild", "run"],
+            "description": "Build action (default: build)"
+          }
+        },
+        "required": ["component"]
+      },
+      "examples": [
+        {
+          "input": {"component": "java", "action": "build", "configuration": "release"},
+          "output": {
+            "component": "java",
+            "workingDirectory": "java-app/",
+            "command": "mvn clean package",
+            "description": "Build JAR with dependencies",
+            "expectedOutput": "target/wavy-1.0-SNAPSHOT-jar-with-dependencies.jar",
+            "expectedSize": "50-100 MB"
+          }
+        },
+        {
+          "input": {"component": "cpp", "action": "build", "configuration": "release"},
+          "output": {
+            "component": "cpp",
+            "workingDirectory": "msvc-shared-library/",
+            "command": "msbuild msvc-shared-library.sln /p:Configuration=Release /p:Platform=x64",
+            "description": "Build DLL in release mode",
+            "expectedOutput": "x64/Release/wavy.dll",
+            "expectedSize": "3-5 MB"
+          }
+        }
+      ]
+    },
+    {
+      "id": "list-symbols-in-file",
+      "name": "List Symbols in File",
+      "description": "List all symbols (classes, methods, functions) defined in a specific file",
+      "category": "code-navigation",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "filePath": {
+            "type": "string",
+            "description": "File path to analyze"
+          }
+        },
+        "required": ["filePath"]
+      }
+    },
+    {
+      "id": "explain-pipe-connection",
+      "name": "Explain Pipe Connection",
+      "description": "Explain how two pipes can be connected, including data types and compatibility",
+      "category": "signal-processing",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "sourcePipe": {
+            "type": "string",
+            "description": "Source pipe type (e.g., 'ConstantWavePipe')"
+          },
+          "targetPipe": {
+            "type": "string",
+            "description": "Target pipe type (e.g., 'AudioPlayerPipe')"
+          },
+          "sourcePortIndex": {
+            "type": "integer",
+            "description": "Output port index of source pipe (default: 0)"
+          },
+          "targetPortIndex": {
+            "type": "integer",
+            "description": "Input port index of target pipe (default: 0)"
+          }
+        },
+        "required": ["sourcePipe", "targetPipe"]
+      }
+    },
+    {
+      "id": "get-interop-info",
+      "name": "Get Interop Information",
+      "description": "Get information about Java-C++ (JNA) or C#-C++ (P/Invoke) interoperability",
+      "category": "interoperability",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "interface": {
+            "type": "string",
+            "enum": ["java-cpp", "csharp-cpp"],
+            "description": "Interop interface to query"
+          },
+          "function": {
+            "type": "string",
+            "description": "Specific function to get info about (optional)"
+          }
+        },
+        "required": ["interface"]
+      }
+    },
+    {
+      "id": "get-project-structure",
+      "name": "Get Project Structure",
+      "description": "Retrieve the project directory structure and organization",
+      "category": "project-management",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "component": {
+            "type": "string",
+            "enum": ["cpp", "java", "csharp", "all"],
+            "description": "Component to analyze"
+          },
+          "depth": {
+            "type": "integer",
+            "description": "Directory depth to show (default: 3)"
+          }
+        }
+      }
+    },
+    {
+      "id": "get-dependencies",
+      "name": "Get Dependencies",
+      "description": "List external dependencies and their versions",
+      "category": "build-system",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "component": {
+            "type": "string",
+            "enum": ["java", "csharp", "cpp"],
+            "description": "Component to analyze"
+          }
+        },
+        "required": ["component"]
+      }
+    }
+  ]
+}
