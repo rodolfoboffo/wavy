@@ -21,13 +21,13 @@ $ErrorActionPreference = "Stop"
 $workspace_root = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
 
 Write-Host "=" * 80
-Write-Host "🔨 Wavy Full Recompile & Run - $Configuration Configuration"
+Write-Host "Wavy Full Recompile and Run - $Configuration Configuration"
 Write-Host "=" * 80
 
 try {
     # Step 1: Build C++ DLL
     Write-Host ""
-    Write-Host "📦 Step 1: Building C++ DLL ($Configuration x64)..."
+    Write-Host "Step 1: Building C++ DLL ($Configuration x64)..."
     Push-Location "$workspace_root\msvc-shared-library"
     
     $msbuild = "C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\MSBuild.exe"
@@ -39,12 +39,12 @@ try {
     if ($LASTEXITCODE -ne 0) {
         throw "C++ build failed with exit code: $LASTEXITCODE"
     }
-    Write-Host "✓ C++ DLL compiled successfully"
+    Write-Host "C++ DLL compiled successfully"
     Pop-Location
     
     # Step 2: Copy DLL to WPF output
     Write-Host ""
-    Write-Host "📋 Step 2: Copying wavy.dll to WPF output directory..."
+    Write-Host "Step 2: Copying wavy.dll to WPF output directory..."
     
     $source_dll = "$workspace_root\msvc-shared-library\x64\$Configuration\wavy.dll"
     $target_dir = "$workspace_root\wpf-app\bin\$Configuration\net8.0-windows"
@@ -59,43 +59,43 @@ try {
     
     Copy-Item $source_dll $target_dir -Force
     $dll_size = (Get-Item "$target_dir\wavy.dll").Length / 1KB
-    Write-Host "✓ Copied wavy.dll to: $target_dir ($([Math]::Round($dll_size, 2)) KB)"
+    Write-Host "Copied wavy.dll to: $target_dir ($([Math]::Round($dll_size, 2)) KB)"
     
     # Step 3: Build WPF Application
     Write-Host ""
-    Write-Host "🔧 Step 3: Building WPF Application ($Configuration)..."
+    Write-Host "Step 3: Building WPF Application ($Configuration)..."
     Push-Location "$workspace_root\wpf-app"
     
     dotnet build wpf-app.csproj -c $Configuration
     if ($LASTEXITCODE -ne 0) {
         throw "WPF build failed with exit code: $LASTEXITCODE"
     }
-    Write-Host "✓ WPF Application compiled successfully"
+    Write-Host "WPF Application compiled successfully"
     Pop-Location
     
     # Step 4: Run Application
     if (-not $NoRun) {
         Write-Host ""
-        Write-Host "🚀 Step 4: Launching Wavy WPF Application..."
+        Write-Host "Step 4: Launching Wavy WPF Application..."
         
         $exe_path = "$workspace_root\wpf-app\bin\$Configuration\net8.0-windows\wpf-app.exe"
         if (-not (Test-Path $exe_path)) {
             throw "Executable not found at: $exe_path"
         }
         
-        Write-Host "✓ Starting: $exe_path"
+        Write-Host "Starting: $exe_path"
         & $exe_path
     }
     
     Write-Host ""
     Write-Host "=" * 80
-    Write-Host "✅ Full recompile completed successfully!"
+    Write-Host "Full recompile completed successfully!"
     Write-Host "=" * 80
 }
 catch {
     Write-Host ""
     Write-Host "=" * 80
-    Write-Host "❌ Build failed: $_"
+    Write-Host "Build failed: $_"
     Write-Host "=" * 80
     exit 1
 }
