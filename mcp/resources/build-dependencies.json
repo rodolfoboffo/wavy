@@ -215,13 +215,9 @@
   "interComponentDependencies": {
     "c++_to_other": {
       "type": "Provides native core library",
-      "consumers": ["Java via JNA", "C# via P/Invoke"],
-      "requirement": "wavy.dll must be built and available BEFORE Java/C# builds"
-    },
-    "java_to_cpp": {
-      "mechanism": "JNA (Java Native Access)",
-      "dependency": "JNA 5.17.0 from Maven Central",
-      "dllLocation": "Must be in Java process PATH"
+      "consumers": ["C# WPF via P/Invoke"],
+      "requirement": "wavy.dll must be built and available BEFORE WPF build/run",
+      "note": "Java app is standalone — it does NOT depend on wavy.dll"
     },
     "csharp_to_cpp": {
       "mechanism": "P/Invoke (Windows .NET Interop)",

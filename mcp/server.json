@@ -132,11 +132,12 @@
       "entryPoint": "msvc-shared-library/wavy.cpp"
     },
     "java": {
-      "name": "Java UI Application",
+      "name": "Java Standalone App (Legacy)",
       "language": "Java",
       "buildSystem": "Maven 3.x",
       "outputPath": "target/wavy-1.0-SNAPSHOT-jar-with-dependencies.jar",
-      "entryPoint": "java-app/src/main/java/com/terpomo/wavy/ui/UIApplication.java"
+      "entryPoint": "java-app/src/main/java/com/terpomo/wavy/ui/UIApplication.java",
+      "note": "Older standalone initiative — a complete pure-Java signal processing app with 20+ pipes, Swing UI, and audio I/O. Has no dependency on wavy.dll. JNA is used only for RTL-SDR hardware access (librtlsdr), not for C++ core integration."
     },
     "csharp": {
       "name": "C# WPF Application",
@@ -147,11 +148,6 @@
     }
   },
   "interConnections": {
-    "java_to_cpp": {
-      "mechanism": "JNA (Java Native Access)",
-      "library": "java-app/src/main/java/com/terpomo/wavy/jni/*",
-      "protocol": "C ABI with extern \"C\" functions"
-    },
     "csharp_to_cpp": {
       "mechanism": "P/Invoke (.NET interop)",
       "library": "wpf-app/Pipes/PipeWrapper.cs, wpf-app/Pipes/PortWrapper.cs",

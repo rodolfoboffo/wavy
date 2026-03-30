@@ -16,7 +16,7 @@ This Model Context Protocol (MCP) configuration enables AI assistants like Claud
 
 ### Start Here
 
-1. **[ARCHITECTURE.md](ARCHITECTURE.md)** - Three-tier architecture overview
+1. **[ARCHITECTURE.md](ARCHITECTURE.md)** - Architecture overview (new C++/WPF stack + legacy Java)
 2. **[TECHNOLOGY_STACK.md](TECHNOLOGY_STACK.md)** - Languages, frameworks, versions
 3. **[BUILD_GUIDE.md](BUILD_GUIDE.md)** - How to build all components
 
@@ -57,19 +57,18 @@ Output (Speaker, File, Network)
 - `Buffer` - Thread-safe data transfer between pipes
 - `Project` - Collection of pipes with connections (Java/C#)
 
-### Three-Tier Architecture
+### Two Parallel Tracks
 
-| Layer | Technology | Purpose |
+| Track | Technology | Purpose |
 |-------|-----------|---------|
-| **Presentation** | Java Swing or C# WPF | User interface |
-| **Application** | Java or C# | Workflow management, marshalling |
-| **Performance** | C++ DLL | Real-time signal processing |
+| **New — UI** | C# WPF (.NET 8) | Modern user interface |
+| **New — Core** | C++ DLL (`wavy.dll`) | Real-time signal processing |
+| **Legacy** | Java Swing (standalone) | Older complete implementation, no C++ dependency |
 
 ### Interoperability
 
-- **Java ↔ C++**: JNA (Java Native Access)
-- **C# ↔ C++**: P/Invoke (.NET Windows interop)
-- **Both**: Via C ABI exports with `extern "C"` functions
+- **C# ↔ C++**: P/Invoke (.NET Windows interop) via C ABI exports (`extern "C"`)
+- **Java app**: Standalone — no connection to `wavy.dll`. JNA used only for RTL-SDR hardware (`librtlsdr`)
 
 ---
 
@@ -222,7 +221,7 @@ mcp/
 
 | Issue | Solution |
 |-------|----------|
-| "JNA cannot load wavy.dll" | Ensure DLL is in PATH or same directory as JAR |
+| "JNA cannot load librtlsdr" | Ensure librtlsdr is installed and in PATH (JNA is for RTL-SDR hardware, not wavy.dll) |
 | "MSVC compiler not found" | Install Visual Studio with C++ workload |
 | ".NET 8.0 not installed" | Download from dotnet.microsoft.com |
 | "Maven dependency resolution failed" | Check internet connection, run `mvn dependency:resolve` |

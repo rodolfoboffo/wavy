@@ -21,11 +21,13 @@ Wavy uses a multi-language technology stack optimized for signal processing, rea
 - `<algorithm>`: Standard algorithms
 - `<vector>`: Dynamic arrays for buffers
 
-### Java
+### Java (Legacy Standalone App)
+
+> The Java app is a fully self-contained older initiative — a complete signal processing platform with 20+ pipes, Swing UI, audio I/O, and math utilities. It has no dependency on `wavy.dll`.
 
 | Component | Version | Purpose |
 |-----------|---------|---------|
-| **Language** | Java 8/11+ | Cross-platform application logic |
+| **Language** | Java 8/11+ | Legacy standalone signal processing application |
 | **Build Tool** | Maven 3.9+ | Dependency & build management |
 | **JVM Target** | Java 8+ | Compatibility |
 | **Package Manager** | Apache Maven Central | Artifact resolution |
@@ -33,7 +35,7 @@ Wavy uses a multi-language technology stack optimized for signal processing, rea
 **Frameworks & Libraries**:
 - **UI**: `javax.swing` (Swing), `java.awt` (AWT)
 - **Charting**: `org.jfree:jfreechart:1.5.3`
-- **Interop**: `net.java.dev.jna:jna:5.17.0` (C++ interop via JNA)
+- **Interop**: `net.java.dev.jna:jna:5.17.0` (RTL-SDR hardware access via librtlsdr — not used for wavy.dll)
 - **Serialization**: `org.json:json:20250107` (JSON I/O)
 - **Utilities**: `com.google.guava:guava:33.4.8-jre` (collections, utilities)
 - **Math**: `net.objecthunter:exp4j:0.4.8` (expression evaluation)
@@ -239,20 +241,18 @@ PATH=%PATH%;%DOTNET_ROOT%\bin
 
 ### JNA (Java Native Access)
 
-**Purpose**: Bridge between Java and C++ DLL
+**Purpose**: RTL-SDR hardware access in the legacy Java app — **not** used to call `wavy.dll`
 **Version**: 5.17.0
-**Mechanism**: 
-- Runtime binding to native libraries
-- Automatic type marshalling (Java ↔ C types)
-- Callback support for reverse calls
-**Configuration**: JNA classpath, DLL location in `PATH`
+**Used in**: `java-app/src/main/java/com/terpomo/wavy/rtl/` only
+**Mechanism**: Runtime binding to `librtlsdr` (the RTL-SDR C library) for software-defined radio device support
 
-**Example**:
+> The Java app is a **standalone** application with no dependency on the C++ core. JNA appears in its `pom.xml` exclusively for RTL-SDR hardware access via `librtlsdr`. It does **not** bridge Java to `wavy.dll`.
+
+**Example (RTL-SDR only)**:
 ```java
-// Load and call C++ function
-Native.setProtected(true);
-WavyLibrary lib = Native.load("wavy", WavyLibrary.class);
-IntPtr handle = lib.Pipe_init("ConstantWavePipe");
+// JNA binding to librtlsdr — NOT to wavy.dll
+RTLSDRDevice device = Native.load("rtlsdr", RTLSDRDevice.class);
+device.rtlsdr_open(deviceIndex);
 ```
 
 ### P/Invoke (.NET Interop)
@@ -277,7 +277,7 @@ IntPtr handle = Pipe_init("ConstantWavePipe");
 | Dependency | Version | Language | Purpose |
 |------------|---------|----------|---------|
 | JFreeChart | 1.5.3 | Java | Real-time charting |
-| JNA | 5.17.0 | Java | C++ interop |
+| JNA | 5.17.0 | Java | RTL-SDR hardware access (librtlsdr) |
 | JSON | 20250107 | Java | Serialization |
 | Guava | 33.4.8-jre | Java | Utilities |
 | exp4j | 0.4.8 | Java | Math expressions |

@@ -7,10 +7,33 @@
     "rootPath": "c:\\working\\wavy"
   },
   "architecture": {
-    "pattern": "Three-Tier Architecture with Native Interop",
-    "layers": {
-      "presentation": {
-        "description": "User Interface Layer",
+    "pattern": "Two parallel tracks: new C++/WPF stack (active) + legacy Java standalone app",
+    "tracks": {
+      "new_stack": {
+        "description": "Active development — C++ core + WPF frontend (work in progress)",
+        "components": [
+          {
+            "name": "C# WPF UI",
+            "path": "wpf-app",
+            "framework": "WPF (.NET8)",
+            "entryPoint": "App.xaml.cs",
+            "responsibilities": ["Modern UI", "Pipe graph editor", "P/Invoke wrapper around wavy.dll"],
+            "currentPipes": ["ConstantValuePipe", "OscilloscopePipe"]
+          },
+          {
+            "name": "C++ Core Library (wavy.dll)",
+            "path": "msvc-shared-library",
+            "type": "Windows DLL",
+            "language": "C++",
+            "responsibilities": ["High-performance signal processing", "Threaded pipe execution", "C ABI exports"],
+            "interop": "P/Invoke from WPF",
+            "currentPipes": ["ConstantValuePipe", "OscilloscopePipe"]
+          }
+        ]
+      },
+      "legacy_java": {
+        "description": "Legacy initiative — fully standalone pure-Java signal processing app",
+        "note": "No connection to wavy.dll. JNA is used only for RTL-SDR hardware (librtlsdr).",
         "components": [
           {
             "name": "Java Swing UI",
@@ -19,18 +42,6 @@
             "entryPoint": "UIApplication.java",
             "responsibilities": ["Graph editor", "Pipe visualization", "Real-time charts"]
           },
-          {
-            "name": "C# WPF UI",
-            "path": "wpf-app",
-            "framework": "WPF (.NET8)",
-            "entryPoint": "App.xaml.cs",
-            "responsibilities": ["Alternative modern UI", "Cross-platform target"]
-          }
-        ]
-      },
-      "application": {
-        "description": "Business Logic & Workflows",
-        "components": [
           {
             "name": "Java Flow Management",
             "path": "java-app/src/main/java/com/terpomo/wavy/flow",
@@ -43,12 +54,12 @@
             }
           },
           {
-            "name": "Java Pipe Implementations",
+            "name": "Java Pipe Implementations (20+)",
             "path": "java-app/src/main/java/com/terpomo/wavy/pipes",
             "submodules": {
-              "sources": ["ConstantWavePipe", "NoisePipe", "FileReaderPipe", "MicPipe", "RTLPipe"],
+              "sources": ["ConstantValuePipe", "ConstantWavePipe", "NoisePipe", "FileReaderPipe", "MicPipe", "RTLPipe"],
               "filters": ["BandPassFilterPipe"],
-              "operators": ["CombinationPipe", "MultiplicationPipe", "ResamplingPipe", "FMModulationPipe", "IQModulationPipe", "IQDemodulationPipe"],
+              "operators": ["CombinationPipe", "MultiplicationPipe", "ResamplingPipe", "FMModulationPipe", "FMDemodulationPipe", "IQModulationPipe", "IQDemodulationPipe", "SplitterPipe"],
               "monitors": ["OscilloscopePipe", "FFTPipe"],
               "output": ["AudioPlayerPipe", "FileWriterPipe"]
             }
@@ -57,29 +68,6 @@
             "name": "Java Marshalling",
             "path": "java-app/src/main/java/com/terpomo/wavy/marshal",
             "purpose": "JSON serialization/deserialization of project graphs"
-          },
-          {
-            "name": "C# Wrappers",
-            "path": "wpf-app/Pipes, wpf-app/Flow",
-            "purpose": "P/Invoke bindings to C++ DLL with managed interfaces"
-          }
-        ]
-      },
-      "performance": {
-        "description": "Native Performance Layer",
-        "components": [
-          {
-            "name": "C++ Core Library",
-            "path": "msvc-shared-library",
-            "type": "Windows DLL (wavy.dll)",
-            "language": "C++",
-            "architecture": "Node-based pipe graph with threading",
-            "modules": {
-              "pipe": "Base Pipe class with async worker tasks",
-              "port": "Port connection system with buffer management",
-              "math": "Signal processing math (FFT, sine tables)",
-              "pipes_subdir": "Pre-built pipe implementations (buffer, constant, oscilloscope)"
-            }
           }
         ]
       }
@@ -126,7 +114,8 @@
       }
     },
     "java": {
-      "name": "Java Application",
+      "name": "Java Standalone App (Legacy)",
+      "note": "Older standalone initiative — complete pure-Java signal processing platform. No dependency on wavy.dll. JNA is used exclusively for RTL-SDR hardware access (librtlsdr), not for C++ core integration.",
       "path": "java-app",
       "language": "Java",
       "buildSystem": "Maven 3.x",
@@ -219,14 +208,6 @@
     }
   },
   "interConnections": {
-    "java_to_cpp": {
-      "mechanism": "JNA (Java Native Access)",
-      "direction": "Java UI ←→ C++ DLL",
-      "dllPath": "x64/{Debug|Release}/wavy.dll",
-      "callPattern": "Java.createPipe() → JNA marshalling → C++ Pipe::init()",
-      "dataFlow": "Native pointers (IntPtr) passed between JVM and C++",
-      "threadSafety": "Mutexes in C++, synchronized blocks in Java"
-    },
     "csharp_to_cpp": {
       "mechanism": "P/Invoke (.NET Interop)",
       "direction": "C# WPF ←→ C++ DLL",

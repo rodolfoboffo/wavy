@@ -2,7 +2,11 @@
 
 ## Overview
 
-This directory contains a comprehensive Model Context Protocol (MCP) configuration for the **Wavy** signal processing project. The MCP enables AI assistants (like Claude) to efficiently understand and navigate the full-stack codebase across C++, Java, and C# components.
+This directory contains a Model Context Protocol (MCP) configuration for the **Wavy** signal processing project. The MCP enables AI assistants (like Claude) to efficiently understand and navigate the codebase.
+
+**Architecture summary**: Wavy has two parallel tracks:
+- **New stack (active)**: C++ core (`wavy.dll`) + C# WPF frontend connected via P/Invoke
+- **Legacy Java app**: A standalone, older initiative — a complete pure-Java signal processing platform (20+ pipes, Swing UI). No connection to `wavy.dll`.
 
 ## What's Included
 
@@ -15,7 +19,7 @@ This directory contains a comprehensive Model Context Protocol (MCP) configurati
 
 | File | Purpose |
 |------|---------|
-| **`documentation/ARCHITECTURE.md`** | Three-tier architecture, component interaction, data flow |
+| **`documentation/ARCHITECTURE.md`** | Architecture: new C++/WPF stack + legacy Java standalone, component interaction, data flow |
 | **`documentation/TECHNOLOGY_STACK.md`** | Languages, frameworks, versions, dependencies |
 | **`documentation/BUILD_GUIDE.md`** | Comprehensive build instructions for all components |
 | **`documentation/DATA_MODELS.md`** | JSON schemas, data types, project persistence |
@@ -145,18 +149,18 @@ Wavy implements a **node-based signal processing graph**:
 - `Port` - Data connection (Input/Output)
 - `Project` - Collection of pipes with events (Java/C#)
 
-### Three-Tier Architecture
+### Architecture
 
-| Layer | Technology | Role |
+| Track | Technology | Role |
 |-------|-----------|------|
-| **UI Tier** | Java Swing / C# WPF | User interaction, visualization |
-| **Logic Tier** | Java / C# | Workflow, event management, marshalling |
-| **Core Tier** | C++ DLL | Real-time signal processing |
+| **New — UI** | C# WPF (.NET 8) | User interaction, visualization |
+| **New — Core** | C++ DLL (`wavy.dll`) | Real-time signal processing |
+| **Legacy** | Java Swing (standalone) | Older complete implementation, no C++ dependency |
 
 ### Interoperability
 
-- **Java ↔ C++**: JNA (Java Native Access)
-- **C# ↔ C++**: P/Invoke (Windows .NET interop)
+- **C# ↔ C++**: P/Invoke (Windows .NET interop) — the only C++ integration
+- **Java ↔ librtlsdr**: JNA — used in the Java app for RTL-SDR hardware only (not related to wavy.dll)
 
 ---
 

@@ -183,7 +183,7 @@ java -cp target/wavy-1.0-SNAPSHOT-jar-with-dependencies.jar com.terpomo.wavy.ui.
 |-------|----------|
 | "Cannot find JDK" | Set `JAVA_HOME` environment variable |
 | "Dependency resolution failed" | Check internet connection, try `mvn dependency:resolve` |
-| "JNA cannot load wavy.dll" | Ensure DLL is in PATH or same directory as JAR |
+| "JNA cannot load librtlsdr" | Ensure librtlsdr is installed and in PATH (JNA is used for RTL-SDR hardware only, not wavy.dll) |
 | "Test failures" | Use `-DskipTests` flag to skip test execution |
 
 ---

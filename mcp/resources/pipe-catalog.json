@@ -1,15 +1,52 @@
 {
   "metadata": {
     "projectName": "Wavy",
-    "description": "Complete catalog of Pipe types with configurations and parameters",
-    "lastUpdated": "2026-03-28",
-    "totalPipeTypes": 15
+    "description": "Pipe catalog split by implementation: C++ (new stack, active) and Java (legacy standalone app)",
+    "lastUpdated": "2026-03-29"
   },
-  "pipes": {
+  "cpp_pipes": {
+    "description": "Pipes implemented in the C++ core (wavy.dll). Exposed via C ABI, wrapped in WPF via P/Invoke. Work in progress — more pipes being added.",
+    "status": "active / work in progress",
+    "count": 2,
+    "pipes": [
+      {
+        "name": "ConstantValuePipe",
+        "file": "msvc-shared-library/pipes/constant_value_pipe.h",
+        "description": "Outputs a constant (non-oscillating) float value",
+        "inputs": 0,
+        "outputs": 1,
+        "parameters": {
+          "value": {"type": "float", "description": "Constant output value"}
+        },
+        "csharp_wrapper": "wpf-app/Pipes/ConstantValuePipe.cs"
+      },
+      {
+        "name": "OscilloscopePipe",
+        "file": "msvc-shared-library/pipes/oscilloscope_pipe.h",
+        "description": "Captures waveform samples for visualization (no signal output)",
+        "inputs": 1,
+        "outputs": 0,
+        "parameters": {
+          "bufferSize": {"type": "size_t", "description": "Number of samples to capture"}
+        },
+        "csharp_wrapper": "wpf-app/Pipes/OscilloscopePipe.cs"
+      }
+    ]
+  },
+  "java_pipes": {
+    "description": "Pipes implemented in the legacy Java standalone app. Pure Java — no dependency on wavy.dll.",
+    "status": "legacy / feature-complete",
+    "count": 20,
     "sources": {
-      "count": 5,
-      "category": "Signal generation",
+      "count": 6,
       "pipes": [
+        {
+          "name": "ConstantValuePipe",
+          "class": "com.terpomo.wavy.pipes.sources.ConstantValuePipe",
+          "description": "Outputs a constant float value",
+          "inputs": 0,
+          "outputs": 1
+        },
         {
           "name": "ConstantWavePipe",
           "class": "com.terpomo.wavy.pipes.sources.ConstantWavePipe",
@@ -60,7 +97,7 @@
         {
           "name": "RTLPipe",
           "class": "com.terpomo.wavy.pipes.sources.RTLPipe",
-          "description": "RTL-SDR software-defined radio receiver",
+          "description": "RTL-SDR software-defined radio receiver (uses JNA → librtlsdr, not wavy.dll)",
           "inputs": 0,
           "outputs": 1,
           "parameters": {
@@ -74,7 +111,6 @@
     },
     "filters": {
       "count": 1,
-      "category": "Signal filtering and processing",
       "pipes": [
         {
           "name": "BandPassFilterPipe",
@@ -93,8 +129,7 @@
       ]
     },
     "operators": {
-      "count": 6,
-      "category": "Signal manipulation and modulation",
+      "count": 8,
       "pipes": [
         {
           "name": "CombinationPipe",
@@ -113,6 +148,13 @@
           "inputs": 2,
           "outputs": 1,
           "parameters": {}
+        },
+        {
+          "name": "SplitterPipe",
+          "class": "com.terpomo.wavy.pipes.operators.SplitterPipe",
+          "description": "Fan out one signal to multiple outputs",
+          "inputs": 1,
+          "outputs": 2
         },
         {
           "name": "ResamplingPipe",
@@ -137,6 +179,13 @@
           }
         },
         {
+          "name": "FMDemodulationPipe",
+          "class": "com.terpomo.wavy.pipes.operators.FMDemodulationPipe",
+          "description": "Frequency demodulation",
+          "inputs": 1,
+          "outputs": 1
+        },
+        {
           "name": "IQModulationPipe",
           "class": "com.terpomo.wavy.pipes.operators.IQModulationPipe",
           "description": "In-phase/Quadrature modulation (complex modulation)",
@@ -150,7 +199,7 @@
         {
           "name": "IQDemodulationPipe",
           "class": "com.terpomo.wavy.pipes.operators.IQDemodulationPipe",
-          "description": "In-phase/Quadrature demodulation (complex demod)",
+          "description": "In-phase/Quadrature demodulation",
           "inputs": 1,
           "outputs": 2,
           "outputLabels": ["inPhase", "quadrature"],
@@ -162,7 +211,6 @@
     },
     "monitors": {
       "count": 2,
-      "category": "Real-time analysis and visualization",
       "pipes": [
         {
           "name": "OscilloscopePipe",
@@ -171,10 +219,10 @@
           "inputs": 1,
           "outputs": 0,
           "parameters": {
-            "bufferSize": {"type": "int", "default": 4096, "min": 1024, "max": 65536, "unit": "samples", "description": "Waveform display length"},
+            "bufferSize": {"type": "int", "default": 4096, "min": 1024, "max": 65536, "unit": "samples"},
             "triggerMode": {"type": "enum", "options": ["AUTO", "MANUAL", "SINGLE"], "default": "AUTO"},
-            "triggerLevel": {"type": "float", "default": 0.0, "min": -1.0, "max": 1.0, "description": "Trigger threshold"},
-            "timebaseScale": {"type": "float", "default": 1.0, "min": 0.1, "max": 10.0, "description": "Time scaling"}
+            "triggerLevel": {"type": "float", "default": 0.0, "min": -1.0, "max": 1.0},
+            "timebaseScale": {"type": "float", "default": 1.0, "min": 0.1, "max": 10.0}
           }
         },
         {
@@ -184,17 +232,16 @@
           "inputs": 1,
           "outputs": 0,
           "parameters": {
-            "fftSize": {"type": "int", "default": 4096, "min": 256, "max": 65536, "unit": "samples", "constraint": "Must be power of 2"},
+            "fftSize": {"type": "int", "default": 4096, "min": 256, "max": 65536, "constraint": "Must be power of 2"},
             "windowType": {"type": "enum", "options": ["RECTANGULAR", "HANN", "HAMMING", "BLACKMAN"], "default": "HANN"},
-            "overlap": {"type": "float", "default": 0.5, "min": 0.0, "max": 0.9, "description": "Frame overlap ratio"},
-            "dBScale": {"type": "boolean", "default": true, "description": "Display in dB or linear"}
+            "overlap": {"type": "float", "default": 0.5, "min": 0.0, "max": 0.9},
+            "dBScale": {"type": "boolean", "default": true}
           }
         }
       ]
     },
     "output": {
       "count": 2,
-      "category": "Output and data sinks",
       "pipes": [
         {
           "name": "AudioPlayerPipe",
@@ -204,9 +251,9 @@
           "outputs": 0,
           "parameters": {
             "sampleRate": {"type": "int", "default": 44100, "min": 8000, "max": 192000, "unit": "Hz"},
-            "channels": {"type": "int", "default": 1, "min": 1, "max": 8, "description": "Number of audio channels"},
+            "channels": {"type": "int", "default": 1, "min": 1, "max": 8},
             "bufferSize": {"type": "int", "default": 2048, "min": 256, "max": 8192, "unit": "samples"},
-            "gain": {"type": "float", "default": 1.0, "min": 0.0, "max": 2.0, "description": "Output gain multiplier"}
+            "gain": {"type": "float", "default": 1.0, "min": 0.0, "max": 2.0}
           }
         },
         {
@@ -216,49 +263,13 @@
           "inputs": 1,
           "outputs": 0,
           "parameters": {
-            "filePath": {"type": "string", "default": "recording.wav", "description": "Output file path"},
+            "filePath": {"type": "string", "default": "recording.wav"},
             "sampleRate": {"type": "int", "default": 44100, "min": 8000, "max": 192000, "unit": "Hz"},
-            "channels": {"type": "int", "default": 1, "min": 1, "max": 2, "description": "Audio channels"},
+            "channels": {"type": "int", "default": 1, "min": 1, "max": 2},
             "bitDepth": {"type": "int", "default": 16, "options": [8, 16, 24, 32], "unit": "bits"}
           }
         }
       ]
     }
-  },
-  "pipesByFunction": {
-    "synthesis": ["ConstantWavePipe", "NoisePipe"],
-    "analysis": ["OscilloscopePipe", "FFTPipe"],
-    "modulation": ["FMModulationPipe", "IQModulationPipe", "MultiplicationPipe"],
-    "demodulation": ["IQDemodulationPipe"],
-    "filtering": ["BandPassFilterPipe"],
-    "resampling": ["ResamplingPipe"],
-    "mixing": ["CombinationPipe"],
-    "io": ["FileReaderPipe", "MicPipe", "RTLPipe", "AudioPlayerPipe", "FileWriterPipe"]
-  },
-  "commonSignalChains": [
-    {
-      "name": "Simple Tone Generation",
-      "pipes": ["ConstantWavePipe → AudioPlayerPipe"]
-    },
-    {
-      "name": "FM Synthesis",
-      "pipes": ["ConstantWavePipe (carrier) → FMModulationPipe", "ConstantWavePipe (modulator) → FMModulationPipe", "FMModulationPipe → AudioPlayerPipe"]
-    },
-    {
-      "name": "Real-time Spectrum Analysis",
-      "pipes": ["MicPipe → FFTPipe"]
-    },
-    {
-      "name": "Band-Pass Filtering",
-      "pipes": ["FileReaderPipe → BandPassFilterPipe → AudioPlayerPipe"]
-    },
-    {
-      "name": "Ring Modulation",
-      "pipes": ["ConstantWavePipe → MultiplicationPipe", "ConstantWavePipe → MultiplicationPipe", "MultiplicationPipe → AudioPlayerPipe"]
-    },
-    {
-      "name": "Multi-Signal Mixing",
-      "pipes": ["ConstantWavePipe → CombinationPipe", "NoisePipe → CombinationPipe", "CombinationPipe → AudioPlayerPipe"]
-    }
-  ]
+  }
 }
