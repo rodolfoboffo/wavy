@@ -13,17 +13,27 @@ namespace Wavy.Flow
         [DllImport("wavy.dll")]
         protected static extern IntPtr Port_setLinkedPort(IntPtr p1, IntPtr p2);
 
-        public delegate void SelectedChangedEventHandler(Port sender, SelectedEventArgs e);
-        public event SelectedChangedEventHandler? SelectedChanged;
+        public delegate void IsSelectedChangedEventHandler(Port sender, IsSelectedEventArgs e);
+        public event IsSelectedChangedEventHandler? IsSelectedChanged;
+        public delegate void IsLinkedChangedEventHandler(Port sender, IsLinkedEventArgs e);
+        public event IsLinkedChangedEventHandler? IsLinkedChanged;
         public readonly IntPtr NativePtr;
         protected bool IsInput;
-        protected bool _Selected;
+        protected bool _IsSelected;
         public Port? LinkedPort { get; private set; }
-        public bool Selected { 
-            get { return this._Selected; }
+        public bool IsSelected { 
+            get { return this._IsSelected; }
             set {
-                this._Selected = value;
-                this.SelectedChanged?.Invoke(this, new SelectedEventArgs(value));
+                this._IsSelected = value;
+                this.IsSelectedChanged?.Invoke(this, new IsSelectedEventArgs(value));
+            }
+        }
+        protected bool _IsLinked;
+        public bool IsLinked { 
+            get { return this._IsLinked; }
+            set {
+                this._IsLinked = value;
+                this.IsLinkedChanged?.Invoke(this, new IsLinkedEventArgs(value));
             }
         }
         public String Name { get; private set; }
@@ -33,7 +43,7 @@ namespace Wavy.Flow
             this.NativePtr = p;
             string? name = Marshal.PtrToStringAnsi(Port_getName(this.NativePtr));
             this.Name = name == null ? String.Empty : name;
-            this._Selected = false;
+            this._IsSelected = false;
 
             AppController.Instance.AddPort(this);
         }
@@ -53,19 +63,31 @@ namespace Wavy.Flow
             {
                 Port_setLinkedPort(this.NativePtr, sender.NativePtr);
                 IntPtr linkedPortPtr = Port_getLinkedPort(this.NativePtr);
-                if (linkedPortPtr != sender.NativePtr)
+                if (linkedPortPtr != sender.NativePtr && linkedPortPtr != IntPtr.Zero) {
+                    this.LinkedPort = null;
                     throw new Exception("Could not set Linked Port.");
+                }
                 this.LinkedPort = sender;
             }
         }
     }
 
-    public class SelectedEventArgs : EventArgs
+    public class IsSelectedEventArgs : EventArgs
     {
         public bool IsSelected { get; private set; }
-        public SelectedEventArgs(bool selected)
+        public IsSelectedEventArgs(bool selected)
         {
             this.IsSelected = selected;
+        }
+    }
+    public class IsLinkedEventArgs : EventArgs
+    {
+        public bool IsLinked { get; private set; }
+        public Port? LinkedPort { get; private set; }
+
+        public IsLinkedEventArgs(bool linked)
+        {
+            this.IsLinked = linked;
         }
     }
 

@@ -1,8 +1,5 @@
 #include "./port.h"
-
-#ifdef _DEBUG
 #include <iostream>
-#endif
 
 Port::Port(Pipe* p, const char* name) {
 	this->mtx = new std::mutex();
@@ -19,19 +16,31 @@ const char* Port::getName()
 
 void Port::setLinkedPort(Port* p)
 {
-	std::lock_guard<std::mutex> lock(*(this->mtx));
-	Port* previousLinkedPort = this->linkedPort;
-	this->linkedPort = p;
-	if (previousLinkedPort != nullptr && p != previousLinkedPort) {
-		previousLinkedPort->setLinkedPort(nullptr);
-#if _LOGGING_LEVEL <= _LOGGING_LEVEL_INFO
-		std::cout << "Link removed from port." << std::endl;
-#endif
+	if (p == this) {
+		return;
 	}
-	if (p != nullptr && p->getLinkedPort() != this) {
-		p->setLinkedPort(this);
+
+	// Break the old bidirectional link
+	if (this->linkedPort != nullptr) {
+		this->linkedPort->linkedPort = nullptr;
+	}
+
+	this->linkedPort = p;
 #if _LOGGING_LEVEL <= _LOGGING_LEVEL_INFO
-		std::cout << "Link between ports created." << std::endl;
+	if (p != nullptr)
+		std::cout << "Port " << this->name << " is now linked to port " << p->name << "." << std::endl;
+	else
+		std::cout << "Port " << this->name << " is now unlinked." << std::endl;
+#endif
+
+	// Establish new bidirectional link
+	if (p != nullptr) {
+		if (p->linkedPort != nullptr) {
+			p->linkedPort->linkedPort = nullptr;
+		}
+		p->linkedPort = this;
+#if _LOGGING_LEVEL <= _LOGGING_LEVEL_INFO
+		std::cout << "Port " << p->name << " is now linked to port " << this->name << "." << std::endl;
 #endif
 	}
 }

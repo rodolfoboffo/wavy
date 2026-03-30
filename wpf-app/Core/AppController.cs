@@ -33,10 +33,10 @@ namespace Wavy.Core
         public void AddPort(Port p)
         {
             this.PortsMap.Add(p.NativePtr, p);
-            p.SelectedChanged += Port_SelectedChanged;
+            p.IsSelectedChanged += Port_SelectedChanged;
         }
 
-        private void Port_SelectedChanged(Port sender, SelectedEventArgs e)
+        private void Port_SelectedChanged(Port sender, IsSelectedEventArgs e)
         {
             if (this.SelectedPort == null && e.IsSelected)
             {
@@ -49,8 +49,8 @@ namespace Wavy.Core
             else if (this.SelectedPort != null && this.SelectedPort != sender && e.IsSelected)
             {
                 this.SelectedPort.SetLinkedPort(sender);
-                this.SelectedPort.Selected = false;
-                sender.Selected = false;
+                this.SelectedPort.IsSelected = false;
+                sender.IsSelected = false;
             }
         }
     }
