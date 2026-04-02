@@ -36,9 +36,19 @@
             <Setter Property="Margin" Value="2,0,2,0" />
             <Setter Property="Cursor" Value="Hand" />
             <Style.Triggers>
+                <DataTrigger Binding="{Binding IsLinked}" Value="True">
+                    <Setter Property="Fill" Value="DarkBlue" />
+                </DataTrigger>
                 <DataTrigger Binding="{Binding IsSelected}" Value="True">
                     <Setter Property="Fill" Value="LightGreen" />
                 </DataTrigger>
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <Condition Binding="{Binding IsSelected}" Value="True" />
+                        <Condition Binding="{Binding IsLinked}" Value="True" />
+                    </MultiDataTrigger.Conditions>
+                    <Setter Property="Fill" Value="LightBlue" />
+                </MultiDataTrigger>
             </Style.Triggers>
         </Style>
         <Style x:Key="PortValueTextBox" TargetType="TextBox">

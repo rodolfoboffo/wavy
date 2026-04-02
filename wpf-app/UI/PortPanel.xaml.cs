@@ -18,6 +18,8 @@ namespace Wavy.UI
 
         public bool IsSelected { get { return this.Port.IsSelected; }  }
 
+        public bool IsLinked { get { return this.Port.IsLinked; } }
+
         public Visibility ValueTextBoxVisibility
         {
             get { return Visibility.Collapsed; }
@@ -39,6 +41,7 @@ namespace Wavy.UI
         {
             this.Port = port;
             this.Port.IsSelectedChanged += Port_PortSelectedChanged;
+            this.Port.IsLinkedChanged += Port_PortLinkedChanged;
             this.DataContext = this;
             InitializeComponent();
         }
@@ -46,6 +49,11 @@ namespace Wavy.UI
         private void Port_PortSelectedChanged(Port sender, IsSelectedEventArgs e)
         {
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IsSelected"));
+        }
+
+        private void Port_PortLinkedChanged(Port sender, IsLinkedEventArgs e)
+        {
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IsLinked"));
         }
 
         private void PortValueTextBox_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)

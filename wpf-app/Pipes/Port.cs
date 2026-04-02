@@ -20,7 +20,15 @@ namespace Wavy.Flow
         public readonly IntPtr NativePtr;
         protected bool IsInput;
         protected bool _IsSelected;
-        public Port? LinkedPort { get; private set; }
+        private Port? _LinkedPort;
+        public Port? LinkedPort { 
+            get { return this._LinkedPort; } 
+            private set
+            {
+                this._LinkedPort = value;
+                this.IsLinkedChanged?.Invoke(this, new IsLinkedEventArgs(value != null));
+            }
+        }
         public bool IsSelected { 
             get { return this._IsSelected; }
             set {
@@ -28,13 +36,8 @@ namespace Wavy.Flow
                 this.IsSelectedChanged?.Invoke(this, new IsSelectedEventArgs(value));
             }
         }
-        protected bool _IsLinked;
         public bool IsLinked { 
-            get { return this._IsLinked; }
-            set {
-                this._IsLinked = value;
-                this.IsLinkedChanged?.Invoke(this, new IsLinkedEventArgs(value));
-            }
+            get { return this.LinkedPort != null; }
         }
         public String Name { get; private set; }
 
@@ -83,7 +86,6 @@ namespace Wavy.Flow
     public class IsLinkedEventArgs : EventArgs
     {
         public bool IsLinked { get; private set; }
-        public Port? LinkedPort { get; private set; }
 
         public IsLinkedEventArgs(bool linked)
         {
